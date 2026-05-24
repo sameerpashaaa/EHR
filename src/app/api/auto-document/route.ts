@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 // Mock database for auto-documents (in-memory storage)
 const autoDocuments: any[] = [];
@@ -7,10 +8,11 @@ const autoDocuments: any[] = [];
 // GET /api/auto-document - List documents
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const { searchParams } = new URL(req.url);
     const patientId = searchParams.get("patientId");
@@ -51,10 +53,11 @@ export async function GET(req: NextRequest) {
 // POST /api/auto-document - Create new auto-document
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await req.json();
     
@@ -87,10 +90,11 @@ export async function POST(req: NextRequest) {
 // PATCH /api/auto-document/:id - Update document status
 export async function PATCH(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");

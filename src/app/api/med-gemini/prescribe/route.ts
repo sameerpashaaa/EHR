@@ -1,6 +1,8 @@
 "use server";
 
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface PatientContext {
@@ -828,6 +830,13 @@ function getMedicationSuggestions(
 // ─── Main API Handler ────────────────────────────────────────────────────────
 export async function POST(request: NextRequest) {
   try {
+
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
     const body = await request.json();
     const {
       transcript,

@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
+    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     // Mock AI insights
     const aiInsights = [
@@ -220,6 +221,7 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
+    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await request.json();
     const { insightId, action } = body;

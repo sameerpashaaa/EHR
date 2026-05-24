@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // Types
 export interface AuditLog {
@@ -62,24 +62,62 @@ export interface SystemStats {
   recentLogins: number;
 }
 
-export function useAdmin() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export interface SystemHealthData {
+  services: SystemHealth[];
+  statistics: SystemStats;
+  auditStats: Record<string, number>;
+}
 
-  // Audit Logs
-  const fetchAuditLogs = useCallback(async (filters?: {
-    userId?: string;
-    action?: string;
-    resource?: string;
-    status?: string;
-    startDate?: string;
-    endDate?: string;
-    limit?: number;
-    offset?: number;
-  }) => {
-    setIsLoading(true);
-    setError(null);
-    try {
+export interface AuditLogFilters {
+  userId?: string;
+  action?: string;
+  resource?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface AdminUserFilters {
+  search?: string;
+  role?: string;
+  status?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface CreateAdminUserData {
+  email: string;
+  name: string;
+  role: string;
+  department?: string;
+  organizationId?: string;
+  isActive?: boolean;
+  twoFactorEnabled?: boolean;
+}
+
+export interface RecordSystemHealthData {
+  serviceName: string;
+  serviceType: string;
+  status: string;
+  uptime: number;
+  latency: number;
+  cpuUsage?: number;
+  memoryUsage?: number;
+  diskUsage?: number;
+  requestCount?: number;
+  errorCount?: number;
+  region?: string;
+  version?: string;
+}
+
+// Hooks
+
+export function useAuditLogs(filters?: AuditLogFilters) {
+  return useQuery({
+    queryKey: ["auditLogs", filters],
+    queryFn: async () => {
       const params = new URLSearchParams();
       if (filters?.userId) params.append("userId", filters.userId);
       if (filters?.action) params.append("action", filters.action);
@@ -92,45 +130,33 @@ export function useAdmin() {
 
       const response = await fetch(`/api/admin/audit-logs?${params}`);
       if (!response.ok) throw new Error("Failed to fetch audit logs");
-      return await response.json();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      return response.json();
+    },
+  });
+}
 
-  const createAuditLog = useCallback(async (data: Partial<AuditLog>) => {
-    setIsLoading(true);
-    setError(null);
-    try {
+export function useCreateAuditLog() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: Partial<AuditLog>) => {
       const response = await fetch("/api/admin/audit-logs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error("Failed to create audit log");
-      return await response.json();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["auditLogs"] });
+    },
+  });
+}
 
-  // Users
-  const fetchUsers = useCallback(async (filters?: {
-    search?: string;
-    role?: string;
-    status?: string;
-    limit?: number;
-    offset?: number;
-  }) => {
-    setIsLoading(true);
-    setError(null);
-    try {
+export function useAdminUsers(filters?: AdminUserFilters) {
+  return useQuery({
+    queryKey: ["adminUsers", filters],
+    queryFn: async () => {
       const params = new URLSearchParams();
       if (filters?.search) params.append("search", filters.search);
       if (filters?.role) params.append("role", filters.role);
@@ -140,27 +166,15 @@ export function useAdmin() {
 
       const response = await fetch(`/api/admin/users?${params}`);
       if (!response.ok) throw new Error("Failed to fetch users");
-      return await response.json();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      return response.json();
+    },
+  });
+}
 
-  const createUser = useCallback(async (data: {
-    email: string;
-    name: string;
-    role: string;
-    department?: string;
-    organizationId?: string;
-    isActive?: boolean;
-    twoFactorEnabled?: boolean;
-  }) => {
-    setIsLoading(true);
-    setError(null);
-    try {
+export function useCreateUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: CreateAdminUserData) => {
       const response = await fetch("/api/admin/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -170,105 +184,57 @@ export function useAdmin() {
         const error = await response.json();
         throw new Error(error.error || "Failed to create user");
       }
-      return await response.json();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+    },
+  });
+}
 
-  // System Health
-  const fetchSystemHealth = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
+export function useSystemHealth() {
+  return useQuery<SystemHealthData>({
+    queryKey: ["systemHealth"],
+    queryFn: async () => {
       const response = await fetch("/api/admin/system-health");
       if (!response.ok) throw new Error("Failed to fetch system health");
-      return await response.json();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      return response.json();
+    },
+  });
+}
 
-  const recordSystemHealth = useCallback(async (data: {
-    serviceName: string;
-    serviceType: string;
-    status: string;
-    uptime: number;
-    latency: number;
-    cpuUsage?: number;
-    memoryUsage?: number;
-    diskUsage?: number;
-    requestCount?: number;
-    errorCount?: number;
-    region?: string;
-    version?: string;
-  }) => {
-    setIsLoading(true);
-    setError(null);
-    try {
+export function useRecordSystemHealth() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: RecordSystemHealthData) => {
       const response = await fetch("/api/admin/system-health", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error("Failed to record system health");
-      return await response.json();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  return {
-    isLoading,
-    error,
-    fetchAuditLogs,
-    createAuditLog,
-    fetchUsers,
-    createUser,
-    fetchSystemHealth,
-    recordSystemHealth,
-  };
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["systemHealth"] });
+    },
+  });
 }
 
-// Hook for polling system health
 export function useSystemHealthPolling(intervalMs: number = 30000) {
-  const [health, setHealth] = useState<{
-    services: SystemHealth[];
-    statistics: SystemStats;
-    auditStats: Record<string, number>;
-  } | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const query = useQuery<SystemHealthData>({
+    queryKey: ["systemHealth", "polling"],
+    queryFn: async () => {
+      const response = await fetch("/api/admin/system-health");
+      if (!response.ok) throw new Error("Failed to fetch system health");
+      return response.json();
+    },
+    refetchInterval: intervalMs,
+  });
 
-  const { fetchSystemHealth } = useAdmin();
-
-  useEffect(() => {
-    const poll = async () => {
-      try {
-        const data = await fetchSystemHealth();
-        setHealth(data);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    poll(); // Initial fetch
-    const interval = setInterval(poll, intervalMs);
-
-    return () => clearInterval(interval);
-  }, [fetchSystemHealth, intervalMs]);
-
-  return { health, isLoading, error };
+  return {
+    health: query.data,
+    isLoading: query.isLoading,
+    error: query.error ? (query.error as Error).message : null,
+  };
 }

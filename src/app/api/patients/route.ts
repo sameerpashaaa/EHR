@@ -5,80 +5,7 @@ import { patientSchema, patientSearchSchema } from "@/lib/validation/patient";
 import { hasPermission } from "@/lib/auth/roles";
 import { generateMRN } from "@/lib/utils";
 import { z } from "zod";
-
-// Mock patients data
-const MOCK_PATIENTS = [
-  {
-    id: "1",
-    mrn: "MRN2024001",
-    firstName: "John",
-    lastName: "Smith",
-    middleName: "A",
-    gender: "MALE",
-    dateOfBirth: "1985-03-15",
-    status: "ACTIVE",
-    phone: "(555) 123-4567",
-    email: "john.smith@email.com",
-    address: "123 Main St, Medical City, CA 90210",
-    primaryPhysician: "Johnson, Sarah",
-  },
-  {
-    id: "2",
-    mrn: "MRN2024002",
-    firstName: "Maria",
-    lastName: "Garcia",
-    middleName: "L",
-    gender: "FEMALE",
-    dateOfBirth: "1990-07-22",
-    status: "ACTIVE",
-    phone: "(555) 234-5678",
-    email: "maria.garcia@email.com",
-    address: "456 Oak Ave, Medical City, CA 90210",
-    primaryPhysician: "Chen, Michael",
-  },
-  {
-    id: "3",
-    mrn: "MRN2024003",
-    firstName: "Robert",
-    lastName: "Johnson",
-    middleName: "K",
-    gender: "MALE",
-    dateOfBirth: "1975-11-08",
-    status: "ACTIVE",
-    phone: "(555) 345-6789",
-    email: "robert.j@email.com",
-    address: "789 Pine Rd, Medical City, CA 90210",
-    primaryPhysician: "Johnson, Sarah",
-  },
-  {
-    id: "4",
-    mrn: "MRN2024004",
-    firstName: "Jennifer",
-    lastName: "Williams",
-    middleName: "M",
-    gender: "FEMALE",
-    dateOfBirth: "1988-01-30",
-    status: "ACTIVE",
-    phone: "(555) 456-7890",
-    email: "jennifer.w@email.com",
-    address: "321 Elm St, Medical City, CA 90210",
-    primaryPhysician: "Chen, Michael",
-  },
-  {
-    id: "5",
-    mrn: "MRN2024005",
-    firstName: "David",
-    lastName: "Brown",
-    middleName: "T",
-    gender: "MALE",
-    dateOfBirth: "1960-05-12",
-    status: "INACTIVE",
-    phone: "(555) 567-8901",
-    email: "david.brown@email.com",
-    address: "654 Maple Dr, Medical City, CA 90210",
-    primaryPhysician: "Johnson, Sarah",
-  },
-];
+import { db } from "@/lib/db";
 
 // GET /api/patients - List patients with search and pagination
 export async function GET(request: NextRequest) {
@@ -91,6 +18,7 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
+    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     if (!hasPermission((session.user as any).role, "patients:read")) {
       return NextResponse.json(
@@ -114,45 +42,56 @@ export async function GET(request: NextRequest) {
 
     const validated = patientSearchSchema.parse(params);
 
-    // Filter patients
-    let filteredPatients = [...MOCK_PATIENTS];
-
+    const where: any = {};
+    
     if (validated.query) {
-      const query = validated.query.toLowerCase();
-      filteredPatients = filteredPatients.filter(
-        (p) =>
-          p.firstName.toLowerCase().includes(query) ||
-          p.lastName.toLowerCase().includes(query) ||
-          p.mrn.toLowerCase().includes(query)
-      );
+      where.OR = [
+        { firstName: { contains: validated.query, mode: "insensitive" } },
+        { lastName: { contains: validated.query, mode: "insensitive" } },
+        { mrn: { contains: validated.query, mode: "insensitive" } },
+      ];
     }
 
     if (validated.gender) {
-      filteredPatients = filteredPatients.filter((p) => p.gender === validated.gender);
+      where.gender = validated.gender;
     }
 
     if (validated.status) {
-      filteredPatients = filteredPatients.filter((p) => p.status === validated.status);
+      where.status = validated.status;
     }
 
-    // Sort patients
-    filteredPatients.sort((a, b) => {
-      const aValue = a[validated.sortBy as keyof typeof a] || "";
-      const bValue = b[validated.sortBy as keyof typeof b] || "";
-      if (validated.sortOrder === "asc") {
-        return String(aValue).localeCompare(String(bValue));
+    const total = await db.patient.count({ where });
+    const start = (validated.page - 1) * validated.limit;
+
+    const paginatedPatients = await db.patient.findMany({
+      where,
+      orderBy: { [validated.sortBy]: validated.sortOrder },
+      skip: start,
+      take: validated.limit,
+      include: {
+        primaryPhysician: true,
+        addresses: true,
+        telecoms: true,
       }
-      return String(bValue).localeCompare(String(aValue));
     });
 
-    // Paginate
-    const total = filteredPatients.length;
-    const start = (validated.page - 1) * validated.limit;
-    const paginatedPatients = filteredPatients.slice(start, start + validated.limit);
+    // Transform DB model slightly to match frontend expected fields for the table
+    const formattedPatients = paginatedPatients.map((p) => ({
+      ...p,
+      dateOfBirth: p.dateOfBirth.toISOString().split("T")[0],
+      phone: p.telecoms?.find((t) => t.system === "PHONE")?.value || "",
+      email: p.telecoms?.find((t) => t.system === "EMAIL")?.value || "",
+      address: p.addresses?.[0]
+        ? `${p.addresses[0].line1}, ${p.addresses[0].city}, ${p.addresses[0].state} ${p.addresses[0].postalCode}`
+        : "",
+      primaryPhysician: p.primaryPhysician 
+        ? `${p.primaryPhysician.lastName}, ${p.primaryPhysician.firstName}`
+        : "Unassigned",
+    }));
 
     return NextResponse.json({
       success: true,
-      data: paginatedPatients,
+      data: formattedPatients,
       meta: {
         page: validated.page,
         limit: validated.limit,
@@ -186,6 +125,7 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
+    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     if (!hasPermission((session.user as any).role, "patients:create")) {
       return NextResponse.json(
@@ -198,11 +138,13 @@ export async function POST(request: NextRequest) {
     const validated = patientSchema.parse(body);
 
     // Check for duplicate
-    const existingPatient = MOCK_PATIENTS.find(
-      (p) =>
-        p.firstName.toLowerCase() === validated.firstName.toLowerCase() &&
-        p.lastName.toLowerCase() === validated.lastName.toLowerCase()
-    );
+    const existingPatient = await db.patient.findFirst({
+      where: {
+        firstName: { equals: validated.firstName, mode: "insensitive" },
+        lastName: { equals: validated.lastName, mode: "insensitive" },
+        dateOfBirth: new Date(validated.dateOfBirth),
+      }
+    });
 
     if (existingPatient) {
       return NextResponse.json(
@@ -210,37 +152,76 @@ export async function POST(request: NextRequest) {
           success: false,
           error: {
             code: "DUPLICATE_PATIENT",
-            message: "A patient with this name already exists",
+            message: "A patient with this name and DOB already exists",
           },
         },
         { status: 409 }
       );
     }
 
-    // Create new patient (mock)
-    const newPatient = {
-      id: String(MOCK_PATIENTS.length + 1),
-      mrn: generateMRN(),
-      firstName: validated.firstName,
-      lastName: validated.lastName,
-      middleName: validated.middleName || "",
-      gender: validated.gender,
-      dateOfBirth: validated.dateOfBirth,
-      status: validated.status,
-      phone: validated.telecoms?.find((t) => t.system === "PHONE")?.value || "",
-      email: validated.telecoms?.find((t) => t.system === "EMAIL")?.value || "",
-      address: validated.addresses?.[0]
-        ? `${validated.addresses[0].line1}, ${validated.addresses[0].city}, ${validated.addresses[0].state} ${validated.addresses[0].postalCode}`
+    // Create new patient
+    const newPatient = await db.patient.create({
+      data: {
+        mrn: generateMRN(),
+        firstName: validated.firstName,
+        lastName: validated.lastName,
+        middleName: validated.middleName || "",
+        gender: validated.gender as any,
+        dateOfBirth: new Date(validated.dateOfBirth),
+        status: validated.status as any,
+        telecoms: {
+          create: validated.telecoms?.map((t: any) => ({
+            system: t.system,
+            value: t.value,
+            use: t.use,
+            isPrimary: t.isPrimary || false,
+          })) || []
+        },
+        addresses: {
+          create: validated.addresses?.map((a: any) => ({
+            use: a.use,
+            type: a.type || "BOTH",
+            line1: a.line1,
+            line2: a.line2 || "",
+            city: a.city,
+            state: a.state,
+            postalCode: a.postalCode,
+            country: a.country || "US",
+            isPrimary: a.isPrimary || false,
+          })) || []
+        },
+        emergencyContacts: {
+          create: validated.emergencyContacts?.map((e: any) => ({
+            name: e.name,
+            relationship: e.relationship,
+            phone: e.phone,
+            email: e.email || "",
+            isPrimary: e.isPrimary || false,
+          })) || []
+        }
+      },
+      include: {
+        telecoms: true,
+        addresses: true,
+        emergencyContacts: true,
+      }
+    });
+
+    const formattedPatient = {
+      ...newPatient,
+      dateOfBirth: newPatient.dateOfBirth.toISOString().split("T")[0],
+      phone: newPatient.telecoms?.find((t) => t.system === "PHONE")?.value || "",
+      email: newPatient.telecoms?.find((t) => t.system === "EMAIL")?.value || "",
+      address: newPatient.addresses?.[0]
+        ? `${newPatient.addresses[0].line1}, ${newPatient.addresses[0].city}, ${newPatient.addresses[0].state} ${newPatient.addresses[0].postalCode}`
         : "",
       primaryPhysician: "Unassigned",
     };
 
-    MOCK_PATIENTS.push(newPatient);
-
     return NextResponse.json(
       {
         success: true,
-        data: newPatient,
+        data: formattedPatient,
       },
       { status: 201 }
     );

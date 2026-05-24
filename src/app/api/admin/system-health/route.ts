@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 // Mock system health data
 const mockHealthMetrics: any[] = [
@@ -11,10 +12,11 @@ const mockHealthMetrics: any[] = [
 // GET /api/admin/system-health - Get system health metrics
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (!['ADMIN'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     // Get unique latest metrics per service
     const latestByService = new Map();
@@ -56,10 +58,11 @@ export async function GET(req: NextRequest) {
 // POST /api/admin/system-health - Record system health metric
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (!['ADMIN'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await req.json();
 

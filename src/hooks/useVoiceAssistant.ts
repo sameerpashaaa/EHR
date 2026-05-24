@@ -289,6 +289,7 @@ export function useVoiceAssistant(assistantName: string = "Metta") {
 
       const fullTranscript = transcript.trim();
       
+      let currentResponse = null;
       if (fullTranscript) {
         // Add user message to conversation
         setConversation(prev => [...prev, { role: "user", text: fullTranscript }]);
@@ -296,6 +297,7 @@ export function useVoiceAssistant(assistantName: string = "Metta") {
         // Parse and execute command
         const command = parseCommand(fullTranscript);
         const response = await executeCommand(command);
+        currentResponse = response;
         
         // Add assistant response to conversation
         setConversation(prev => [...prev, { role: "assistant", text: response.text }]);
@@ -311,14 +313,14 @@ export function useVoiceAssistant(assistantName: string = "Metta") {
             command: command.type,
             response: response.text,
           }),
-        });
+        }).catch(e => console.error("Failed to log voice command", e));
       }
 
       setTranscript("");
       setInterimTranscript("");
       wakeupDetectedRef.current = false;
       
-      return lastResponse;
+      return currentResponse || lastResponse;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to process command");
       return null;

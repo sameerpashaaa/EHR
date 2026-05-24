@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
+import { authOptions } from "@/lib/auth";
+import { db } from "@/lib/db";
 
 const createUserSchema = z.object({
   email: z.string().email(),
@@ -11,20 +13,14 @@ const createUserSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-// Mock users storage
-const mockUsers: any[] = [
-  { id: "1", email: "admin@metapharsic.com", name: "Admin User", role: "ADMIN", isActive: true, twoFactorEnabled: true, lastLoginAt: new Date().toISOString(), createdAt: "2023-01-01", organization: { id: "1", name: "Metapharsic Medical Center" }, practitioner: { id: "1", department: "IT" } },
-  { id: "2", email: "sarah.chen@metapharsic.com", name: "Dr. Sarah Chen", role: "PHYSICIAN", isActive: true, twoFactorEnabled: true, lastLoginAt: new Date().toISOString(), createdAt: "2023-01-15", organization: { id: "1", name: "Metapharsic Medical Center" }, practitioner: { id: "2", department: "Cardiology" } },
-  { id: "3", email: "michael.ross@metapharsic.com", name: "Dr. Michael Ross", role: "PHYSICIAN", isActive: true, twoFactorEnabled: false, lastLoginAt: new Date(Date.now() - 3600000).toISOString(), createdAt: "2023-02-20", organization: { id: "1", name: "Metapharsic Medical Center" }, practitioner: { id: "3", department: "Internal Medicine" } },
-];
-
 // GET /api/admin/users - List all users
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (!['ADMIN'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search");
@@ -33,23 +29,42 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
 
-    let users = [...mockUsers];
+    const where: any = {};
     
     if (search) {
-      const searchLower = search.toLowerCase();
-      users = users.filter(u => 
-        u.name.toLowerCase().includes(searchLower) || 
-        u.email.toLowerCase().includes(searchLower)
-      );
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+      ];
     }
-    if (role) users = users.filter(u => u.role === role);
-    if (status) users = users.filter(u => u.isActive === (status === "active"));
+    
+    if (role) {
+      where.role = role;
+    }
+    
+    if (status) {
+      where.isActive = status === "active";
+    }
 
-    const total = users.length;
-    users = users.slice(offset, offset + limit);
+    const total = await db.user.count({ where });
+    const users = await db.user.findMany({
+      where,
+      skip: offset,
+      take: limit,
+      include: {
+        organization: true,
+        practitioner: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const formattedUsers = users.map(u => ({
+      ...u,
+      twoFactorEnabled: false, // Not in schema, adding for backwards compatibility
+    }));
 
     return NextResponse.json({
-      users,
+      users: formattedUsers,
       pagination: {
         total,
         limit,
@@ -69,16 +84,20 @@ export async function GET(req: NextRequest) {
 // POST /api/admin/users - Create new user
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (!['ADMIN'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await req.json();
     const validated = createUserSchema.parse(body);
 
     // Check if email already exists
-    const existingUser = mockUsers.find(u => u.email === validated.email);
+    const existingUser = await db.user.findUnique({
+      where: { email: validated.email }
+    });
+
     if (existingUser) {
       return NextResponse.json(
         { error: "User with this email already exists" },
@@ -86,19 +105,44 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const user = {
-      id: `user_${Date.now()}`,
-      ...validated,
+    let practitionerId = undefined;
+
+    // If department is provided and it's a clinical role, we could create a practitioner
+    if (validated.department && ['PHYSICIAN', 'NURSE', 'MEDICAL_ASSISTANT'].includes(validated.role)) {
+       const newPractitioner = await db.practitioner.create({
+         data: {
+           identifier: `PRAC-${Date.now()}`,
+           firstName: validated.name.split(' ')[0] || validated.name,
+           lastName: validated.name.split(' ').slice(1).join(' ') || 'Unknown',
+           specialty: validated.department,
+           email: validated.email,
+           active: validated.isActive,
+         }
+       });
+       practitionerId = newPractitioner.id;
+    }
+
+    const user = await db.user.create({
+      data: {
+        email: validated.email,
+        name: validated.name,
+        role: validated.role as any,
+        isActive: validated.isActive,
+        organizationId: validated.organizationId,
+        practitionerId: practitionerId,
+      },
+      include: {
+        organization: true,
+        practitioner: true,
+      }
+    });
+
+    const formattedUser = {
+      ...user,
       twoFactorEnabled: false,
-      lastLoginAt: null,
-      createdAt: new Date().toISOString(),
-      organization: { id: "1", name: "Metapharsic Medical Center" },
-      practitioner: validated.department ? { id: `prac_${Date.now()}`, department: validated.department } : null,
     };
 
-    mockUsers.push(user);
-
-    return NextResponse.json(user, { status: 201 });
+    return NextResponse.json(formattedUser, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

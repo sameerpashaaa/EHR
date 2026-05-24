@@ -17,6 +17,7 @@ export async function GET(
         { status: 401 }
       );
     }
+    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const { patientId } = params;
     const { searchParams } = new URL(request.url);

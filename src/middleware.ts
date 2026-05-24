@@ -65,7 +65,7 @@ export default withAuth(
     response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
     response.headers.set(
       "Content-Security-Policy",
-      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self';"
+      "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self';"
     );
 
     return response;

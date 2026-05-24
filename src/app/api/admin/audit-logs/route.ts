@@ -1,20 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-
-// Mock audit logs storage
-const mockAuditLogs: any[] = [
-  { id: "1", userId: "1", userEmail: "admin@metapharsic.com", userName: "Admin User", action: "USER_CREATED", resource: "User", resourceId: "5", description: "Created user Jane Smith", status: "SUCCESS", ipAddress: "192.168.1.50", createdAt: new Date().toISOString() },
-  { id: "2", userId: "2", userEmail: "sarah.chen@metapharsic.com", userName: "Dr. Sarah Chen", action: "PATIENT_RECORD_ACCESSED", resource: "Patient", resourceId: "PT12345", description: "Viewed medical history", status: "SUCCESS", ipAddress: "192.168.1.100", createdAt: new Date(Date.now() - 3600000).toISOString() },
-  { id: "3", userId: "system", userEmail: "system", userName: "System", action: "BACKUP_COMPLETED", resource: "Database", description: "Daily backup completed successfully", status: "SUCCESS", ipAddress: "127.0.0.1", createdAt: new Date(Date.now() - 7200000).toISOString() },
-];
+import { authOptions } from "@/lib/auth";
+import { db } from "@/lib/db";
 
 // GET /api/admin/audit-logs - Get audit logs with filters
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (!['ADMIN'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
@@ -24,18 +20,48 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
 
-    let logs = [...mockAuditLogs];
+    const where: any = {};
     
-    if (userId) logs = logs.filter(l => l.userId === userId);
-    if (action) logs = logs.filter(l => l.action.toLowerCase().includes(action.toLowerCase()));
-    if (resource) logs = logs.filter(l => l.resource === resource);
-    if (status) logs = logs.filter(l => l.status === status);
+    if (userId) {
+      where.userId = userId;
+    }
+    
+    if (action) {
+      where.action = { contains: action, mode: "insensitive" };
+    }
+    
+    if (resource) {
+      where.resourceType = resource;
+    }
+    
+    if (status) {
+      where.outcome = status.toLowerCase(); // Map SUCCESS/FAILURE to outcome field in db if it uses lowercase
+    }
 
-    const total = logs.length;
-    logs = logs.slice(offset, offset + limit);
+    const total = await db.auditEvent.count({ where });
+    const logs = await db.auditEvent.findMany({
+      where,
+      skip: offset,
+      take: limit,
+      orderBy: { occurredAt: "desc" },
+    });
+
+    const formattedLogs = logs.map(l => ({
+      id: l.id,
+      userId: l.userId,
+      userEmail: "", // The DB schema doesn't store userEmail natively on auditEvent, we map what we have
+      userName: l.userName || "System",
+      action: l.action,
+      resource: l.resourceType,
+      resourceId: l.resourceId,
+      description: l.outcomeDescription || "",
+      status: l.outcome.toUpperCase(),
+      ipAddress: l.ipAddress || "",
+      createdAt: l.occurredAt.toISOString(),
+    }));
 
     return NextResponse.json({
-      logs,
+      logs: formattedLogs,
       pagination: {
         total,
         limit,
@@ -55,21 +81,41 @@ export async function GET(req: NextRequest) {
 // POST /api/admin/audit-logs - Create audit log entry
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
+    if (!['ADMIN'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     const body = await req.json();
 
-    const log = {
-      id: `log_${Date.now()}`,
-      ...body,
-      userId: session?.user?.email || body.userId,
+    const log = await db.auditEvent.create({
+      data: {
+        type: body.type || "OTHER",
+        action: body.action,
+        userId: session?.user?.email ? undefined : body.userId, // Can map to user ID if we have it, simplified here
+        userName: session?.user?.name || body.userName || "System",
+        userRole: (session?.user as any)?.role || "SYSTEM",
+        resourceType: body.resource || "Unknown",
+        resourceId: body.resourceId,
+        outcome: body.status?.toLowerCase() || "success",
+        outcomeDescription: body.description,
+        ipAddress: body.ipAddress || null,
+        occurredAt: new Date(),
+      }
+    });
+
+    const formattedLog = {
+      id: log.id,
+      userId: log.userId,
       userEmail: session?.user?.email || body.userEmail,
-      userName: session?.user?.name || body.userName,
-      createdAt: new Date().toISOString(),
+      userName: log.userName,
+      action: log.action,
+      resource: log.resourceType,
+      resourceId: log.resourceId,
+      description: log.outcomeDescription,
+      status: log.outcome.toUpperCase(),
+      ipAddress: log.ipAddress,
+      createdAt: log.occurredAt.toISOString(),
     };
 
-    mockAuditLogs.unshift(log);
-
-    return NextResponse.json(log, { status: 201 });
+    return NextResponse.json(formattedLog, { status: 201 });
   } catch (error) {
     console.error("Error creating audit log:", error);
     return NextResponse.json(

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { usePatient } from "@/hooks/usePatients";
 import { motion, AnimatePresence } from "framer-motion";
 import { AIPrescriptionWriter } from "@/components/prescription/AIPrescriptionWriter";
 import { MedGeminiPrescriptionPanel } from "@/components/prescription/MedGeminiPrescriptionPanel";
@@ -299,19 +300,62 @@ export default function PrescribePage() {
   const searchParams = useSearchParams();
   const patientId = searchParams.get("patientId") || "p-123";
 
-  const [selectedPatient, setSelectedPatient] = useState(MOCK_PATIENTS[0]);
+  const { data: patientData, isLoading: patientLoading } = usePatient(patientId);
+
+  const [selectedPatient, setSelectedPatient] = useState<Patient>(MOCK_PATIENTS[0]);
   const [activeTab, setActiveTab] = useState<"medgemini" | "new" | "interactions" | "refills" | "history">("medgemini");
   const [prescriptionHistory, setPrescriptionHistory] = useState(MOCK_PRESCRIPTION_HISTORY);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [interactions, setInteractions] = useState(MOCK_INTERACTIONS);
+  const [interactions, setInteractions] = useState<DrugInteraction[]>(MOCK_INTERACTIONS);
   const [refills, setRefills] = useState(MOCK_REFILLS);
   const [refillSearch, setRefillSearch] = useState("");
   const [checkingInteractions, setCheckingInteractions] = useState(false);
 
+  const [labResults, setLabResults] = useState({
+    eGFR: 72,
+    creatinine: 1.1,
+    A1c: 8.2,
+    potassium: 4.5,
+    ALT: 28,
+    AST: 32,
+  });
+
   useEffect(() => {
-    const patient = MOCK_PATIENTS.find((p) => p.id === patientId);
-    if (patient) setSelectedPatient(patient);
-  }, [patientId]);
+    if (patientData?.data) {
+      const p = patientData.data;
+      const age = p.dateOfBirth ? new Date().getFullYear() - new Date(p.dateOfBirth).getFullYear() : 45;
+      setSelectedPatient({
+        id: p.id,
+        name: `${p.firstName} ${p.lastName}`,
+        age,
+        gender: p.gender || "Unknown",
+        mrn: p.id,
+        allergies: p.allergies || ["Penicillin", "Sulfa"],
+        currentMedications: p.medications || ["Lisinopril 10mg", "Metformin 500mg"],
+        lastVisit: "2024-01-15",
+      });
+    } else {
+      const patient = MOCK_PATIENTS.find((p) => p.id === patientId);
+      if (patient) setSelectedPatient(patient);
+    }
+  }, [patientData, patientId]);
+
+  useEffect(() => {
+    if (selectedPatient?.id) {
+      const fetchLabs = async () => {
+        try {
+          const res = await fetch(`/api/patients/${selectedPatient.id}/labs`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.labs) setLabResults(data.labs);
+          }
+        } catch (e) {
+          console.error("Failed to fetch labs:", e);
+        }
+      };
+      fetchLabs();
+    }
+  }, [selectedPatient?.id]);
 
   const handlePrescriptionSaved = (prescription: any) => {
     setShowSuccess(true);
@@ -326,9 +370,26 @@ export default function PrescribePage() {
     }, ...prev]);
   };
 
-  const handleRunInteractionCheck = () => {
+  const handleRunInteractionCheck = async () => {
     setCheckingInteractions(true);
-    setTimeout(() => setCheckingInteractions(false), 1500);
+    try {
+      const res = await fetch("/api/medications/interactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ medications: selectedPatient.currentMedications })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setInteractions(data.interactions || MOCK_INTERACTIONS);
+      } else {
+        setInteractions(MOCK_INTERACTIONS);
+      }
+    } catch (e) {
+      console.error("Failed to check interactions:", e);
+      setInteractions(MOCK_INTERACTIONS);
+    } finally {
+      setCheckingInteractions(false);
+    }
   };
 
   const handleRefillUpdate = (id: string, status: RefillRequest["status"]) => {
@@ -419,10 +480,14 @@ export default function PrescribePage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 bg-white p-1 rounded-xl border border-slate-200 w-fit">
+        <div role="tablist" className="flex gap-2 bg-white p-1 rounded-xl border border-slate-200 w-fit">
           {tabs.map((tab) => (
             <button
               key={tab.id}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              aria-controls={`panel-${tab.id}`}
+              id={`tab-${tab.id}`}
               onClick={() => setActiveTab(tab.id as any)}
               className={cn(
                 "relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
@@ -458,14 +523,7 @@ export default function PrescribePage() {
                   gender: selectedPatient.gender,
                   allergies: selectedPatient.allergies,
                   currentMedications: selectedPatient.currentMedications,
-                  labResults: {
-                    eGFR: 72,
-                    creatinine: 1.1,
-                    A1c: 8.2,
-                    potassium: 4.5,
-                    ALT: 28,
-                    AST: 32,
-                  },
+                  labResults: labResults,
                   conditions: ["Type 2 Diabetes", "Hypertension", "Hyperlipidemia"],
                 }}
                 onPrescriptionSaved={handlePrescriptionSaved}
@@ -509,12 +567,19 @@ export default function PrescribePage() {
                     { sev: "major", count: interactions.filter((i) => i.severity === "major").length, color: "rose" },
                     { sev: "moderate", count: interactions.filter((i) => i.severity === "moderate").length, color: "amber" },
                     { sev: "minor", count: interactions.filter((i) => i.severity === "minor").length, color: "blue" },
-                  ].map(({ sev, count, color }) => (
-                    <div key={sev} className={`p-3 rounded-xl bg-${color}-50 border border-${color}-200 text-center`}>
-                      <p className={`text-2xl font-bold text-${color}-600`}>{count}</p>
-                      <p className={`text-xs capitalize text-${color}-700`}>{sev}</p>
+                  ].map(({ sev, count, color }) => {
+                    const styles = {
+                      rose: { bg: "bg-rose-50", border: "border-rose-200", textValue: "text-rose-600", textLabel: "text-rose-700" },
+                      amber: { bg: "bg-amber-50", border: "border-amber-200", textValue: "text-amber-600", textLabel: "text-amber-700" },
+                      blue: { bg: "bg-blue-50", border: "border-blue-200", textValue: "text-blue-600", textLabel: "text-blue-700" },
+                    }[color as "rose" | "amber" | "blue"];
+                    return (
+                    <div key={sev} className={`p-3 rounded-xl ${styles.bg} border ${styles.border} text-center`}>
+                      <p className={`text-2xl font-bold ${styles.textValue}`}>{count}</p>
+                      <p className={`text-xs capitalize ${styles.textLabel}`}>{sev}</p>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Current Meds */}

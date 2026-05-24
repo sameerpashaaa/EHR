@@ -166,19 +166,29 @@ export async function parseSymptoms(text: string): Promise<string[]> {
   const lower = text.toLowerCase();
   const symptoms = new Set<string>();
 
-  try {
-     const dbDiagnoses = await prisma.clinicalDiagnosis.findMany({ select: { symptoms: true } });
-     dbDiagnoses.forEach((d: any) => {
-       (d.symptoms || []).forEach((s: string) => {
-         if (lower.includes(s.toLowerCase())) symptoms.add(s.toLowerCase());
-       });
-     });
-  } catch (err) {
+  if (!process.env.DATABASE_URL) {
+     console.warn("⚠️ DATABASE_URL not configured. Skipping DB lookup in parseSymptoms.");
      DIAGNOSIS_DB.forEach((d: any) => {
        d.symptoms.forEach((s: string) => {
          if (lower.includes(s.toLowerCase())) symptoms.add(s.toLowerCase());
        });
      });
+  } else {
+    try {
+       const dbDiagnoses = await prisma.clinicalDiagnosis.findMany({ select: { symptoms: true } });
+       dbDiagnoses.forEach((d: any) => {
+         (d.symptoms || []).forEach((s: string) => {
+           if (lower.includes(s.toLowerCase())) symptoms.add(s.toLowerCase());
+         });
+       });
+    } catch (err) {
+       console.warn("DB Fallback triggered in parseSymptoms", err);
+       DIAGNOSIS_DB.forEach((d: any) => {
+         d.symptoms.forEach((s: string) => {
+           if (lower.includes(s.toLowerCase())) symptoms.add(s.toLowerCase());
+         });
+       });
+    }
   }
 
   Object.entries(LOCAL_KEYWORDS).forEach(([local, englishKey]) => {

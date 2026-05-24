@@ -1,60 +1,14 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { UserRole, SessionUser } from "@/types";
+import { UserRole } from "@/types";
 import { z } from "zod";
+import bcrypt from "bcryptjs";
+import { db } from "@/lib/db";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
 });
-
-// Mock users for demo (no database required)
-const MOCK_USERS = [
-  {
-    id: "1",
-    email: "admin@metapharsic.com",
-    password: "admin123",
-    name: "System Administrator",
-    role: "ADMIN" as UserRole,
-    image: null,
-    practitionerId: null,
-    patientId: null,
-    organizationId: "1",
-  },
-  {
-    id: "2",
-    email: "physician@metapharsic.com",
-    password: "physician123",
-    name: "Dr. Sarah Johnson",
-    role: "PHYSICIAN" as UserRole,
-    image: null,
-    practitionerId: "1",
-    patientId: null,
-    organizationId: "1",
-  },
-  {
-    id: "3",
-    email: "nurse@metapharsic.com",
-    password: "nurse123",
-    name: "Emily Rodriguez",
-    role: "NURSE" as UserRole,
-    image: null,
-    practitionerId: "2",
-    patientId: null,
-    organizationId: "1",
-  },
-  {
-    id: "4",
-    email: "frontdesk@metapharsic.com",
-    password: "frontdesk123",
-    name: "Front Desk Staff",
-    role: "FRONT_DESK" as UserRole,
-    image: null,
-    practitionerId: null,
-    patientId: null,
-    organizationId: "1",
-  },
-];
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -74,33 +28,33 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          console.log("Auth attempt with:", credentials?.email);
           const validated = credentialsSchema.parse(credentials);
-          console.log("Validated:", validated.email);
 
-          // Find mock user
-          const user = MOCK_USERS.find(
-            (u) => u.email === validated.email && u.password === validated.password
-          );
+          const user = await db.user.findUnique({
+            where: { email: validated.email },
+          });
 
-          if (!user) {
-            console.log("User not found or password mismatch");
+          if (!user || !user.password) {
             return null;
           }
 
-          console.log("User found:", user.name);
+          const passwordMatch = await bcrypt.compare(validated.password, user.password);
+
+          if (!passwordMatch) {
+            return null;
+          }
+
           return {
             id: user.id,
             email: user.email,
             name: user.name,
-            role: user.role,
+            role: user.role as UserRole,
             image: user.image,
             practitionerId: user.practitionerId,
             patientId: user.patientId,
             organizationId: user.organizationId,
           } as any;
         } catch (error) {
-          console.error("Auth error:", error);
           return null;
         }
       },
@@ -137,14 +91,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  events: {
-    async signIn({ user, account, profile, isNewUser }) {
-      console.log(`User ${user.email} signed in`);
-    },
-    async signOut({ token }) {
-      console.log(`User ${token.email} signed out`);
-    },
-  },
+  events: {},
 };
-
-// Helper functions removed - using mock auth for demo
