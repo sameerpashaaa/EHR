@@ -105,93 +105,89 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const pathname = usePathname();
-  
+
   const navItems = filterNavItemsByRole(NAV_ITEMS, user.role);
 
   const handleExpand = (val: boolean) => {
     setIsExpanded(val);
     onExpandChange?.(val);
   };
-  
+
   const getIcon = (iconName: string) => {
     const Icon = iconMap[iconName];
-    return Icon ? <Icon className="h-5 w-5" /> : null;
+    return Icon ? <Icon className="h-4 w-4" /> : null;
   };
 
   return (
     <>
       {/* Mobile Menu Overlay */}
       {isExpanded && (
-        <div 
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"
+        <div
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
           onClick={() => handleExpand(false)}
         />
       )}
 
-      {/* Sidebar Navigation - Fixed full height */}
-      <nav className={cn(
-        "fixed left-0 top-0 h-full z-50 hidden lg:flex flex-col",
-        "bg-white/95 backdrop-blur-xl border-r border-slate-200/80 shadow-xl shadow-slate-200/40",
-        "transition-all duration-300 ease-out",
-        isExpanded ? "w-64" : "w-[72px]"
-      )}>
+      {/* Sidebar Navigation */}
+      <nav
+        className={cn(
+          "fixed left-0 top-0 h-full z-50 hidden lg:flex flex-col",
+          "bg-slate-50 border-r border-slate-200",
+          "transition-all duration-300 ease-out",
+          isExpanded ? "w-52" : "w-[72px]"
+        )}
+      >
         {/* Logo */}
-        <div className={cn(
-          "flex items-center gap-3 px-3 py-4 border-b border-slate-100",
-          isExpanded ? "justify-start" : "justify-center"
-        )}>
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-cyan-500/20">
-            <Sparkles className="h-5 w-5 text-white" />
+        <div
+          className={cn(
+            "flex items-center gap-3 px-3 py-4 border-b border-slate-100 bg-white",
+            isExpanded ? "justify-start" : "justify-center"
+          )}
+        >
+          <div className="h-8 w-8 rounded-[6px] bg-[#4CAF72] flex items-center justify-center flex-shrink-0">
+            <Sparkles className="h-4 w-4 text-white" />
           </div>
           {isExpanded && (
             <div className="overflow-hidden">
-              <p className="font-bold text-sm text-slate-800 whitespace-nowrap">Metapharsic</p>
-              <p className="text-[10px] text-cyan-600 font-medium whitespace-nowrap">AI-Native EHR</p>
+              <p className="font-[700] text-[13px] text-[#0f172a] whitespace-nowrap">Metapharsic</p>
+              <p className="text-[10px] text-[#4CAF72] font-[500] whitespace-nowrap tracking-wide">Lifesciences ERP</p>
             </div>
           )}
         </div>
 
         {/* Navigation Items */}
-        <div className="flex flex-col gap-1 flex-1 overflow-y-auto px-2 py-3">
+        <div className="flex flex-col gap-[2px] flex-1 overflow-y-auto px-2 py-3">
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
-            
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                aria-label={!isExpanded ? item.title : undefined}
                 className={cn(
-                  "relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group",
+                  "relative flex items-center gap-3 px-3 h-9 rounded-[6px] transition-all duration-200 group",
                   isExpanded ? "" : "justify-center",
-                  isActive 
-                    ? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/25" 
-                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                  isActive
+                    ? "bg-[#f0fdf4] text-[#16a34a] font-[700] shadow-[inset_3px_0_0_#22c55e]"
+                    : "text-[#475569] hover:bg-white hover:text-[#0f172a]"
                 )}
                 onMouseEnter={() => !isExpanded && setActiveTooltip(item.title)}
                 onMouseLeave={() => setActiveTooltip(null)}
               >
-                <span className={cn(
-                  "flex-shrink-0 transition-transform duration-200",
-                  isActive ? "scale-110" : "group-hover:scale-110"
-                )}>
-                  {getIcon(item.icon)}
-                </span>
-                
+                <span className="flex-shrink-0">{getIcon(item.icon)}</span>
+
                 {isExpanded && (
-                  <span className="text-sm font-medium whitespace-nowrap overflow-hidden">
+                  <span className="text-[13px] whitespace-nowrap overflow-hidden">
                     {item.title}
                   </span>
-                )}
-                
-                {isActive && !isExpanded && (
-                  <span className="absolute right-1 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-white animate-pulse" />
                 )}
 
                 {/* Tooltip */}
                 {!isExpanded && activeTooltip === item.title && (
-                  <div className="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs rounded-lg whitespace-nowrap z-50 pointer-events-none">
+                  <div className="absolute left-full ml-3 px-[10px] py-[6px] bg-[#0f172a] text-white text-[12px] font-[500] rounded-[6px] whitespace-nowrap z-50 pointer-events-none">
                     {item.title}
-                    <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
+                    <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-[#0f172a]" />
                   </div>
                 )}
               </Link>
@@ -199,38 +195,47 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
           })}
         </div>
 
-        {/* Quick Actions */}
-        <div className="px-2 pb-2 border-t border-slate-100 pt-2">
-          <button className={cn(
-            "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-slate-500 hover:bg-cyan-50 hover:text-cyan-600 transition-all group",
-            !isExpanded && "justify-center"
-          )}>
-            <Mic className="h-5 w-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
-            {isExpanded && <span className="text-sm font-medium whitespace-nowrap">Voice Command</span>}
+        {/* Bottom Actions */}
+        <div className="px-2 pb-2 border-t border-slate-200 pt-2">
+          <button
+            aria-label="Voice Command"
+            className={cn(
+              "flex items-center gap-3 w-full px-3 h-9 rounded-[6px] text-[#475569] hover:bg-white hover:text-[#0f172a] transition-all",
+              !isExpanded && "justify-center"
+            )}
+          >
+            <Mic className="h-4 w-4 flex-shrink-0" />
+            {isExpanded && <span className="text-[13px] whitespace-nowrap">Voice Command</span>}
           </button>
-          <button className={cn(
-            "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-slate-500 hover:bg-purple-50 hover:text-purple-600 transition-all group",
-            !isExpanded && "justify-center"
-          )}>
-            <Search className="h-5 w-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
-            {isExpanded && <span className="text-sm font-medium whitespace-nowrap">Smart Search</span>}
+          <button
+            aria-label="Smart Search"
+            className={cn(
+              "flex items-center gap-3 w-full px-3 h-9 rounded-[6px] text-[#475569] hover:bg-white hover:text-[#0f172a] transition-all",
+              !isExpanded && "justify-center"
+            )}
+          >
+            <Search className="h-4 w-4 flex-shrink-0" />
+            {isExpanded && <span className="text-[13px] whitespace-nowrap">Smart Search</span>}
           </button>
         </div>
 
         {/* Expand/Collapse Button */}
-        <div className="px-2 pb-4 border-t border-slate-100 pt-2">
+        <div className="px-2 pb-4 border-t border-slate-200 pt-2">
           <button
             onClick={() => handleExpand(!isExpanded)}
+            aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
             className={cn(
-              "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-100 transition-all",
+              "flex items-center gap-3 w-full px-3 h-9 rounded-[6px] text-[#475569] hover:bg-white hover:text-[#0f172a] transition-all",
               !isExpanded && "justify-center"
             )}
           >
-            <ChevronRight className={cn(
-              "h-5 w-5 flex-shrink-0 transition-transform duration-300",
-              isExpanded && "rotate-180"
-            )} />
-            {isExpanded && <span className="text-sm font-medium text-slate-500">Collapse</span>}
+            <ChevronRight
+              className={cn(
+                "h-4 w-4 flex-shrink-0 transition-transform duration-300",
+                isExpanded && "rotate-180"
+              )}
+            />
+            {isExpanded && <span className="text-[13px] text-[#475569]">Collapse</span>}
           </button>
         </div>
       </nav>
@@ -238,19 +243,22 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
       {/* Mobile Floating Action Button */}
       <button
         onClick={() => handleExpand(!isExpanded)}
-        className="fixed bottom-6 left-6 z-50 lg:hidden h-14 w-14 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-xl shadow-cyan-500/30 flex items-center justify-center"
+        aria-label={isExpanded ? "Close menu" : "Open menu"}
+        className="fixed bottom-6 left-6 z-50 lg:hidden h-12 w-12 rounded-[8px] bg-[#4CAF72] text-white flex items-center justify-center active:scale-95 transition-all"
       >
-        {isExpanded ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        {isExpanded ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
 
       {/* Mobile Navigation Menu */}
-      <div className={cn(
-        "fixed bottom-24 left-6 z-50 lg:hidden",
-        "glass rounded-2xl p-4 w-64",
-        "transition-all duration-300",
-        isExpanded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
-      )}>
-        <div className="flex flex-col gap-2">
+      <div
+        className={cn(
+          "fixed bottom-24 left-6 z-50 lg:hidden",
+          "bg-white border border-[#e2e8f0] rounded-[8px] p-3 w-52",
+          "transition-all duration-300",
+          isExpanded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+        )}
+      >
+        <div className="flex flex-col gap-[2px]">
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
@@ -259,45 +267,45 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
                 href={item.href}
                 onClick={() => setIsExpanded(false)}
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl transition-all",
-                  isActive 
-                    ? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white" 
-                    : "text-slate-600 hover:bg-slate-100"
+                  "flex items-center gap-3 px-3 h-9 rounded-[6px] transition-all text-[13px]",
+                  isActive
+                    ? "bg-[#f0fdf4] text-[#16a34a] font-[700] shadow-[inset_3px_0_0_#22c55e]"
+                    : "text-[#475569] hover:bg-[#f8fafc] hover:text-[#0f172a]"
                 )}
               >
                 {getIcon(item.icon)}
-                <span className="text-sm font-medium">{item.title}</span>
+                <span>{item.title}</span>
               </Link>
             );
           })}
         </div>
       </div>
 
-      {/* Top Bar for Mobile */}
-      <header className="fixed top-0 left-0 right-0 z-40 lg:hidden glass border-b-0">
-        <div className="flex items-center justify-between px-4 h-16">
+      {/* Mobile Top Bar */}
+      <header className="fixed top-0 left-0 right-0 z-40 lg:hidden bg-white border-b border-[#e2e8f0]">
+        <div className="flex items-center justify-between px-4 h-14">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center">
-              <Sparkles className="h-5 w-5 text-white" />
+            <div className="h-8 w-8 rounded-[6px] bg-[#4CAF72] flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-white" />
             </div>
             <div>
-              <p className="font-bold text-sm text-slate-800 ">Metapharsic</p>
-              <p className="text-[10px] text-cyan-600">AI-Native EHR</p>
+              <p className="font-[700] text-[13px] text-[#0f172a]">Metapharsic</p>
+              <p className="text-[10px] text-[#4CAF72]">Lifesciences ERP</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 ">
-              <Bell className="h-5 w-5" />
+            <button aria-label="Notifications" className="p-2 rounded-[6px] text-[#475569] hover:bg-[#f8fafc] transition-all active:scale-95">
+              <Bell className="h-4 w-4" />
             </button>
-            <button className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 ">
-              <Search className="h-5 w-5" />
+            <button aria-label="Search" className="p-2 rounded-[6px] text-[#475569] hover:bg-[#f8fafc] transition-all active:scale-95">
+              <Search className="h-4 w-4" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Spacer for mobile */}
-      <div className="h-16 lg:hidden" />
+      {/* Mobile spacer */}
+      <div className="h-14 lg:hidden" />
     </>
   );
 }

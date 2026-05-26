@@ -3,17 +3,29 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "px-[8px] py-[2px] rounded-[4px] text-[11px] font-[600] border inline-flex items-center",
   {
     variants: {
       variant: {
+        // Semantic ERP status variants
         default:
-          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
-        secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-[#f0fdf4] text-[#16a34a] border-[#dcfce7]",
+        success:
+          "bg-[#f0fdf4] text-[#16a34a] border-[#dcfce7]",
+        warning:
+          "bg-[#fffbeb] text-[#b45309] border-[#fef3c7]",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
+          "bg-[#fef2f2] text-[#dc2626] border-[#fecaca]",
+        danger:
+          "bg-[#fef2f2] text-[#dc2626] border-[#fecaca]",
+        info:
+          "bg-[#eff6ff] text-[#2563eb] border-[#dbeafe]",
+        secondary:
+          "bg-[#f8fafc] text-[#64748b] border-[#e2e8f0]",
+        neutral:
+          "bg-[#f8fafc] text-[#64748b] border-[#e2e8f0]",
+        outline:
+          "bg-transparent text-[#475569] border-[#e2e8f0]",
       },
     },
     defaultVariants: {
@@ -23,12 +35,12 @@ const badgeVariants = cva(
 )
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <span className={cn(badgeVariants({ variant }), className)} {...props} />
   )
 }
 

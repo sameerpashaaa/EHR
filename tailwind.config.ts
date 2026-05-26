@@ -17,19 +17,23 @@ const config: Config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Plus Jakarta Sans", "sans-serif"],
+      },
       colors: {
+        // shadcn/radix CSS variable tokens (kept for compatibility with ui primitives)
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#111111",
+          foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#888888",
+          foreground: "#111111",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -40,8 +44,8 @@ const config: Config = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#4CAF72",
+          foreground: "#FFFFFF",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -51,34 +55,49 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // EHR-specific colors - Medical Theme
+        // Metapharsic ERP Design Tokens
+        highlight: "#EAF4EC",
+        surface: "#FFFFFF",
+        page: "#F5F5F5",
+        text: "#111111",
+        // EHR-specific semantic colors (kept for badge/status usage)
         ehr: {
-          primary: "#0D9488",      // Teal 600
-          secondary: "#14B8A6",    // Teal 500
-          success: "#059669",      // Emerald 600
-          warning: "#D97706",      // Amber 600
-          danger: "#DC2626",       // Red 600
-          info: "#0891B2",         // Cyan 600
-          muted: "#64748B",        // Slate 500
-          // Medical status colors
-          critical: "#991B1B",     // Red 800
-          urgent: "#EA580C",       // Orange 600
-          stable: "#059669",       // Emerald 600
-          observation: "#0284C7",  // Sky 600
-          // Soft backgrounds
+          primary: "#4CAF72",
+          secondary: "#888888",
+          success: "#16a34a",
+          warning: "#b45309",
+          danger: "#dc2626",
+          info: "#2563eb",
+          muted: "#64748B",
+          critical: "#991B1B",
+          urgent: "#EA580C",
+          stable: "#16a34a",
+          observation: "#2563eb",
           soft: {
-            teal: "#F0FDFA",
-            blue: "#EFF6FF",
-            green: "#F0FDF4",
-            amber: "#FFFBEB",
-            red: "#FEF2F2",
-          }
+            green: "#f0fdf4",
+            blue: "#eff6ff",
+            amber: "#fffbeb",
+            red: "#fef2f2",
+          },
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "8px",
+        md: "6px",
+        sm: "4px",
+      },
+      boxShadow: {
+        sm: "none",
+        DEFAULT: "none",
+        md: "none",
+        lg: "none",
+        xl: "none",
+        "2xl": "none",
+        inner: "none",
+      },
+      backgroundImage: {
+        metallic: "none",
+        glass: "none",
       },
       keyframes: {
         "accordion-down": {
@@ -97,12 +116,17 @@ const config: Config = {
           from: { transform: "translateX(-100%)" },
           to: { transform: "translateX(0)" },
         },
+        fadeIn: {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.2s ease-out",
         "slide-in": "slide-in 0.3s ease-out",
+        fadeIn: "fadeIn 0.3s ease-out",
       },
     },
   },

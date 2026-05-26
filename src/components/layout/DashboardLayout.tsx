@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { SessionUser } from "@/types";
 import { FloatingNav } from "./FloatingNav";
 import { cn, initials } from "@/lib/utils";
@@ -27,7 +26,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  
+
   // Smart Search State
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -98,263 +97,294 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#F5F5F5]">
       <FloatingNav user={user} onExpandChange={setSidebarExpanded} />
 
-      <div className="min-h-screen flex flex-col transition-all duration-300 ease-out" style={{ marginLeft: sidebarExpanded ? 256 : 72 }}>
-        
+      <div
+        className="min-h-screen flex flex-col transition-all duration-300 ease-out"
+        style={{ marginLeft: sidebarExpanded ? 208 : 72 }}
+      >
         {/* Top Header Bar */}
-        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm">
-          <div className="px-6 py-3 flex items-center justify-between gap-4">
-            
-            {/* Server / AI Status Badge */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 shadow-sm cursor-pointer hover:bg-slate-800 transition-colors">
-              <div className="relative flex items-center justify-center w-4 h-4">
-                <span className="absolute w-full h-full rounded-full border border-cyan-400/40 animate-ping" />
-                <span className="relative w-2 h-2 rounded-full bg-cyan-400" />
-              </div>
-              <span className="text-xs font-bold text-white tracking-wide">Metta AI Core</span>
-              <span className="text-[10px] text-cyan-400 font-mono font-medium">12ms</span>
+        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
+          <div className="px-5 py-2.5 flex items-center justify-between gap-4">
+
+            {/* System Status Badge */}
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-[6px] bg-[#f0fdf4] border border-[#dcfce7] cursor-pointer hover:bg-[#dcfce7] transition-colors">
+              <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
+              <span className="text-[11px] font-[700] text-[#16a34a] tracking-wide">Metta AI Core</span>
+              <span className="text-[10px] text-[#4CAF72] font-mono font-[600]">12ms</span>
             </div>
 
-            {/* Faux Search Bar (Triggers Modal) */}
-            <div className="flex-1 max-w-2xl mx-auto relative group">
-              <div 
+            {/* Search Bar Trigger */}
+            <div className="flex-1 max-w-xl mx-auto">
+              <button
                 onClick={() => setSearchOpen(true)}
-                className="w-full flex items-center gap-3 bg-slate-100 hover:bg-slate-200/60 border border-slate-200 hover:border-cyan-300 rounded-2xl px-4 py-2.5 cursor-text transition-all duration-300 shadow-sm group-hover:shadow-md"
+                className="w-full flex items-center gap-3 bg-[#f8fafc] hover:bg-white border border-[#e2e8f0] hover:border-[#22c55e]/40 rounded-[6px] px-[12px] py-[8px] cursor-text transition-all active:scale-[0.99] text-left"
               >
-                <Search className="w-5 h-5 text-slate-400 group-hover:text-cyan-500 transition-colors" />
-                <span className="text-sm font-medium text-slate-500 flex-1 flex items-center gap-2">Search patients, records, or ask Metta <Sparkles className="w-3.5 h-3.5 text-amber-500"/></span>
-                <div className="flex items-center gap-1.5 opacity-60">
-                  <kbd className="h-6 px-2 rounded-md bg-white border border-slate-200 text-xs font-bold text-slate-600 flex items-center">
-                    <Command className="w-3 h-3 mr-1" /> K
+                <Search className="w-4 h-4 text-[#94a3b8] flex-shrink-0" />
+                <span className="text-[13px] font-[500] text-[#94a3b8] flex-1">
+                  Search patients, records…
+                </span>
+                <div className="flex items-center gap-1 opacity-60">
+                  <kbd className="h-5 px-1.5 rounded-[4px] bg-white border border-[#e2e8f0] text-[10px] font-[700] text-[#475569] flex items-center gap-0.5">
+                    <Command className="w-2.5 h-2.5" /> K
                   </kbd>
                 </div>
-              </div>
+              </button>
             </div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-3">
-              <Button size="icon" className={cn("h-10 w-10 rounded-2xl transition-all duration-300 shadow-sm", isListening ? "bg-rose-500 hover:bg-rose-600 text-white animate-pulse" : "bg-white border border-slate-200 hover:border-cyan-300 text-slate-600 hover:text-cyan-600")} onClick={() => setIsListening(!isListening)}>
-                <Mic className="h-5 w-5" />
+            <div className="flex items-center gap-2">
+              <Button
+                size="icon"
+                variant={isListening ? "default" : "secondary"}
+                aria-label="Voice input"
+                className={cn(
+                  "h-9 w-9 rounded-[6px]",
+                  isListening && "bg-[#dc2626] hover:bg-[#b91c1c] border-0"
+                )}
+                onClick={() => {
+                  setIsListening(!isListening);
+                  window.dispatchEvent(new CustomEvent('toggle-ai-assistant'));
+                }}
+              >
+                <Mic className="h-4 w-4" />
               </Button>
 
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-2xl relative text-slate-600 hover:bg-slate-100 border border-transparent hover:border-slate-200">
-                <Bell className="h-5 w-5" />
-                <span className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white" />
+              <Button size="icon" variant="secondary" aria-label="Notifications" className="h-9 w-9 rounded-[6px] relative">
+                <Bell className="h-4 w-4" />
+                <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#dc2626] ring-2 ring-white" />
               </Button>
 
+              {/* User Menu */}
               <div className="relative">
-                <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center gap-3 p-1.5 pr-4 rounded-2xl hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500/20">
-                  <Avatar className="h-9 w-9 shadow-sm">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-[6px] hover:bg-[#f8fafc] border border-transparent hover:border-[#e2e8f0] transition-all focus:outline-none focus:ring-[3px] focus:ring-[#22c55e]/20"
+                >
+                  <Avatar className="h-7 w-7">
                     <AvatarImage src={user.image} alt={user.name} />
-                    <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-purple-500 text-white text-xs font-bold shadow-inner">
+                    <AvatarFallback className="bg-[#4CAF72] text-white text-[10px] font-[700]">
                       {user.name ? initials(user.name.split(" ")[0], user.name.split(" ").pop() || "") : "??"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden md:block text-left">
-                    <p className="text-sm font-bold text-slate-900 leading-tight">{user.name}</p>
-                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{getRoleDisplayName(user.role)}</p>
+                    <p className="text-[13px] font-[700] text-[#0f172a] leading-tight">{user.name}</p>
+                    <p className="text-[10px] font-[600] text-[#94a3b8] uppercase tracking-wider">{getRoleDisplayName(user.role)}</p>
                   </div>
-                  <ChevronDown className={cn("h-4 w-4 text-slate-400 transition-transform hidden md:block", userMenuOpen && "rotate-180")} />
+                  <ChevronDown className={cn("h-3.5 w-3.5 text-[#94a3b8] transition-transform hidden md:block", userMenuOpen && "rotate-180")} />
                 </button>
 
-                {/* User Menu Dropdown */}
-                <AnimatePresence>
-                  {userMenuOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                      <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute right-0 top-full mt-3 w-72 bg-white rounded-3xl border border-slate-200 shadow-[0_20px_60px_rgba(0,0,0,0.08)] p-2 z-50 overflow-hidden">
-                        <div className="p-4 bg-slate-50/50 rounded-2xl mb-2">
-                          <p className="font-black text-slate-900 text-base">{user.name}</p>
-                          <p className="text-xs font-medium text-slate-500">{user.email}</p>
-                        </div>
-                        <Link href="/admin" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-cyan-600 transition-colors w-full group">
-                          <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-cyan-100 flex items-center justify-center transition-colors"><Settings className="w-4 h-4" /></div>
-                          Administration
-                        </Link>
-                        <button className="w-full flex items-center gap-3 p-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-purple-600 transition-colors group">
-                          <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-purple-100 flex items-center justify-center transition-colors"><Sparkles className="w-4 h-4" /></div>
-                          AI Preferences
-                        </button>
-                        <div className="h-px bg-slate-100 my-2 mx-2" />
-                        <Link href="/api/auth/signout" className="flex items-center gap-3 p-3 rounded-xl text-sm font-bold text-rose-600 hover:bg-rose-50 transition-colors w-full">
-                          <LogOut className="h-4 h-4 mr-1" /> Sign Out
-                        </Link>
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
+                {/* User Dropdown */}
+                {userMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
+                    <div className="absolute right-0 top-full mt-2 w-60 bg-white rounded-[8px] border border-[#e2e8f0] p-1.5 z-50 animate-fadeIn">
+                      <div className="px-3 py-2.5 border-b border-[#e2e8f0] mb-1">
+                        <p className="font-[700] text-[#0f172a] text-[13px]">{user.name}</p>
+                        <p className="text-[11px] text-[#888888]">{user.email}</p>
+                      </div>
+                      <Link
+                        href="/admin"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] font-[500] text-[#475569] hover:bg-[#f8fafc] hover:text-[#0f172a] transition-colors w-full"
+                      >
+                        <Settings className="w-4 h-4" />
+                        Administration
+                      </Link>
+                      <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] font-[500] text-[#475569] hover:bg-[#f8fafc] hover:text-[#0f172a] transition-colors">
+                        <Sparkles className="w-4 h-4" />
+                        AI Preferences
+                      </button>
+                      <div className="h-px bg-[#e2e8f0] my-1 mx-1" />
+                      <Link
+                        href="/api/auth/signout"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] font-[600] text-[#dc2626] hover:bg-[#fef2f2] transition-colors w-full"
+                      >
+                        <LogOut className="h-4 w-4" /> Sign Out
+                      </Link>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </header>
 
         {/* Global Smart Search Modal */}
-        <AnimatePresence>
-          {searchOpen && (
-            <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] px-4">
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setSearchOpen(false)} />
-              
-              <motion.div initial={{ opacity: 0, scale: 0.98, y: -20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98, y: -20 }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="relative w-full max-w-3xl bg-white rounded-3xl shadow-[0_40px_100px_rgba(0,0,0,0.2)] border border-slate-200 overflow-hidden flex flex-col max-h-[80vh]">
-                
-                {/* Search Input Area */}
-                <div className="relative flex items-center px-6 py-5 border-b border-slate-100">
-                  <Search className="w-6 h-6 text-cyan-500 mr-4 flex-shrink-0" />
-                  <input
-                    ref={searchInputRef}
-                    autoFocus
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Search patients, conditions, or ask Metta AI..."
-                    className="w-full bg-transparent border-none outline-none text-xl font-medium text-slate-900 placeholder:text-slate-400"
-                  />
-                  {searchQuery && (
-                    <button onClick={() => setSearchQuery("")} className="p-1 hover:bg-slate-100 rounded-lg text-slate-400 absolute right-16">
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                  <div className="px-3 py-1 bg-slate-100 rounded-lg border border-slate-200 ml-4 flex items-center gap-1">
-                    <Command className="w-3 h-3 text-slate-500" />
-                    <span className="text-xs font-bold text-slate-500">K</span>
-                  </div>
-                </div>
+        {searchOpen && (
+          <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[8vh] px-4">
+            {/* Flat overlay — no blur */}
+            <div
+              className="absolute inset-0 bg-black/40"
+              onClick={() => setSearchOpen(false)}
+            />
 
-                {/* Loading State */}
-                {isSearching && (
-                  <div className="p-8 flex items-center gap-4 text-slate-500 bg-slate-50/50">
-                    <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-                    <p className="font-medium">Metta AI Neural Net Scanning...</p>
-                  </div>
+            <div className="relative w-full max-w-2xl bg-white rounded-[8px] border border-[#e2e8f0] overflow-hidden flex flex-col max-h-[80vh] animate-fadeIn">
+
+              {/* Search Input */}
+              <div className="relative flex items-center px-4 py-3 border-b border-[#e2e8f0]">
+                <Search className="w-4 h-4 text-[#4CAF72] mr-3 flex-shrink-0" />
+                <input
+                  ref={searchInputRef}
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Search patients, conditions, or ask Metta AI…"
+                  className="w-full bg-transparent border-none outline-none text-[15px] font-[500] text-[#0f172a] placeholder:text-[#94a3b8]"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    aria-label="Clear search"
+                    className="p-1 hover:bg-[#f8fafc] rounded-[4px] text-[#94a3b8] absolute right-14"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
                 )}
+                <div className="px-2 py-1 bg-[#f8fafc] rounded-[4px] border border-[#e2e8f0] ml-3 flex items-center gap-1">
+                  <Command className="w-2.5 h-2.5 text-[#94a3b8]" />
+                  <span className="text-[10px] font-[700] text-[#94a3b8]">K</span>
+                </div>
+              </div>
 
-                {/* Search Results Area */}
-                {!isSearching && (
-                  <div className="overflow-y-auto flex-1 p-2">
-                    {searchQuery.length > 0 && searchResults.length === 0 ? (
-                      <div className="p-12 text-center">
-                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100">
-                          <Search className="w-8 h-8 text-slate-300" />
-                        </div>
-                        <p className="text-slate-900 font-bold text-lg mb-1">No results found for "{searchQuery}"</p>
-                        <p className="text-slate-500 text-sm">Try asking Metta AI to generate a report instead.</p>
+              {/* Loading */}
+              {isSearching && (
+                <div className="p-6 flex items-center gap-3 text-[#475569]">
+                  <div className="w-4 h-4 border-2 border-[#4CAF72] border-t-transparent rounded-full animate-spin" />
+                  <p className="text-[13px] font-[500]">Searching…</p>
+                </div>
+              )}
+
+              {/* Results */}
+              {!isSearching && (
+                <div className="overflow-y-auto flex-1 p-2">
+                  {searchQuery.length > 0 && searchResults.length === 0 ? (
+                    <div className="p-8 text-center">
+                      <div className="w-12 h-12 bg-[#f8fafc] rounded-[8px] border border-[#e2e8f0] flex items-center justify-center mx-auto mb-3">
+                        <Search className="w-5 h-5 text-[#94a3b8]" />
                       </div>
-                    ) : searchQuery.length > 0 ? (
-                      <div className="p-2 space-y-1">
-                        <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-cyan-600 flex items-center gap-2">
-                          <Activity className="w-4 h-4" /> AI Correlated Results
-                        </p>
-                        {searchResults.map((result, i) => {
-                          const iconMap: Record<string, any> = { LayoutDashboard: TrendingUp, Calendar, ClipboardList, FileText, Users, MessageCircle: Sparkles, Settings, Sparkles, Mic, Brain, User: Users, Stethoscope };
-                          const Icon = iconMap[result.iconName] || Search;
+                      <p className="text-[#0f172a] font-[700] text-[14px] mb-1">No results for "{searchQuery}"</p>
+                      <p className="text-[#888888] text-[12px]">Try asking Metta AI to generate a report instead.</p>
+                    </div>
+                  ) : searchQuery.length > 0 ? (
+                    <div className="p-1 space-y-0.5">
+                      <p className="px-3 py-2 text-[10px] font-[800] uppercase tracking-[0.08em] text-[#94a3b8]">Results</p>
+                      {searchResults.map((result, i) => {
+                        const iconMap2: Record<string, any> = { LayoutDashboard: TrendingUp, Calendar, ClipboardList, FileText, Users, MessageCircle: Sparkles, Settings, Sparkles, Mic, Brain, User: Users, Stethoscope };
+                        const Icon = iconMap2[result.iconName] || Search;
 
-                          if (result.isExecutable) {
-                            const isExecuting = executingAction === result.title;
-                            return (
-                              <div key={i} className="mb-4 mt-2 p-[2px] rounded-[1.25rem] bg-gradient-to-r from-cyan-400 to-violet-500 shadow-md">
-                                <div className="bg-white rounded-[1.15rem] p-5 relative overflow-hidden">
-                                  <div className="flex items-start gap-5">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-50 to-violet-50 border border-white shadow-inner flex items-center justify-center flex-shrink-0">
-                                      <Icon className="w-6 h-6 text-cyan-600" />
-                                    </div>
-                                    <div className="flex-1">
-                                      <div className="flex items-center gap-2 mb-1">
-                                        <Sparkles className="w-3.5 h-3.5 text-violet-500" />
-                                        <span className="text-[10px] font-black text-violet-600 uppercase tracking-widest bg-violet-50 px-2 py-0.5 rounded-md">Autonomous Workflow</span>
+                        if (result.isExecutable) {
+                          const isExecuting = executingAction === result.title;
+                          return (
+                            <div key={i} className="mb-3 p-4 rounded-[8px] border border-[#e2e8f0] bg-[#f8fafc]">
+                              <div className="flex items-start gap-4">
+                                <div className="w-9 h-9 rounded-[6px] bg-[#f0fdf4] border border-[#dcfce7] flex items-center justify-center flex-shrink-0">
+                                  <Icon className="w-4 h-4 text-[#22c55e]" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-[10px] font-[800] text-[#16a34a] uppercase tracking-[0.08em] bg-[#f0fdf4] px-2 py-0.5 rounded-[4px] border border-[#dcfce7]">Autonomous Workflow</span>
+                                  </div>
+                                  <h4 className="font-[700] text-[#0f172a] text-[14px]">{result.title}</h4>
+                                  <div className="mt-2 grid grid-cols-2 gap-2">
+                                    {Object.entries(result.actionPayload).map(([key, val]) => (
+                                      <div key={key} className="bg-white p-2 rounded-[6px] border border-[#e2e8f0]">
+                                        <p className="text-[9px] uppercase tracking-wider text-[#94a3b8] font-[700] mb-0.5">{key}</p>
+                                        <p className="text-[12px] font-[600] text-[#0f172a] truncate">{String(val)}</p>
                                       </div>
-                                      <h4 className="font-bold text-slate-900 text-lg">{result.title}</h4>
-                                      <div className="mt-3 grid grid-cols-2 gap-3">
-                                        {Object.entries(result.actionPayload).map(([key, val]) => (
-                                          <div key={key} className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                                            <p className="text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">{key}</p>
-                                            <p className="text-sm font-semibold text-slate-800 truncate">{String(val)}</p>
-                                          </div>
-                                        ))}
-                                      </div>
-                                      <div className="mt-4 flex gap-3">
-                                        <Button onClick={() => {
-                                          setExecutingAction(result.title);
-                                          setTimeout(() => {
-                                            setExecutingAction(null);
-                                            setSearchOpen(false);
-                                            setSearchQuery("");
-                                          }, 2000);
-                                        }} disabled={isExecuting} className="flex-1 bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg h-12 font-bold text-sm">
-                                          {isExecuting ? <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-3"/> Executing Automation...</> : <>Approve & Execute Workflow <ChevronRight className="w-4 h-4 ml-2" /></>}
-                                        </Button>
-                                      </div>
-                                    </div>
+                                    ))}
+                                  </div>
+                                  <div className="mt-3">
+                                    <Button
+                                      onClick={() => {
+                                        setExecutingAction(result.title);
+                                        setTimeout(() => {
+                                          setExecutingAction(null);
+                                          setSearchOpen(false);
+                                          setSearchQuery("");
+                                        }, 2000);
+                                      }}
+                                      disabled={isExecuting}
+                                      className="h-9 px-4 text-[12px]"
+                                    >
+                                      {isExecuting ? (
+                                        <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" /> Executing…</>
+                                      ) : (
+                                        <>Approve & Execute <ChevronRight className="w-3.5 h-3.5 ml-1.5" /></>
+                                      )}
+                                    </Button>
                                   </div>
                                 </div>
                               </div>
-                            );
-                          }
-
-                          return (
-                            <button key={i} onClick={() => handleResultClick(result.href)} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-slate-50 cursor-pointer transition-all border border-transparent hover:border-slate-200 hover:shadow-sm text-left group">
-                              <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-cyan-50 flex items-center justify-center flex-shrink-0 transition-colors border border-slate-200/60">
-                                <Icon className="w-5 h-5 text-slate-500 group-hover:text-cyan-600" />
-                              </div>
-                              <div className="flex-1 overflow-hidden">
-                                <p className="text-base font-bold text-slate-900 truncate">{result.title}</p>
-                                <p className="text-sm font-medium text-slate-500 truncate mt-0.5">{result.subtitle}</p>
-                              </div>
-                              <span className="ml-auto flex items-center text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-100 border border-slate-200 px-2 py-1.5 rounded-lg group-hover:border-cyan-200 group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-colors">
-                                {result.type}
-                              </span>
-                            </button>
+                            </div>
                           );
-                        })}
-                      </div>
-                    ) : (
-                      <div className="p-4">
-                        <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Suggested Workflows</p>
-                        <div className="grid grid-cols-2 gap-3 mb-6">
-                          {[
-                            { icon: Sparkles, text: "Generate Waitlist Report", color: "text-violet-500", bg: "bg-violet-50", border: "border-violet-100" },
-                            { icon: Users, text: "Find High-Risk Patients", color: "text-rose-500", bg: "bg-rose-50", border: "border-rose-100" },
-                            { icon: FileText, text: "Auto-draft Clinical Notes", color: "text-cyan-500", bg: "bg-cyan-50", border: "border-cyan-100" },
-                            { icon: Activity, text: "Analyze Revenue Impact", color: "text-emerald-500", bg: "bg-emerald-50", border: "border-emerald-100" },
-                          ].map((item, i) => (
-                            <button key={i} className={cn("flex flex-col items-start p-4 rounded-2xl border transition-all hover:shadow-md text-left", item.bg, item.border)}>
-                              <item.icon className={cn("w-6 h-6 mb-3", item.color)} />
-                              <span className="font-bold text-slate-800 text-sm leading-tight">{item.text}</span>
-                            </button>
-                          ))}
-                        </div>
-                        <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Quick Navigation</p>
-                        <div className="flex flex-wrap gap-2 px-1">
-                          {[ { name: "Dashboard", href: "/" }, { name: "Voice Hub", href: "/voice" }, { name: "Patient Directory", href: "/patients" }, { name: "Billing & Claims", href: "/documents" }, { name: "System Admin", href: "/admin" }].map(n => (
-                            <Link key={n.name} href={n.href} onClick={() => setSearchOpen(false)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors">
-                              {n.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
+                        }
 
-                {/* Footer */}
-                <div className="bg-slate-50 border-t border-slate-200 px-6 py-4 flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-xs font-semibold text-slate-500">
-                    <span className="flex items-center gap-1.5"><kbd className="px-1.5 py-0.5 rounded border border-slate-300 bg-white">↑↓</kbd> Navigate</span>
-                    <span className="flex items-center gap-1.5"><kbd className="px-1.5 py-0.5 rounded border border-slate-300 bg-white">↵</kbd> Select</span>
-                    <span className="flex items-center gap-1.5"><kbd className="px-1.5 py-0.5 rounded border border-slate-300 bg-white">ESC</kbd> Close</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-cyan-500" />
-                    <span className="text-xs font-bold text-cyan-600">Metta AI Command Center</span>
-                  </div>
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => handleResultClick(result.href)}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[6px] hover:bg-[#f8fafc] cursor-pointer transition-all border border-transparent hover:border-[#e2e8f0] text-left group active:scale-[0.99]"
+                          >
+                            <div className="w-8 h-8 rounded-[6px] bg-[#f8fafc] border border-[#e2e8f0] group-hover:bg-[#f0fdf4] group-hover:border-[#dcfce7] flex items-center justify-center flex-shrink-0 transition-colors">
+                              <Icon className="w-4 h-4 text-[#475569] group-hover:text-[#22c55e]" />
+                            </div>
+                            <div className="flex-1 overflow-hidden">
+                              <p className="text-[13px] font-[700] text-[#0f172a] truncate">{result.title}</p>
+                              <p className="text-[11px] font-[500] text-[#888888] truncate mt-0.5">{result.subtitle}</p>
+                            </div>
+                            <span className="ml-auto text-[10px] font-[700] text-[#94a3b8] uppercase tracking-[0.06em] bg-[#f8fafc] border border-[#e2e8f0] px-2 py-1 rounded-[4px]">
+                              {result.type}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="p-3">
+                      <p className="px-2 py-2 text-[10px] font-[800] uppercase tracking-[0.08em] text-[#94a3b8] mb-1">Quick Navigation</p>
+                      <div className="flex flex-wrap gap-1.5 px-1">
+                        {[
+                          { name: "Dashboard", href: "/" },
+                          { name: "Voice Hub", href: "/voice" },
+                          { name: "Patients", href: "/patients" },
+                          { name: "Billing & Claims", href: "/documents" },
+                          { name: "System Admin", href: "/admin" },
+                        ].map((n) => (
+                          <Link
+                            key={n.name}
+                            href={n.href}
+                            onClick={() => setSearchOpen(false)}
+                            className="px-3 py-1.5 bg-[#f8fafc] hover:bg-[#f0fdf4] border border-[#e2e8f0] hover:border-[#dcfce7] text-[#475569] hover:text-[#16a34a] text-[12px] font-[600] rounded-[6px] transition-all active:scale-95"
+                          >
+                            {n.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
+              )}
 
-              </motion.div>
+              {/* Footer */}
+              <div className="bg-[#f8fafc] border-t border-[#e2e8f0] px-4 py-2.5 flex items-center justify-between">
+                <div className="flex items-center gap-3 text-[11px] font-[500] text-[#94a3b8]">
+                  <span className="flex items-center gap-1.5"><kbd className="px-1.5 py-0.5 rounded-[4px] border border-[#e2e8f0] bg-white text-[10px]">↑↓</kbd> Navigate</span>
+                  <span className="flex items-center gap-1.5"><kbd className="px-1.5 py-0.5 rounded-[4px] border border-[#e2e8f0] bg-white text-[10px]">↵</kbd> Select</span>
+                  <span className="flex items-center gap-1.5"><kbd className="px-1.5 py-0.5 rounded-[4px] border border-[#e2e8f0] bg-white text-[10px]">ESC</kbd> Close</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#4CAF72]" />
+                  <span className="text-[11px] font-[700] text-[#16a34a]">Metta AI</span>
+                </div>
+              </div>
             </div>
-          )}
-        </AnimatePresence>
+          </div>
+        )}
 
-        <main className="p-4 lg:p-6 pt-6 flex-1">
+        <main className="p-4 lg:p-5 flex-1">
           {children}
         </main>
       </div>

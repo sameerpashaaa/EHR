@@ -48,6 +48,12 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
   const ModeIcon = currentMode.icon;
 
   useEffect(() => {
+    const handleToggle = () => setIsOpen(prev => !prev);
+    window.addEventListener('toggle-ai-assistant', handleToggle);
+    return () => window.removeEventListener('toggle-ai-assistant', handleToggle);
+  }, []);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [conversation, interimTranscript]);
 
@@ -74,13 +80,13 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
         className={cn(
           "fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all",
           isListening 
-            ? `bg-${currentMode.color}-500 shadow-${currentMode.color}-500/50` 
-            : "bg-gradient-to-r from-cyan-500 to-blue-500 shadow-cyan-500/30"
+            ? "bg-[#ef4444] shadow-red-500/50" 
+            : "bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] shadow-cyan-500/30"
         )}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         animate={isListening ? { 
-          boxShadow: ["0 0 20px rgba(6,182,212,0.3)", "0 0 40px rgba(6,182,212,0.6)", "0 0 20px rgba(6,182,212,0.3)"]
+          boxShadow: ["0 0 20px rgba(239,68,68,0.3)", "0 0 40px rgba(239,68,68,0.6)", "0 0 20px rgba(239,68,68,0.3)"]
         } : {}}
         transition={{ repeat: Infinity, duration: 1.5 }}
       >
