@@ -173,7 +173,7 @@ export default function LoginPage() {
       `}</style>
 
       <div
-        className={`${plusJakarta.className} min-h-screen relative`}
+        className={`${plusJakarta.className} h-screen overflow-hidden flex flex-col relative`}
         style={{ background: "#f8f9ff", color: "#0b1c30" }}
       >
         {/* Animated cells background */}
@@ -192,7 +192,7 @@ export default function LoginPage() {
 
         {/* ══════════════════════ NAVBAR ══════════════════════════════════════ */}
         <nav
-          className="fixed top-0 left-0 right-0 z-[100] bg-transparent py-6 px-10 grid grid-cols-3 items-center"
+          className="fixed top-0 left-0 right-0 z-[100] h-16 bg-transparent px-10 grid grid-cols-3 items-center"
           aria-label="Main navigation"
         >
           {/* Logo */}
@@ -249,14 +249,14 @@ export default function LoginPage() {
         </nav>
 
         {/* ══════════════════════ MAIN ════════════════════════════════════════ */}
-        <main className="flex flex-col md:flex-row min-h-screen w-full relative z-10 mt-24">
+        <main className="flex flex-col md:flex-row w-full h-[calc(100vh-64px)] mt-16 overflow-hidden relative z-10">
 
           {/* ── LEFT PANEL ─────────────────────────────────────────────────── */}
           <section
-            className="hidden md:flex md:w-1/2 relative flex-col justify-center px-10 py-12 z-10"
+            className="hidden md:flex md:w-1/2 relative flex-col justify-center px-10 h-full overflow-hidden z-10"
             style={{ borderRight: "1px solid rgba(187,202,191,.30)" }}
           >
-            <div className="relative z-20 max-w-2xl mx-auto space-y-10">
+            <div className="relative z-20 max-w-2xl mx-auto space-y-6">
 
               {/* Live badge */}
               <div
@@ -281,10 +281,10 @@ export default function LoginPage() {
               </div>
 
               {/* Headline */}
-              <div className="space-y-6">
+              <div className="space-y-3">
                 <h1
                   className="font-extrabold leading-tight"
-                  style={{ fontSize: "48px", color: "#0b1c30", letterSpacing: "-0.02em" }}
+                  style={{ fontSize: "40px", color: "#0b1c30", letterSpacing: "-0.02em" }}
                 >
                   The World&apos;s First{" "}
                   <span
@@ -297,18 +297,18 @@ export default function LoginPage() {
                   </span>{" "}
                   EHR
                 </h1>
-                <p className="text-[18px] leading-relaxed max-w-xl" style={{ color: "#3c4a42" }}>
+                <p className="text-[16px] leading-relaxed max-w-xl" style={{ color: "#3c4a42" }}>
                   Metta AI works alongside you — documenting encounters, mapping symptoms,
                   predicting outcomes, and writing prescriptions in real time.
                 </p>
               </div>
 
               {/* Feature bento grid */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 {AI_FEATURES.map(({ icon, label, desc }) => (
                   <div
                     key={label}
-                    className="p-6 rounded-xl transition-all duration-300 cursor-default group hover:-translate-y-[2px] hover:shadow-lg"
+                    className="p-4 rounded-xl transition-all duration-300 cursor-default group hover:-translate-y-[2px] hover:shadow-lg"
                     style={{
                       background: "rgba(255,255,255,.40)",
                       backdropFilter: "blur(24px)",
@@ -318,13 +318,13 @@ export default function LoginPage() {
                   >
                     <Icon
                       name={icon}
-                      className="text-[28px] mb-3 block transition-transform group-hover:scale-110"
+                      className="text-[24px] mb-2 block transition-transform group-hover:scale-110"
                       style={{ color: "#006c49" }}
                     />
-                    <h3 className="text-[20px] font-semibold mb-1" style={{ color: "#0b1c30" }}>
+                    <h3 className="text-[16px] font-semibold mb-1" style={{ color: "#0b1c30" }}>
                       {label}
                     </h3>
-                    <p className="text-[14px]" style={{ color: "#3c4a42" }}>
+                    <p className="text-[13px]" style={{ color: "#3c4a42" }}>
                       {desc}
                     </p>
                   </div>
@@ -333,7 +333,7 @@ export default function LoginPage() {
 
               {/* Stats row */}
               <div
-                className="flex items-center justify-between pt-8"
+                className="flex items-center justify-between pt-4"
                 style={{ borderTop: "1px solid rgba(187,202,191,.30)" }}
               >
                 {STAT_TOKENS.map(({ value, label }, i) => (
@@ -348,7 +348,7 @@ export default function LoginPage() {
                     <div className="text-center">
                       <div
                         className="font-extrabold"
-                        style={{ fontSize: "32px", color: "#0b1c30", letterSpacing: "-0.01em" }}
+                        style={{ fontSize: "28px", color: "#0b1c30", letterSpacing: "-0.01em" }}
                       >
                         {value}
                       </div>
@@ -367,7 +367,7 @@ export default function LoginPage() {
 
           {/* ── RIGHT PANEL ────────────────────────────────────────────────── */}
           <section
-            className="flex-1 flex flex-col justify-between items-center p-8 md:p-16"
+            className="flex-1 flex flex-col justify-between items-center px-8 md:px-12 py-6 h-full overflow-hidden"
             style={{
               background: "rgba(255,255,255,.70)",
               backdropFilter: "blur(24px)",
@@ -376,7 +376,7 @@ export default function LoginPage() {
             }}
           >
             {/* Form card */}
-            <div className="w-full max-w-md space-y-8 py-12 login-slide-up">
+            <div className="w-full max-w-md space-y-6 login-slide-up flex flex-col justify-center h-full">
 
               {/* Header */}
               <div className="space-y-2 text-center md:text-left">
@@ -392,10 +392,10 @@ export default function LoginPage() {
                     Powered by Metta AI
                   </span>
                 </div>
-                <h2 className="font-extrabold leading-tight" style={{ fontSize: "36px", color: "#0b1c30" }}>
+                <h2 className="font-extrabold leading-tight" style={{ fontSize: "32px", color: "#0b1c30" }}>
                   Welcome back
                 </h2>
-                <p className="text-[18px]" style={{ color: "#3c4a42" }}>
+                <p className="text-[16px]" style={{ color: "#3c4a42" }}>
                   Sign in to your clinical workspace
                 </p>
               </div>
@@ -417,8 +417,8 @@ export default function LoginPage() {
               )}
 
               {/* ── Form ─────────────────────────────────────────────────── */}
-              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-                <div className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+                <div className="space-y-3">
 
                   {/* Email */}
                   <div>
@@ -444,7 +444,7 @@ export default function LoginPage() {
                         onChange={(e) => { setEmail(e.target.value); setError(""); }}
                         required
                         disabled={isLoading}
-                        className="w-full rounded-lg px-12 py-3.5 outline-none transition-all text-[16px] disabled:opacity-60"
+                        className="w-full rounded-lg px-12 py-2.5 outline-none transition-all text-[15px] disabled:opacity-60"
                         style={{ background: "#fff", border: "1px solid #bbcabf", color: "#0b1c30" }}
                         onFocus={(e) => {
                           e.currentTarget.style.border    = "1px solid #006c49";
@@ -482,7 +482,7 @@ export default function LoginPage() {
                         onChange={(e) => { setPassword(e.target.value); setError(""); }}
                         required
                         disabled={isLoading}
-                        className="w-full rounded-lg px-12 py-3.5 outline-none transition-all text-[16px] disabled:opacity-60"
+                        className="w-full rounded-lg px-12 py-2.5 outline-none transition-all text-[15px] disabled:opacity-60"
                         style={{ background: "#fff", border: "1px solid #bbcabf", color: "#0b1c30" }}
                         onFocus={(e) => {
                           e.currentTarget.style.border    = "1px solid #006c49";
@@ -540,7 +540,7 @@ export default function LoginPage() {
                   id="login-submit-btn"
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-4 rounded-xl font-semibold text-[18px] text-white flex items-center justify-center gap-2 transition-all duration-150 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5"
+                  className="w-full py-3 mt-2 rounded-xl font-semibold text-[16px] text-white flex items-center justify-center gap-2 transition-all duration-150 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5"
                   style={{
                     background: "linear-gradient(135deg,#10b981 0%,#059669 100%)",
                     borderTop: "1px solid rgba(255,255,255,.40)",
@@ -564,7 +564,7 @@ export default function LoginPage() {
 
               {/* Demo credentials panel */}
               <div
-                className="rounded-xl overflow-hidden font-mono text-sm space-y-2 p-4"
+                className="rounded-xl overflow-hidden font-mono text-sm space-y-1.5 p-3"
                 style={{
                   background: "rgba(255,255,255,.80)",
                   border: "1px solid #bbcabf",
@@ -587,15 +587,15 @@ export default function LoginPage() {
                     style={{ color: "#3c4a42" }}
                     title={`Fill ${role} credentials`}
                   >
-                    <span className="font-semibold">{role}</span>
-                    <span className="text-[12px]" style={{ color: "#6c7a71" }}>{e}</span>
+                    <span className="font-semibold text-[13px]">{role}</span>
+                    <span className="text-[11px]" style={{ color: "#6c7a71" }}>{e}</span>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* ── Footer ─────────────────────────────────────────────────── */}
-            <footer className="w-full text-center space-y-4 pb-4">
+            <footer className="w-full text-center space-y-3 pb-2 mt-4 shrink-0">
               <p className="text-[14px] flex items-center justify-center gap-2" style={{ color: "#3c4a42" }}>
                 <Icon name="security" className="text-[16px]" style={{ color: "#3c4a42" }} />
                 Protected by HIPAA-compliant security · Unauthorized access is prohibited
