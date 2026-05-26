@@ -20,6 +20,7 @@ import {
   Menu,
   X,
   ChevronRight,
+  BarChart3,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -37,6 +38,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   AlertTriangle,
   UserCog,
   ClipboardList,
+  BarChart3,
 };
 
 function List({ className }: { className?: string }) {
@@ -106,7 +108,7 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const pathname = usePathname();
 
-  const navItems = filterNavItemsByRole(NAV_ITEMS, user.role);
+  const navItems = filterNavItemsByRole(NAV_ITEMS, user?.role || "FRONT_DESK");
 
   const handleExpand = (val: boolean) => {
     setIsExpanded(val);
@@ -132,10 +134,16 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
       <nav
         className={cn(
           "fixed left-0 top-0 h-full z-50 hidden lg:flex flex-col",
-          "bg-slate-50 border-r border-slate-200",
+          "border-r",
           "transition-all duration-300 ease-out",
           isExpanded ? "w-52" : "w-[72px]"
         )}
+        style={{
+          background: "rgba(248,250,252,0.95)",
+          backdropFilter: "blur(12px)",
+          borderColor: "rgba(226,232,240,0.8)",
+          boxShadow: "2px 0 20px rgba(0,0,0,0.04)",
+        }}
       >
         {/* Logo */}
         <div
@@ -166,14 +174,34 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
                 href={item.href}
                 aria-label={!isExpanded ? item.title : undefined}
                 className={cn(
-                  "relative flex items-center gap-3 px-3 h-9 rounded-[6px] transition-all duration-200 group",
+                  "relative flex items-center gap-3 px-3 h-9 rounded-[12px] group",
                   isExpanded ? "" : "justify-center",
                   isActive
-                    ? "bg-[#f0fdf4] text-[#16a34a] font-[700] shadow-[inset_3px_0_0_#22c55e]"
-                    : "text-[#475569] hover:bg-white hover:text-[#0f172a]"
+                    ? "font-[700]"
+                    : "text-[#475569]"
                 )}
-                onMouseEnter={() => !isExpanded && setActiveTooltip(item.title)}
-                onMouseLeave={() => setActiveTooltip(null)}
+                style={{
+                  color: isActive ? "#16a34a" : undefined,
+                  background: isActive ? "#f0fdf4" : undefined,
+                  boxShadow: isActive ? "inset 3px 0 0 #22c55e" : undefined,
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={e => {
+                  if (!isActive) {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(34,197,94,0.10)";
+                    (e.currentTarget as HTMLElement).style.color = "#0f172a";
+                    (e.currentTarget as HTMLElement).style.transform = "scale(1.04)";
+                  }
+                  if (!isExpanded) setActiveTooltip(item.title);
+                }}
+                onMouseLeave={e => {
+                  if (!isActive) {
+                    (e.currentTarget as HTMLElement).style.background = "";
+                    (e.currentTarget as HTMLElement).style.color = "";
+                    (e.currentTarget as HTMLElement).style.transform = "";
+                  }
+                  setActiveTooltip(null);
+                }}
               >
                 <span className="flex-shrink-0">{getIcon(item.icon)}</span>
 

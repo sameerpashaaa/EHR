@@ -74,20 +74,30 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes ai-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.40), 0 8px 32px rgba(34,197,94,0.25); }
+          50%        { box-shadow: 0 0 0 12px rgba(34,197,94,0), 0 8px 32px rgba(34,197,94,0.25); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .ai-pulse-btn { animation: none !important; }
+        }
+      ` }} />
       {/* Floating Voice Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all",
-          isListening 
-            ? "bg-[#ef4444] shadow-red-500/50" 
-            : "bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] shadow-cyan-500/30"
+          "ai-pulse-btn fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all",
+          isListening
+            ? "bg-[#ef4444] shadow-red-500/50"
+            : "bg-gradient-to-r from-[#1D9E75] to-[#06b6d4]"
         )}
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.9 }}
-        animate={isListening ? { 
+        animate={isListening ? {
           boxShadow: ["0 0 20px rgba(239,68,68,0.3)", "0 0 40px rgba(239,68,68,0.6)", "0 0 20px rgba(239,68,68,0.3)"]
         } : {}}
+        style={!isListening ? { animation: "ai-pulse 2.5s infinite" } : {}}
         transition={{ repeat: Infinity, duration: 1.5 }}
       >
         <AnimatePresence mode="wait">

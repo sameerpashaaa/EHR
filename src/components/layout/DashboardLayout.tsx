@@ -97,7 +97,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
+    <div className="min-h-screen" style={{ background: "#f5f7fb" }}>
       <FloatingNav user={user} onExpandChange={setSidebarExpanded} />
 
       <div
@@ -105,7 +105,16 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
         style={{ marginLeft: sidebarExpanded ? 208 : 72 }}
       >
         {/* Top Header Bar */}
-        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
+        <header
+          className="sticky top-0 z-30"
+          style={{
+            background: "rgba(255,255,255,0.72)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            borderBottom: "1px solid rgba(255,255,255,0.4)",
+            boxShadow: "0 2px 20px rgba(0,0,0,0.04)",
+          }}
+        >
           <div className="px-5 py-2.5 flex items-center justify-between gap-4">
 
             {/* System Status Badge */}
@@ -119,7 +128,27 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
             <div className="flex-1 max-w-xl mx-auto">
               <button
                 onClick={() => setSearchOpen(true)}
-                className="w-full flex items-center gap-3 bg-[#f8fafc] hover:bg-white border border-[#e2e8f0] hover:border-[#22c55e]/40 rounded-[6px] px-[12px] py-[8px] cursor-text transition-all active:scale-[0.99] text-left"
+                className="w-full flex items-center gap-3 rounded-[6px] px-[12px] py-[8px] cursor-text text-left active:scale-[0.99]"
+                style={{
+                  background: "#f8fafc",
+                  border: "1px solid #e2e8f0",
+                  transition: "width 0.3s ease, border-color 0.2s, box-shadow 0.2s",
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(34,197,94,0.40)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "#e2e8f0";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                }}
+                onFocus={e => {
+                  (e.currentTarget as HTMLElement).style.outline = "2px solid rgba(34,197,94,0.5)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 4px rgba(34,197,94,0.1), 0 4px 20px rgba(0,0,0,0.08)";
+                }}
+                onBlur={e => {
+                  (e.currentTarget as HTMLElement).style.outline = "none";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                }}
               >
                 <Search className="w-4 h-4 text-[#94a3b8] flex-shrink-0" />
                 <span className="text-[13px] font-[500] text-[#94a3b8] flex-1">
@@ -163,14 +192,14 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
                   className="flex items-center gap-2 px-2 py-1.5 rounded-[6px] hover:bg-[#f8fafc] border border-transparent hover:border-[#e2e8f0] transition-all focus:outline-none focus:ring-[3px] focus:ring-[#22c55e]/20"
                 >
                   <Avatar className="h-7 w-7">
-                    <AvatarImage src={user.image} alt={user.name} />
+                    <AvatarImage src={user?.image || ""} alt={user?.name || "User"} />
                     <AvatarFallback className="bg-[#4CAF72] text-white text-[10px] font-[700]">
-                      {user.name ? initials(user.name.split(" ")[0], user.name.split(" ").pop() || "") : "??"}
+                      {user?.name ? initials(user.name.split(" ")[0] || "", user.name.split(" ").pop() || "") : "??"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden md:block text-left">
-                    <p className="text-[13px] font-[700] text-[#0f172a] leading-tight">{user.name}</p>
-                    <p className="text-[10px] font-[600] text-[#94a3b8] uppercase tracking-wider">{getRoleDisplayName(user.role)}</p>
+                    <p className="text-[13px] font-[700] text-[#0f172a] leading-tight">{user?.name || "User"}</p>
+                    <p className="text-[10px] font-[600] text-[#94a3b8] uppercase tracking-wider">{getRoleDisplayName(user?.role || "FRONT_DESK")}</p>
                   </div>
                   <ChevronDown className={cn("h-3.5 w-3.5 text-[#94a3b8] transition-transform hidden md:block", userMenuOpen && "rotate-180")} />
                 </button>
@@ -181,8 +210,8 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
                     <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
                     <div className="absolute right-0 top-full mt-2 w-60 bg-white rounded-[8px] border border-[#e2e8f0] p-1.5 z-50 animate-fadeIn">
                       <div className="px-3 py-2.5 border-b border-[#e2e8f0] mb-1">
-                        <p className="font-[700] text-[#0f172a] text-[13px]">{user.name}</p>
-                        <p className="text-[11px] text-[#888888]">{user.email}</p>
+                        <p className="font-[700] text-[#0f172a] text-[13px]">{user?.name || "User"}</p>
+                        <p className="text-[11px] text-[#888888]">{user?.email || ""}</p>
                       </div>
                       <Link
                         href="/admin"

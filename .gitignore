@@ -30,3 +30,8 @@ yarn-error.log*
 *.log
 logs.txt
 val_err.txt
+
+# local scratch and browser check files
+/scratch/
+/check_browser.js
+
