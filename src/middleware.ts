@@ -21,6 +21,8 @@ const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
 const PUBLIC_ROUTES = [
   "/login",
   "/register",
+  "/signup",
+  "/plans",
   "/forgot-password",
   "/reset-password",
   "/api/auth",
@@ -76,6 +78,9 @@ export default withAuth(
     return response;
   },
   {
+    pages: {
+      signIn: "/login",
+    },
     callbacks: {
       authorized({ req, token }) {
         // Allow public routes without token

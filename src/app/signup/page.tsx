@@ -1,20 +1,19 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Loader2 } from "lucide-react";
 import PublicNavbar from "@/components/layout/PublicNavbar";
 
-// ─── Font ────────────────────────────────────────────────────────────────────
+// Font
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
 });
 
-// ─── Material Symbols icon (module-level, no hooks) ──────────────────────────
+// Icon helper
 function Icon({
   name,
   className = "",
@@ -31,18 +30,12 @@ function Icon({
   );
 }
 
-// ─── Static data ─────────────────────────────────────────────────────────────
+// Static left-panel data
 const AI_FEATURES = [
   { icon: "psychology",  label: "Neural Symptom Mapper", desc: "Deep pattern recognition across longitudinal patient data." },
   { icon: "description", label: "Auto-Documentation",    desc: "Real-time structured notes generated from ambient audio." },
   { icon: "insights",    label: "Predictive Timeline",   desc: "Visualizing future health trajectories using 4.2B data points." },
   { icon: "bolt",        label: "Ambient Scribe",        desc: "Zero-interaction capture of clinical narratives." },
-];
-
-const DEMO_CREDS = [
-  { role: "Admin",     email: "admin@metapharsic.com",     pass: "admin123" },
-  { role: "Physician", email: "physician@metapharsic.com", pass: "physician123" },
-  { role: "Nurse",     email: "nurse@metapharsic.com",     pass: "nurse123" },
 ];
 
 const STAT_TOKENS = [
@@ -51,7 +44,7 @@ const STAT_TOKENS = [
   { value: "<12ms", label: "Inference Speed" },
 ];
 
-// ─── Vanta animated background ───────────────────────────────────────────────
+// Vanta background helper
 function VantaBackground() {
   const vantaRef    = useRef<HTMLDivElement>(null);
   const vantaEffect = useRef<{ destroy?: () => void } | null>(null);
@@ -79,7 +72,6 @@ function VantaBackground() {
             color2: 0xf0fdf4,
             size: 1.5,
           });
-          console.log("Vanta CELLS initialized successfully.");
         } catch (e) {
           console.error("Failed to initialize Vanta CELLS:", e);
         }
@@ -96,7 +88,6 @@ function VantaBackground() {
       const existingVanta = document.querySelector('script[src*="vanta.cells"]');
       if (existingVanta) {
         existingVanta.addEventListener('load', tryInit);
-        // In case it finished loading between our check and event listener
         if (W.VANTA?.CELLS) tryInit();
         return;
       }
@@ -104,7 +95,6 @@ function VantaBackground() {
       vantaScript = document.createElement("script");
       vantaScript.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.cells.min.js";
       vantaScript.onload = tryInit;
-      vantaScript.onerror = (e) => console.error("Failed to load Vanta cells script:", e);
       document.head.appendChild(vantaScript);
     };
 
@@ -125,7 +115,6 @@ function VantaBackground() {
       threeScript = document.createElement("script");
       threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js";
       threeScript.onload = loadVanta;
-      threeScript.onerror = (e) => console.error("Failed to load Three.js script:", e);
       document.head.appendChild(threeScript);
     };
 
@@ -137,55 +126,85 @@ function VantaBackground() {
         vantaEffect.current.destroy?.();
         vantaEffect.current = null;
       }
-      if (threeScript) {
-        threeScript.remove();
-      }
-      if (vantaScript) {
-        vantaScript.remove();
-      }
+      if (threeScript) threeScript.remove();
+      if (vantaScript) vantaScript.remove();
     };
   }, []);
 
   return <div ref={vantaRef} className="fixed inset-0 z-0" aria-hidden="true" />;
 }
 
-// ─── Login Page ───────────────────────────────────────────────────────────────
-export default function LoginPage() {
-  const router       = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl  = searchParams.get("callbackUrl") || "/";
+export default function SignupPage() {
+  const router = useRouter();
 
-  const [email,        setEmail]        = useState("");
-  const [password,     setPassword]     = useState("");
+  // Form states
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
+  const [role, setRole] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [hipaaCompliant, setHipaaCompliant] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading,    setIsLoading]    = useState(false);
-  const [error,        setError]        = useState("");
-  const [btnPressed,   setBtnPressed]   = useState(false);
-  const [showDemoMenu, setShowDemoMenu] = useState(false);
+  const [btnPressed, setBtnPressed] = useState(false);
 
-  // ── Submit handler ──────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      setError("Please enter your email and password.");
+
+    // Validations
+    if (!name || !email || !organizationName || !role || !password || !confirmPassword) {
+      setError("Please fill in all required fields.");
       return;
     }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (!agreeTerms) {
+      setError("You must agree to the Terms of Service and Privacy Policy.");
+      return;
+    }
+
+    if (!hipaaCompliant) {
+      setError("Organization must confirm HIPAA compliance readiness.");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
     setBtnPressed(true);
     setTimeout(() => setBtnPressed(false), 120);
+
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-        callbackUrl,
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          organizationName,
+          role,
+          password,
+        }),
       });
-      if (result?.error) {
-        setError("Invalid email or password. Please try again.");
-      } else if (result?.ok) {
-        router.push(callbackUrl);
-        router.refresh();
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Failed to create workspace.");
+      } else {
+        router.push("/login?registered=true");
       }
     } catch {
       setError("An unexpected error occurred. Please try again.");
@@ -194,15 +213,6 @@ export default function LoginPage() {
     }
   };
 
-  // ── Fill demo credentials ───────────────────────────────────────────────────
-  const fillDemo = (e: string, p: string) => {
-    setEmail(e);
-    setPassword(p);
-    setError("");
-    setShowDemoMenu(false);
-  };
-
-  // ─────────────────────────────────────────────────────────────────────────────
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
@@ -211,7 +221,7 @@ export default function LoginPage() {
           0%   { opacity: 0; transform: translateY(16px); }
           100% { opacity: 1; transform: translateY(0); }
         }
-        .login-slide-up { animation: slideUp 0.4s ease-out forwards; }
+        .signup-slide-up { animation: slideUp 0.4s ease-out forwards; }
         input[type="checkbox"] { accent-color: #1D9E75; }
         
         :focus-visible {
@@ -222,23 +232,8 @@ export default function LoginPage() {
         .footer-link:hover {
           text-decoration: underline;
         }
-
-        .signup-btn {
-          background: #1D9E75;
-          color: #ffffff;
-          padding: 9px 20px;
-          border-radius: 8px;
-          font-size: 14px;
-          font-weight: 500;
-          border: none;
-          transition: background 0.15s ease;
-        }
-        .signup-btn:hover {
-          background: #0F6E56;
-        }
       ` }} />
 
-      {/* ── Root wrapper ── */}
       <div
         className={`${plusJakarta.className}`}
         style={{
@@ -263,10 +258,10 @@ export default function LoginPage() {
           aria-hidden="true"
         />
 
-        {/* ══════════════════════ NAVBAR ══════════════════════════════════════ */}
+        {/* Navbar */}
         <PublicNavbar />
 
-        {/* ══════════════════════ MAIN CONTENT ROW ════════════════════════════ */}
+        {/* Main Content */}
         <main
           style={{
             flex: 1,
@@ -278,7 +273,7 @@ export default function LoginPage() {
             zIndex: 10,
           }}
         >
-          {/* ── LEFT PANEL ─────────────────────────────────────────────────── */}
+          {/* LEFT PANEL */}
           <section
             className="hidden md:flex"
             style={{
@@ -345,7 +340,7 @@ export default function LoginPage() {
                 </span>
               </div>
 
-              {/* Headline block */}
+              {/* Headline */}
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 <h1
                   className="font-extrabold leading-tight"
@@ -363,12 +358,11 @@ export default function LoginPage() {
                   EHR
                 </h1>
                 <p style={{ fontSize: "15px", lineHeight: "1.6", color: "#3c4a42", margin: 0, maxWidth: "460px" }}>
-                  Metta AI works alongside you — documenting encounters, mapping symptoms,
-                  predicting outcomes, and writing prescriptions in real time.
+                  Join 12,400+ clinical innovators. Metta AI maps medical timelines, automates SOAP notes, and supports multi-site hospital configurations.
                 </p>
               </div>
 
-              {/* Feature bento grid */}
+              {/* Feature grid */}
               <div
                 style={{
                   display: "grid",
@@ -409,7 +403,7 @@ export default function LoginPage() {
                 ))}
               </div>
 
-              {/* Stats row */}
+              {/* Stats */}
               <div
                 className="flex items-center justify-between"
                 style={{
@@ -445,17 +439,17 @@ export default function LoginPage() {
             </div>
           </section>
 
-          {/* ── RIGHT PANEL ────────────────────────────────────────────────── */}
+          {/* RIGHT PANEL (Sign Up Form) */}
           <section
             style={{
               flex: 1,
               minWidth: 0,
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
+              justifyContent: "flex-start",
               alignItems: "center",
               padding: "24px 40px",
-              overflow: "hidden",
+              overflowY: "auto",
               background: "rgba(255, 255, 255, 0.75)",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
@@ -463,49 +457,30 @@ export default function LoginPage() {
               boxShadow: "-10px 0 30px rgba(0,0,0,.02)",
             }}
           >
-            {/* Form card */}
             <div
-              className="login-slide-up"
+              className="signup-slide-up w-full my-auto"
               style={{
-                width: "100%",
-                maxWidth: "420px",
+                maxWidth: "440px",
                 display: "flex",
                 flexDirection: "column",
                 gap: "18px",
+                padding: "20px 0",
               }}
             >
               {/* Header */}
               <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                 <h2
-                  className="font-extrabold leading-tight"
-                  style={{ fontSize: "30px", color: "#0b1c30", margin: 0 }}
+                  className="font-extrabold leading-tight text-3xl text-slate-900"
+                  style={{ margin: 0 }}
                 >
-                  Welcome back
+                  Create Workspace
                 </h2>
-                <p style={{ fontSize: "15px", color: "#3c4a42", margin: 0 }}>
-                  Sign in to your clinical workspace
+                <p className="text-slate-600 text-sm" style={{ margin: 0 }}>
+                  Set up your AI-native clinical environment
                 </p>
               </div>
 
-              {/* Success alert */}
-              {searchParams.get("registered") === "true" && !error && (
-                <div
-                  role="status"
-                  className="flex items-center gap-3 text-sm font-medium"
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: "10px",
-                    background: "#d1fae5",
-                    border: "1px solid rgba(16,185,129,.25)",
-                    color: "#065f46",
-                  }}
-                >
-                  <Icon name="check_circle" className="text-[17px] flex-shrink-0" style={{ color: "#065f46" }} />
-                  Workspace created successfully! Please sign in.
-                </div>
-              )}
-
-              {/* Error alert */}
+              {/* Error Box */}
               {error && (
                 <div
                   role="alert"
@@ -523,76 +498,122 @@ export default function LoginPage() {
                 </div>
               )}
 
-              {/* ── Form ─────────────────────────────────────────────────── */}
-              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }} noValidate>
+              {/* Form */}
+              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }} noValidate>
+                {/* Full Name */}
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="font-semibold uppercase block"
+                    style={{ fontSize: "10px", color: "#3c4a42", letterSpacing: "0.06em", marginLeft: "4px", marginBottom: "4px" }}
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Dr. Eleanor Vance"
+                    value={name}
+                    onChange={(e) => { setName(e.target.value); setError(""); }}
+                    required
+                    disabled={isLoading}
+                    className="w-full rounded-lg outline-none transition-all disabled:opacity-60 py-[10px] px-4 text-[14px] bg-white border border-[#bbcabf] text-[#0b1c30]"
+                    style={{ borderRadius: "10px" }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.border    = "1px solid #006c49";
+                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,108,73,.10)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.border    = "1px solid #bbcabf";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  />
+                </div>
 
                 {/* Email */}
                 <div>
                   <label
                     htmlFor="email"
                     className="font-semibold uppercase block"
-                    style={{ fontSize: "10px", color: "#3c4a42", letterSpacing: "0.06em", marginLeft: "4px", marginBottom: "5px" }}
+                    style={{ fontSize: "10px", color: "#3c4a42", letterSpacing: "0.06em", marginLeft: "4px", marginBottom: "4px" }}
                   >
-                    Email Address
+                    Work Email
                   </label>
-                  <div className="relative">
-                    <input
-                      id="email"
-                      type="email"
-                      autoComplete="email"
-                      placeholder="name@metapharsic.com"
-                      value={email}
-                      onChange={(e) => { setEmail(e.target.value); setError(""); }}
-                      required
-                      disabled={isLoading}
-                      className="w-full rounded-lg outline-none transition-all disabled:opacity-60"
-                      style={{
-                        padding: "11px 16px",
-                        fontSize: "15px",
-                        background: "#fff",
-                        border: "1px solid #bbcabf",
-                        color: "#0b1c30",
-                        borderRadius: "10px",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.border    = "1px solid #006c49";
-                        e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,108,73,.10)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.border    = "1px solid #bbcabf";
-                        e.currentTarget.style.boxShadow = "none";
-                      }}
-                    />
-                  </div>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="evance@clinic.org"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                    required
+                    disabled={isLoading}
+                    className="w-full rounded-lg outline-none transition-all disabled:opacity-60 py-[10px] px-4 text-[14px] bg-white border border-[#bbcabf] text-[#0b1c30]"
+                    style={{ borderRadius: "10px" }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.border    = "1px solid #006c49";
+                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,108,73,.10)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.border    = "1px solid #bbcabf";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  />
                 </div>
 
-                {/* Password */}
+                {/* Org Name */}
                 <div>
                   <label
-                    htmlFor="password"
+                    htmlFor="organizationName"
                     className="font-semibold uppercase block"
-                    style={{ fontSize: "10px", color: "#3c4a42", letterSpacing: "0.06em", marginLeft: "4px", marginBottom: "5px" }}
+                    style={{ fontSize: "10px", color: "#3c4a42", letterSpacing: "0.06em", marginLeft: "4px", marginBottom: "4px" }}
                   >
-                    Password
+                    Organization / Hospital Name
+                  </label>
+                  <input
+                    id="organizationName"
+                    type="text"
+                    placeholder="St. Jude Cardiology Center"
+                    value={organizationName}
+                    onChange={(e) => { setOrganizationName(e.target.value); setError(""); }}
+                    required
+                    disabled={isLoading}
+                    className="w-full rounded-lg outline-none transition-all disabled:opacity-60 py-[10px] px-4 text-[14px] bg-white border border-[#bbcabf] text-[#0b1c30]"
+                    style={{ borderRadius: "10px" }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.border    = "1px solid #006c49";
+                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,108,73,.10)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.border    = "1px solid #bbcabf";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  />
+                </div>
+
+                {/* Role */}
+                <div>
+                  <label
+                    htmlFor="role"
+                    className="font-semibold uppercase block"
+                    style={{ fontSize: "10px", color: "#3c4a42", letterSpacing: "0.06em", marginLeft: "4px", marginBottom: "4px" }}
+                  >
+                    Clinical Role
                   </label>
                   <div className="relative">
-                    <input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="current-password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => { setPassword(e.target.value); setError(""); }}
+                    <select
+                      id="role"
+                      value={role}
+                      onChange={(e) => { setRole(e.target.value); setError(""); }}
                       required
                       disabled={isLoading}
-                      className="w-full rounded-lg outline-none transition-all disabled:opacity-60"
+                      className="w-full rounded-lg outline-none transition-all disabled:opacity-60 bg-white border border-[#bbcabf] text-[#0b1c30] py-[10px] px-4 text-[14px]"
                       style={{
-                        padding: "11px 44px 11px 16px",
-                        fontSize: "15px",
-                        background: "#fff",
-                        border: "1px solid #bbcabf",
-                        color: "#0b1c30",
                         borderRadius: "10px",
+                        appearance: "none",
+                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233c4a42' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "right 16px center",
+                        backgroundSize: "16px",
                       }}
                       onFocus={(e) => {
                         e.currentTarget.style.border    = "1px solid #006c49";
@@ -602,79 +623,133 @@ export default function LoginPage() {
                         e.currentTarget.style.border    = "1px solid #bbcabf";
                         e.currentTarget.style.boxShadow = "none";
                       }}
-                    />
-                    <button
-                      type="button"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors duration-150 hover:opacity-100 opacity-60"
-                      style={{ color: "#6c7a71" }}
                     >
-                      <Icon name={showPassword ? "visibility_off" : "visibility"} className="text-[18px]" />
-                    </button>
+                      <option value="" disabled>Select your role</option>
+                      <option value="Physician">Physician</option>
+                      <option value="Nurse Practitioner">Nurse Practitioner</option>
+                      <option value="Administrator">Administrator</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
                 </div>
 
-                {/* Remember me + Forgot password */}
-                <div className="flex items-center justify-between" style={{ padding: "0 2px" }}>
-                  <label className="flex items-center gap-2 cursor-pointer group select-none">
+                {/* Password fields row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Password */}
+                  <div>
+                    <label
+                      htmlFor="password"
+                      className="font-semibold uppercase block"
+                      style={{ fontSize: "10px", color: "#3c4a42", letterSpacing: "0.06em", marginLeft: "4px", marginBottom: "4px" }}
+                    >
+                      Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => { setPassword(e.target.value); setError(""); }}
+                        required
+                        disabled={isLoading}
+                        className="w-full rounded-lg outline-none transition-all disabled:opacity-60 py-[10px] px-4 text-[14px] bg-white border border-[#bbcabf] text-[#0b1c30]"
+                        style={{ borderRadius: "10px" }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.border    = "1px solid #006c49";
+                          e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,108,73,.10)";
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.border    = "1px solid #bbcabf";
+                          e.currentTarget.style.boxShadow = "none";
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 transition-opacity"
+                        style={{ color: "#6c7a71" }}
+                      >
+                        <Icon name={showPassword ? "visibility_off" : "visibility"} className="text-[17px]" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div>
+                    <label
+                      htmlFor="confirmPassword"
+                      className="font-semibold uppercase block"
+                      style={{ fontSize: "10px", color: "#3c4a42", letterSpacing: "0.06em", marginLeft: "4px", marginBottom: "4px" }}
+                    >
+                      Confirm Password
+                    </label>
+                    <input
+                      id="confirmPassword"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => { setConfirmPassword(e.target.value); setError(""); }}
+                      required
+                      disabled={isLoading}
+                      className="w-full rounded-lg outline-none transition-all disabled:opacity-60 py-[10px] px-4 text-[14px] bg-white border border-[#bbcabf] text-[#0b1c30]"
+                      style={{ borderRadius: "10px" }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.border    = "1px solid #006c49";
+                        e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,108,73,.10)";
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.border    = "1px solid #bbcabf";
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Checkboxes */}
+                <div className="flex flex-col gap-2 mt-2" style={{ padding: "0 2px" }}>
+                  <label className="flex items-start gap-2.5 cursor-pointer group select-none">
                     <input
                       type="checkbox"
-                      id="remember"
-                      className="rounded"
+                      checked={agreeTerms}
+                      onChange={(e) => { setAgreeTerms(e.target.checked); setError(""); }}
+                      disabled={isLoading}
+                      className="rounded mt-0.5"
                     />
                     <span
                       className="transition-colors group-hover:opacity-100 opacity-80"
-                      style={{ fontSize: "13px", color: "#2a362f" }}
+                      style={{ fontSize: "12px", color: "#2a362f", lineHeight: "1.4" }}
                     >
-                      Remember device
+                      I agree to the Terms of Service and Privacy Policy
                     </span>
                   </label>
-                  <Link
-                    href="/forgot-password"
-                    className="font-medium transition-colors hover:opacity-80"
-                    style={{ fontSize: "13px", color: "#006c49" }}
-                  >
-                    Forgot Password?
-                  </Link>
-                </div>
 
-                {/* Social proof */}
-                <div 
-                  className="flex items-center justify-center gap-3 mt-2 pt-4"
-                  style={{ borderTop: "1px solid rgba(187,202,191,0.4)" }}
-                >
-                  <div className="flex -space-x-2">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="w-6 h-6 rounded-full border-2 border-white bg-emerald-100 flex items-center justify-center"
-                        style={{ zIndex: 4 - i }}
-                      >
-                        <span className="text-[9px] font-bold text-emerald-800">
-                          {["JD", "AS", "MK"][i-1]}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <span
-                    className="font-medium"
-                    style={{ fontSize: "13px", color: "var(--text-secondary, #6c7a71)" }}
-                  >
-                    Trusted by 12,400+ clinicians
-                  </span>
+                  <label className="flex items-start gap-2.5 cursor-pointer group select-none">
+                    <input
+                      type="checkbox"
+                      checked={hipaaCompliant}
+                      onChange={(e) => { setHipaaCompliant(e.target.checked); setError(""); }}
+                      disabled={isLoading}
+                      className="rounded mt-0.5"
+                    />
+                    <span
+                      className="transition-colors group-hover:opacity-100 opacity-80"
+                      style={{ fontSize: "12px", color: "#2a362f", lineHeight: "1.4" }}
+                    >
+                      This organization is HIPAA-compliant
+                    </span>
+                  </label>
                 </div>
 
                 {/* Submit button */}
                 <button
-                  id="login-submit-btn"
                   type="submit"
                   disabled={isLoading}
-                  className="w-full font-semibold text-white flex items-center justify-center gap-2 transition-all duration-150 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5"
+                  className="w-full font-semibold text-white flex items-center justify-center gap-2 transition-all duration-150 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5 mt-3"
                   style={{
-                    padding: "13px 0",
+                    padding: "12px 0",
                     borderRadius: "12px",
-                    fontSize: "16px",
+                    fontSize: "15px",
                     background: "linear-gradient(135deg,#10b981 0%,#059669 100%)",
                     borderTop: "1px solid rgba(255,255,255,.40)",
                     boxShadow: "0 4px 15px rgba(16,185,129,.25)",
@@ -684,100 +759,48 @@ export default function LoginPage() {
                   {isLoading ? (
                     <>
                       <Loader2 className="h-5 w-5 animate-spin" />
-                      Signing in…
+                      Creating Workspace…
                     </>
                   ) : (
                     <>
-                      Sign in to Workspace
+                      Create Workspace
                       <Icon name="arrow_forward" className="text-[17px]" style={{ color: "#fff" }} />
                     </>
                   )}
                 </button>
               </form>
 
-              {/* Demo credentials */}
-              <div style={{ position: "relative", width: "100%", marginTop: "8px" }}>
-                <button
-                  type="button"
-                  onClick={() => setShowDemoMenu(!showDemoMenu)}
-                  className="w-full rounded-lg transition-colors hover:bg-black/5"
-                  style={{
-                    padding: "8px 12px",
-                    background: "transparent",
-                    border: "1px dashed rgba(187,202,191,0.8)",
-                    color: "#3c4a42",
-                    fontSize: "13px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Try demo account
-                </button>
-                {showDemoMenu && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: "100%",
-                      left: 0,
-                      right: 0,
-                      marginBottom: "8px",
-                      background: "rgba(255,255,255,0.95)",
-                      backdropFilter: "blur(12px)",
-                      border: "1px solid #bbcabf",
-                      boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-                      borderRadius: "8px",
-                      padding: "8px",
-                      zIndex: 10,
-                    }}
+              {/* Footer link to sign in */}
+              <div style={{ textAlign: "center", marginTop: "10px" }}>
+                <p style={{ fontSize: "13px", color: "#6c7a71", margin: 0 }}>
+                  Already have an account?{" "}
+                  <Link
+                    href="/login"
+                    className="font-semibold transition-colors hover:opacity-80"
+                    style={{ color: "#006c49" }}
                   >
-                    <div
-                      style={{
-                        paddingBottom: "6px",
-                        marginBottom: "4px",
-                        borderBottom: "1px solid rgba(187,202,191,.50)",
-                        color: "#6c7a71",
-                        fontSize: "11px",
-                        textAlign: "center",
-                      }}
-                    >
-                      Select Role
-                    </div>
-                    {DEMO_CREDS.map(({ role, email: e, pass }) => (
-                      <button
-                        key={role}
-                        type="button"
-                        onClick={() => fillDemo(e, pass)}
-                        className="w-full text-left rounded hover:bg-black/5 transition-colors"
-                        style={{ color: "#3c4a42", padding: "6px 12px", fontSize: "13px" }}
-                      >
-                        <span className="font-semibold">{role}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+                    Sign in
+                  </Link>
+                </p>
               </div>
 
-              {/* Footer */}
-              <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "10px", marginTop: "16px" }}>
+              {/* Footer Legal */}
+              <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "8px", marginTop: "12px" }}>
                 <div className="flex flex-wrap justify-center" style={{ gap: "20px" }}>
                   {["Privacy policy", "Terms of service", "Security architecture"].map((item) => (
                     <Link
                       key={item}
                       href="#"
                       className="footer-link transition-colors opacity-80 hover:opacity-100"
-                      style={{ fontSize: "12px", color: "rgba(0,0,0,0.45)" }}
+                      style={{ fontSize: "11px", color: "rgba(0,0,0,0.45)" }}
                     >
                       {item}
                     </Link>
                   ))}
                 </div>
-                
-                <div style={{ fontSize: "11px", color: "rgba(0,0,0,0.4)" }}>
+                <div style={{ fontSize: "10px", color: "rgba(0,0,0,0.4)" }}>
                   Powered by Metta AI &nbsp;&middot;&nbsp; HIPAA Compliant
                 </div>
-                
-                <p style={{ fontSize: "12px", color: "rgba(0,0,0,0.45)", margin: 0 }}>
-                  © 2025 Metapharsic AI. HIPAA Compliant.
-                </p>
               </div>
             </div>
           </section>
