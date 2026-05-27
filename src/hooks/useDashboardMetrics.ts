@@ -51,9 +51,11 @@ export function useDashboardMetrics(options: UseDashboardMetricsOptions = {}) {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchMetrics = useCallback(async () => {
+  const fetchMetrics = useCallback(async (isBackground = false) => {
     try {
-      setLoading(true);
+      if (!isBackground) {
+        setLoading(true);
+      }
       const response = await fetch(`/api/dashboard/metrics?period=${period}`);
       const result = await response.json();
 
@@ -68,26 +70,30 @@ export function useDashboardMetrics(options: UseDashboardMetricsOptions = {}) {
       setError(err.message);
       console.error("Error fetching dashboard metrics:", err);
     } finally {
-      setLoading(false);
+      if (!isBackground) {
+        setLoading(false);
+      }
     }
   }, [period]);
 
   // Initial fetch
   useEffect(() => {
-    fetchMetrics();
+    fetchMetrics(false);
   }, [fetchMetrics]);
 
   // Auto-refresh
   useEffect(() => {
     if (!refreshInterval) return;
 
-    const interval = setInterval(fetchMetrics, refreshInterval);
+    const interval = setInterval(() => {
+      fetchMetrics(true);
+    }, refreshInterval);
     return () => clearInterval(interval);
   }, [fetchMetrics, refreshInterval]);
 
   // Manual refresh
   const refresh = useCallback(() => {
-    fetchMetrics();
+    fetchMetrics(false);
   }, [fetchMetrics]);
 
   return {

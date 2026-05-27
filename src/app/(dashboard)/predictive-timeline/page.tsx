@@ -8,10 +8,22 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  AreaChart, Area, ReferenceLine 
-} from "recharts";
+import dynamic from "next/dynamic";
+
+const PredictiveTimelineChart = dynamic(
+  () => import("@/components/innovation/PredictiveTimelineChart"),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="h-full w-full flex items-center justify-center bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs text-slate-400">Loading Risk Trajectory...</span>
+        </div>
+      </div>
+    )
+  }
+);
 
 interface TimelineEvent {
   month: string;
@@ -87,47 +99,7 @@ export default function PredictiveTimelinePage() {
               </div>
 
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={TIMELINE_DATA}>
-                    <defs>
-                      <linearGradient id="riskGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="month" stroke="#94a3b8" fontSize={12} />
-                    <YAxis stroke="#94a3b8" fontSize={12} domain={[0, 100]} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: "white", 
-                        border: "1px solid #e2e8f0",
-                        borderRadius: "12px",
-                        padding: "12px"
-                      }}
-                    />
-                    <ReferenceLine y={50} stroke="#f59e0b" strokeDasharray="5 5" label="Risk Threshold" />
-                    <ReferenceLine y={75} stroke="#f43f5e" strokeDasharray="5 5" label="Critical" />
-                    <Area 
-                      type="monotone" 
-                      dataKey="riskScore" 
-                      stroke="#f43f5e" 
-                      strokeWidth={3}
-                      fillOpacity={1} 
-                      fill="url(#riskGradient)" 
-                    />
-                    {showInterventions && (
-                      <Line 
-                        type="monotone" 
-                        dataKey="confidence" 
-                        stroke="#06b6d4" 
-                        strokeWidth={2}
-                        strokeDasharray="5 5"
-                        dot={false}
-                      />
-                    )}
-                  </AreaChart>
-                </ResponsiveContainer>
+                <PredictiveTimelineChart data={TIMELINE_DATA} showInterventions={showInterventions} />
               </div>
 
               {/* Legend */}

@@ -3,13 +3,19 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { SessionUser } from "@/types";
 import { FloatingNav } from "./FloatingNav";
 import { cn, initials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getRoleDisplayName } from "@/lib/auth/roles";
-import { AdvancedVoiceAssistant } from "@/components/ai/AdvancedVoiceAssistant";
+import dynamic from "next/dynamic";
+
+const AdvancedVoiceAssistant = dynamic(
+  () => import("@/components/ai/AdvancedVoiceAssistant").then(m => m.AdvancedVoiceAssistant),
+  { ssr: false }
+);
 import {
   Sparkles, Bell, Settings, LogOut, ChevronDown, ChevronRight,
   Mic, Brain, Users, FileText, Calendar, Stethoscope,
@@ -226,12 +232,12 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
                         AI Preferences
                       </button>
                       <div className="h-px bg-[#e2e8f0] my-1 mx-1" />
-                      <Link
-                        href="/api/auth/signout"
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] font-[600] text-[#dc2626] hover:bg-[#fef2f2] transition-colors w-full"
+                      <button
+                        onClick={() => signOut({ callbackUrl: "/login" })}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] font-[600] text-[#dc2626] hover:bg-[#fef2f2] transition-colors w-full text-left"
                       >
                         <LogOut className="h-4 w-4" /> Sign Out
-                      </Link>
+                      </button>
                     </div>
                   </>
                 )}
