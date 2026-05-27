@@ -63,9 +63,14 @@ export default withAuth(
     response.headers.set("X-Frame-Options", "DENY");
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    // NOTE: 'unsafe-eval' and 'unsafe-inline' are required for Next.js dev mode.
+    // In production you can harden this further.
+    const isDev = process.env.NODE_ENV === "development";
     response.headers.set(
       "Content-Security-Policy",
-      "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self';"
+      isDev
+        ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' ws: wss:;"
+        : "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self' data: https://fonts.gstatic.com;"
     );
 
     return response;
@@ -78,7 +83,12 @@ export default withAuth(
         if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
           return true;
         }
-        return !!token;
+        // Validate token exists AND has not expired
+        if (!token) return false;
+        const now = Math.floor(Date.now() / 1000);
+        if (token.exp && (token.exp as number) < now) return false;
+        // Must have a user id to be a real authenticated session
+        return !!(token.sub || (token as any).id);
       },
     },
   }
