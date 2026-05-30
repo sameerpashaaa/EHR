@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   Calendar,
@@ -15,35 +15,72 @@ import {
   ChevronRight,
   Check,
   Clock,
-  Menu,
-  Plus,
-  Star
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 
-// ─── ClientOnly Wrapper ─────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────
+interface DashboardData {
+  kpi: {
+    appointments:   { value: number; sub: string; trend: string };
+    totalPatients:  { value: number; sub: string; trend: string };
+    overallRooms:   { value: number | null; sub: string; trend: string };
+    doctorsOnDuty:  { value: number; sub: string; trend: string };
+    treatments:     { value: number; sub: string; trend: string };
+  };
+  riskAnalytics: { high: number; moderate: number; low: number; total: number };
+  encounterStats: { label: string; value: number; from: string; to: string }[];
+  summary: { totalScheduled: number; completed: number; missed: number };
+  recentAppointments: {
+    time: string; name: string; type: string;
+    status: "success" | "danger" | "info";
+    patientId: string; initial: string;
+  }[];
+  calendarDotMap: Record<string, number>;
+}
+
+// ─── Data fetching hook ──────────────────────────────────────────────────────
+function useDashboard() {
+  const [data, setData]       = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  const fetch_ = useCallback(async (bg = false) => {
+    try {
+      if (!bg) setLoading(true);
+      const res  = await fetch("/api/dashboard/metrics");
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed");
+      setData(json.data as DashboardData);
+      setLastUpdated(new Date());
+      setError(null);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      if (!bg) setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetch_(false); }, [fetch_]);
+  useEffect(() => {
+    const id = setInterval(() => fetch_(true), 60_000);
+    return () => clearInterval(id);
+  }, [fetch_]);
+
+  return { data, loading, error, lastUpdated, refresh: () => fetch_(false) };
+}
+
+// ─── ClientOnly Wrapper ──────────────────────────────────────────────────────
 function ClientOnly({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   return mounted ? <>{children}</> : <>{fallback}</>;
 }
 
-// ─── Reduced-motion hook ────────────────────────────────────────────────────
-function usePrefersReducedMotion() {
-  const [pref, setPref] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPref(mq.matches);
-    const handler = () => setPref(mq.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-  return pref;
-}
-
-// ─── Shared card style ─────────────────────────────────────────────────────
+// ─── Shared card style ────────────────────────────────────────────────────────
 const CARD_STYLE: React.CSSProperties = {
   background: "rgba(255,255,255,0.92)",
   border: "1px solid rgba(255,255,255,0.60)",
@@ -51,146 +88,191 @@ const CARD_STYLE: React.CSSProperties = {
   boxShadow: "0 4px 10px rgba(0,0,0,0.03), 0 10px 30px rgba(0,0,0,0.06)",
 };
 
-// ─── Top Header ─────────────────────────────────────────────────────────────
-function TopHeader() {
-  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+function Skeleton({ w = "100%", h = "16px" }: { w?: string; h?: string }) {
+  return (
+    <span
+      className="animate-pulse rounded-md bg-slate-100 block"
+      style={{ width: w, height: h }}
+    />
+  );
+}
 
-  const addRipple = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const id = Date.now();
-    setRipples(r => [...r, { id, x: e.clientX - rect.left, y: e.clientY - rect.top }]);
-    setTimeout(() => setRipples(r => r.filter(x => x.id !== id)), 600);
-  };
+// ─── Top Header ──────────────────────────────────────────────────────────────
+function TopHeader({ loading, lastUpdated, onRefresh }: {
+  loading: boolean; lastUpdated: Date | null; onRefresh: () => void;
+}) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const dateStr = now.toLocaleDateString("en-US", {
+    day: "2-digit", month: "short", year: "numeric",
+  });
 
   return (
-    <div className="flex items-center justify-between mb-[16px]">
-      <div
-        className="flex items-center gap-[8px] p-[8px] rounded-[8px]"
-        style={{ background: "rgba(255,255,255,0.85)", border: "0.5px solid rgba(0,0,0,0.08)", backdropFilter: "blur(8px)" }}
+    <div className="flex items-center justify-end gap-[8px] mb-[16px]">
+      {lastUpdated && (
+        <span style={{ fontSize: "11px", color: "#94a3b8" }}>
+          Updated {lastUpdated.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+        </span>
+      )}
+      <button
+        onClick={onRefresh}
+        className="p-[6px] rounded-[6px] hover:bg-white/80 transition-colors"
+        style={{ border: "0.5px solid rgba(0,0,0,0.08)" }}
+        title="Refresh dashboard"
       >
-        <Link href="/" className="flex items-center gap-[8px] px-[12px] py-[8px] rounded-[6px] bg-[#f8fafc] text-[12px] font-[500] text-[#0f172a] hover:bg-[#e2e8f0] transition-colors">
-          <Menu className="w-3.5 h-3.5" />
-          Dashboard
-          <Star className="w-3 h-3 text-[#f59e0b] fill-[#f59e0b]" />
-        </Link>
-      </div>
-      <div className="flex items-center gap-[12px]">
-        <Link
-          href="/schedule"
-          onMouseDown={addRipple}
-          className="relative overflow-hidden flex items-center gap-[8px] px-[12px] py-[8px] text-white text-[12px] font-[500] rounded-[8px] active:scale-95 transition-transform"
-          style={{
-            background: "linear-gradient(135deg,#1D9E75 0%,#16a34a 100%)",
-            boxShadow: "0 4px 12px rgba(29,158,117,0.30)",
-          }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 0 20px rgba(34,197,94,0.4),0 4px 12px rgba(29,158,117,0.30)"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 12px rgba(29,158,117,0.30)"; }}
-        >
-          {ripples.map(r => (
-            <span key={r.id} className="absolute rounded-full bg-white/30 animate-ping pointer-events-none"
-              style={{ left: r.x - 16, top: r.y - 16, width: 32, height: 32, animationDuration: "0.6s" }} />
-          ))}
-          <Plus className="w-3.5 h-3.5" />
-          Add new appointment
-        </Link>
-        <div
-          className="flex items-center gap-[8px] px-[12px] py-[8px] rounded-[8px] text-[12px] font-[500] text-[#94a3b8]"
-          style={{ background: "rgba(255,255,255,0.85)", border: "0.5px solid rgba(0,0,0,0.08)" }}
-        >
-          10 Feb, 2025
-          <Calendar className="w-3.5 h-3.5" />
-        </div>
+        <RefreshCw className={cn("w-3.5 h-3.5 text-[#94a3b8]", loading && "animate-spin")} />
+      </button>
+      <div
+        className="flex items-center gap-[8px] px-[12px] py-[8px] rounded-[8px] text-[12px] font-[500] text-[#94a3b8]"
+        style={{ background: "rgba(255,255,255,0.85)", border: "0.5px solid rgba(0,0,0,0.08)" }}
+      >
+        {dateStr}
+        <Calendar className="w-3.5 h-3.5" />
       </div>
     </div>
   );
 }
 
-// ─── KPI Cards ──────────────────────────────────────────────────────────────
-function KPICards() {
-  const kpis = [
-    { title: "Appointments",    value: 98,  icon: Calendar,    color: { bg: "bg-[#E1F5EE]", text: "text-[#0F6E56]" }, trend: "up",   sub: "↑ 80% annual · 34 new",    href: "/schedule"  },
-    { title: "Total patients",  value: 87,  icon: Users,       color: { bg: "bg-[#E6F1FB]", text: "text-[#185FA5]" }, trend: "down", sub: "↓ 12% annual · 29 new",    href: "/patients"  },
-    { title: "Overall rooms",   value: 112, icon: Building,    color: { bg: "bg-[#FAEEDA]", text: "text-[#854F0B]" }, trend: "flat", sub: "— 82 general · 30 private", href: "#"          },
-    { title: "Doctors on duty", value: 76,  icon: Stethoscope, color: { bg: "bg-[#EEEDFE]", text: "text-[#534AB7]" }, trend: "up",   sub: "↑ 72 available · 4 leave",  href: "#"          },
-    { title: "Treatments",      value: 64,  icon: Heart,       color: { bg: "bg-[#FBEAF0]", text: "text-[#993556]" }, trend: "up",   sub: "↑ 30 ops · 34 general",    href: "/prescribe"  },
+// ─── KPI Cards ────────────────────────────────────────────────────────────────
+function KPICards({ data, loading }: { data: DashboardData | null; loading: boolean }) {
+  const kpiDefs = [
+    {
+      key:   "appointments" as const,
+      title: "Appointments",
+      icon:  Calendar,
+      color: { bg: "bg-[#E1F5EE]", text: "text-[#0F6E56]" },
+      href:  "/schedule",
+    },
+    {
+      key:   "totalPatients" as const,
+      title: "Total patients",
+      icon:  Users,
+      color: { bg: "bg-[#E6F1FB]", text: "text-[#185FA5]" },
+      href:  "/patients",
+    },
+    {
+      key:   "overallRooms" as const,
+      title: "Overall rooms",
+      icon:  Building,
+      color: { bg: "bg-[#FAEEDA]", text: "text-[#854F0B]" },
+      href:  "#",
+    },
+    {
+      key:   "doctorsOnDuty" as const,
+      title: "Doctors on duty",
+      icon:  Stethoscope,
+      color: { bg: "bg-[#EEEDFE]", text: "text-[#534AB7]" },
+      href:  "#",
+    },
+    {
+      key:   "treatments" as const,
+      title: "Treatments",
+      icon:  Heart,
+      color: { bg: "bg-[#FBEAF0]", text: "text-[#993556]" },
+      href:  "/prescribe",
+    },
   ];
 
   return (
     <div className="grid grid-cols-5 gap-[16px] mb-[16px]">
-      {kpis.map((kpi, idx) => (
-        <motion.div
-          key={idx}
-          className="group"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: idx * 0.08 }}
-        >
-          <Link
-            href={kpi.href}
-            className="flex flex-col h-full"
-            style={{
-              ...CARD_STYLE,
-              padding: "16px",
-              display: "flex",
-              flexDirection: "column",
-              transition: "box-shadow 0.3s cubic-bezier(0.4,0,0.2,1), border-color 0.3s, transform 0.3s cubic-bezier(0.4,0,0.2,1)",
-            }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.boxShadow = "0 14px 40px rgba(0,0,0,0.10)";
-              el.style.borderColor = "rgba(34,197,94,0.25)";
-              el.style.transform = "translateY(-6px)";
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.boxShadow = CARD_STYLE.boxShadow as string;
-              el.style.borderColor = "rgba(255,255,255,0.60)";
-              el.style.transform = "translateY(0)";
-            }}
+      {kpiDefs.map((kpi, idx) => {
+        const metric = data?.kpi[kpi.key];
+        const value  = metric?.value ?? null;
+        const sub    = metric?.sub ?? "";
+        const trend  = metric?.trend ?? "flat";
+
+        return (
+          <motion.div
+            key={idx}
+            className="group"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: idx * 0.08 }}
           >
-            <div className="flex items-start justify-between mb-[12px]">
-              <div className="flex items-center gap-[12px]">
-                <div className={cn(
-                  "w-[32px] h-[32px] rounded-[6px] flex items-center justify-center",
-                  "group-hover:scale-[1.12] transition-transform duration-300",
-                  kpi.color.bg
-                )}>
-                  <kpi.icon className={cn("w-[16px] h-[16px]", kpi.color.text)} />
+            <Link
+              href={kpi.href}
+              className="flex flex-col h-full"
+              style={{
+                ...CARD_STYLE,
+                padding: "16px",
+                display: "flex",
+                flexDirection: "column",
+                transition: "box-shadow 0.3s cubic-bezier(0.4,0,0.2,1), border-color 0.3s, transform 0.3s cubic-bezier(0.4,0,0.2,1)",
+              }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.boxShadow = "0 14px 40px rgba(0,0,0,0.10)";
+                el.style.borderColor = "rgba(34,197,94,0.25)";
+                el.style.transform = "translateY(-6px)";
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.boxShadow = CARD_STYLE.boxShadow as string;
+                el.style.borderColor = "rgba(255,255,255,0.60)";
+                el.style.transform = "translateY(0)";
+              }}
+            >
+              <div className="flex items-start justify-between mb-[12px]">
+                <div className="flex items-center gap-[12px]">
+                  <div className={cn(
+                    "w-[32px] h-[32px] rounded-[6px] flex items-center justify-center",
+                    "group-hover:scale-[1.12] transition-transform duration-300",
+                    kpi.color.bg
+                  )}>
+                    <kpi.icon className={cn("w-[16px] h-[16px]", kpi.color.text)} />
+                  </div>
+                  <p style={{ fontSize: "14px", fontWeight: 500, color: "#475569" }}>{kpi.title}</p>
                 </div>
-                <p style={{ fontSize: "14px", fontWeight: 500, color: "#475569" }}>{kpi.title}</p>
+                {trend === "up"   && <ArrowUpRight   className="w-4 h-4 text-[#1D9E75]" />}
+                {trend === "down" && <ArrowDownRight className="w-4 h-4 text-[#E24B4A]" />}
+                {trend === "flat" && <Minus          className="w-4 h-4 text-[#94a3b8]" />}
               </div>
-              {kpi.trend === "up"   && <ArrowUpRight   className="w-4 h-4 text-[#1D9E75]" />}
-              {kpi.trend === "down" && <ArrowDownRight className="w-4 h-4 text-[#E24B4A]" />}
-              {kpi.trend === "flat" && <Minus          className="w-4 h-4 text-[#94a3b8]" />}
-            </div>
-            <div className="flex flex-col gap-[4px] mt-auto pt-[8px]">
-              <span style={{ fontSize: "38px", fontWeight: 700, color: "#0f172a", letterSpacing: "-0.5px", lineHeight: 1 }}>
-                <ClientOnly fallback={kpi.value}>
-                  <CountUp end={kpi.value} duration={1.8} />
-                </ClientOnly>
-              </span>
-              <span style={{ fontSize: "12px", color: "#94a3b8" }} className="truncate">{kpi.sub}</span>
-            </div>
-          </Link>
-        </motion.div>
-      ))}
+
+              <div className="flex flex-col gap-[4px] mt-auto pt-[8px]">
+                {loading ? (
+                  <Skeleton h="38px" w="60px" />
+                ) : value === null ? (
+                  <span style={{ fontSize: "28px", fontWeight: 700, color: "#cbd5e1", lineHeight: 1 }}>—</span>
+                ) : (
+                  <span style={{ fontSize: "38px", fontWeight: 700, color: "#0f172a", letterSpacing: "-0.5px", lineHeight: 1 }}>
+                    <ClientOnly fallback={value}>
+                      <CountUp end={value} duration={1.8} />
+                    </ClientOnly>
+                  </span>
+                )}
+                {loading ? (
+                  <Skeleton h="12px" w="80%" />
+                ) : (
+                  <span style={{ fontSize: "12px", color: "#94a3b8" }} className="truncate">{sub}</span>
+                )}
+              </div>
+            </Link>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
 
-// ─── Animated Donut Chart ────────────────────────────────────────────────────
-function AnimatedDonutChart() {
+// ─── Animated Donut Chart ─────────────────────────────────────────────────────
+function AnimatedDonutChart({ high, moderate, low, total }: {
+  high: number; moderate: number; low: number; total: number;
+}) {
   const [drawn, setDrawn] = useState(false);
   useEffect(() => { const t = setTimeout(() => setDrawn(true), 100); return () => clearTimeout(t); }, []);
 
   const radius = 45;
   const circ   = 2 * Math.PI * radius;
-  const total  = 115;
-  const lowPct = 78 / total;
-  const modPct = 25 / total;
+  const safeTotal = total || 1;
+  const lowPct = low      / safeTotal;
+  const modPct = moderate / safeTotal;
   const modOffset  = circ - (lowPct * circ);
   const highOffset = circ - ((lowPct + modPct) * circ);
-  const dur = "1.5s";
 
   return (
     <div className="relative w-[120px] h-[120px] flex-shrink-0">
@@ -199,41 +281,39 @@ function AnimatedDonutChart() {
           <linearGradient id="gLow"  x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#22c55e"/><stop offset="100%" stopColor="#4ade80"/></linearGradient>
           <linearGradient id="gHigh" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#ef4444"/><stop offset="100%" stopColor="#f87171"/></linearGradient>
         </defs>
-        {/* Track */}
         <circle cx="60" cy="60" r={radius} fill="none" stroke="#F0F0EE" strokeWidth="12" />
-        {/* Low risk – green */}
-        <circle cx="60" cy="60" r={radius} fill="none" stroke="url(#gLow)"  strokeWidth="12"
+        <circle cx="60" cy="60" r={radius} fill="none" stroke="url(#gLow)" strokeWidth="12"
           strokeDasharray={circ} strokeDashoffset={drawn ? 0 : circ}
-          style={{ transition: `stroke-dashoffset ${dur} ease-out` }} />
-        {/* Moderate risk – blue */}
+          style={{ transition: "stroke-dashoffset 1.5s ease-out" }} />
         <circle cx="60" cy="60" r={radius} fill="none" stroke="#378ADD" strokeWidth="12"
           strokeDasharray={circ} strokeDashoffset={drawn ? modOffset : circ}
-          style={{ transition: `stroke-dashoffset ${dur} ease-out 0.2s` }} />
-        {/* High risk – red with pulse */}
+          style={{ transition: "stroke-dashoffset 1.5s ease-out 0.2s" }} />
         <circle cx="60" cy="60" r={radius} fill="none" stroke="url(#gHigh)" strokeWidth="12"
           strokeDasharray={circ} strokeDashoffset={drawn ? highOffset : circ}
-          style={{ transition: `stroke-dashoffset ${dur} ease-out 0.4s` }} />
+          style={{ transition: "stroke-dashoffset 1.5s ease-out 0.4s" }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
         <span style={{ fontSize: "9px", color: "#94a3b8", lineHeight: 1, marginBottom: "2px" }}>patients</span>
-        <span style={{ fontSize: "14px", fontWeight: 700, color: "#0f172a", lineHeight: 1 }}>115</span>
+        <span style={{ fontSize: "14px", fontWeight: 700, color: "#0f172a", lineHeight: 1 }}>{total}</span>
       </div>
     </div>
   );
 }
 
-// ─── Patient Risk Analytics ──────────────────────────────────────────────────
-function PatientRiskAnalytics() {
+// ─── Patient Risk Analytics ────────────────────────────────────────────────────
+function PatientRiskAnalytics({ data, loading }: { data: DashboardData | null; loading: boolean }) {
+  const risk = data?.riskAnalytics ?? { high: 0, moderate: 0, low: 0, total: 0 };
+
   const rows = [
-    { label: "High risk",     count: 12, color: "#E24B4A", badge: "↑ 3%",  badgeBg: "#FAECE7", badgeText: "#993C1D" },
-    { label: "Moderate risk", count: 25, color: "#378ADD", badge: "↓ 2",   badgeBg: "#E1F5EE", badgeText: "#0F6E56" },
-    { label: "Low risk",      count: 78, color: "#1D9E75", badge: "↑ 87%", badgeBg: "#E1F5EE", badgeText: "#0F6E56" },
+    { label: "High risk",     count: risk.high,     color: "#E24B4A", badge: "Predictive", badgeBg: "#FAECE7", badgeText: "#993C1D" },
+    { label: "Moderate risk", count: risk.moderate, color: "#378ADD", badge: "Predictive", badgeBg: "#E1F5EE", badgeText: "#0F6E56" },
+    { label: "Low risk",      count: risk.low,      color: "#1D9E75", badge: "Predictive", badgeBg: "#E1F5EE", badgeText: "#0F6E56" },
   ];
 
   const insights = [
-    { text: "Sepsis risk detected in 3 patients",  accent: "#ef4444", bg: "rgba(239,68,68,0.06)"  },
-    { text: "Chronic disease alert for 7 patients", accent: "#f97316", bg: "rgba(249,115,22,0.06)" },
-    { text: "Model confidence: 92%",                accent: "#22c55e", bg: "rgba(34,197,94,0.06)"  },
+    { text: `${risk.high} patient${risk.high !== 1 ? "s" : ""} flagged high risk`,     accent: "#ef4444", bg: "rgba(239,68,68,0.06)"  },
+    { text: `${risk.moderate} patient${risk.moderate !== 1 ? "s" : ""} moderate risk`, accent: "#f97316", bg: "rgba(249,115,22,0.06)" },
+    { text: `${risk.low} patient${risk.low !== 1 ? "s" : ""} low risk`,               accent: "#22c55e", bg: "rgba(34,197,94,0.06)"  },
   ];
 
   return (
@@ -246,12 +326,14 @@ function PatientRiskAnalytics() {
     >
       <div className="mb-[16px]">
         <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#0f172a", margin: 0 }}>Patient risk analytics</h2>
-        <p style={{ fontSize: "13px", color: "#94a3b8", margin: 0 }}>Identifies high-risk patients based on predictive analytics</p>
+        <p style={{ fontSize: "13px", color: "#94a3b8", margin: 0 }}>Derived from active clinical conditions</p>
       </div>
 
       <div className="flex items-center gap-[20px] mb-[16px] flex-1">
         <div className="flex-1 flex flex-col">
-          {rows.map((row, i) => (
+          {loading
+            ? [0,1,2].map(i => <div key={i} className="py-[8px]"><Skeleton h="24px" /></div>)
+            : rows.map((row, i) => (
             <div key={i} className="flex items-center justify-between py-[8px]"
               style={{ borderBottom: i < 2 ? "0.5px solid rgba(0,0,0,0.08)" : "none" }}>
               <div className="flex items-center gap-[8px]">
@@ -266,31 +348,33 @@ function PatientRiskAnalytics() {
             </div>
           ))}
         </div>
-        <AnimatedDonutChart />
+        {!loading && (
+          <AnimatedDonutChart
+            high={risk.high}
+            moderate={risk.moderate}
+            low={risk.low}
+            total={risk.total}
+          />
+        )}
       </div>
 
-      {/* AI Insights */}
       <div style={{ background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.15)", borderRadius: "16px", padding: "12px 14px" }}>
         <div className="flex items-center gap-2 mb-[8px]">
           <span className="text-[10px] font-[500] px-[8px] py-[2px] rounded-full"
             style={{ background: "#E6F1FB", color: "#185FA5" }}>
-            AI insights
+            Risk summary
           </span>
           <span className="w-[7px] h-[7px] rounded-full animate-pulse" style={{ background: "#22c55e" }} />
         </div>
         <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
-          {insights.map((ins, i) => (
-            <li
-              key={i}
-              style={{
-                fontSize: "12px",
-                color: "#475569",
-                background: ins.bg,
-                padding: "4px 8px",
-                borderRadius: "4px",
-                borderLeft: `3px solid ${ins.accent}`,
-              }}
-            >
+          {loading
+            ? [0,1,2].map(i => <li key={i}><Skeleton h="22px" /></li>)
+            : insights.map((ins, i) => (
+            <li key={i} style={{
+              fontSize: "12px", color: "#475569",
+              background: ins.bg, padding: "4px 8px",
+              borderRadius: "4px", borderLeft: `3px solid ${ins.accent}`,
+            }}>
               {ins.text}
             </li>
           ))}
@@ -300,21 +384,13 @@ function PatientRiskAnalytics() {
   );
 }
 
-// ─── Patients Statistics ─────────────────────────────────────────────────────
-function PatientsStatistics() {
+// ─── Patients Statistics ──────────────────────────────────────────────────────
+function PatientsStatistics({ data, loading }: { data: DashboardData | null; loading: boolean }) {
   const [grown, setGrown] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setGrown(true), 100);
-    return () => clearTimeout(t);
-  }, []);
+  useEffect(() => { const t = setTimeout(() => setGrown(true), 100); return () => clearTimeout(t); }, []);
 
-  const stats = [
-    { label: "Emergency patient", value: 56, from: "#dc2626", to: "#f87171" },
-    { label: "Routine check-up",  value: 45, from: "#4338ca", to: "#818cf8" },
-    { label: "Appointment",       value: 34, from: "#059669", to: "#34d399" },
-    { label: "Physical therapy",  value: 20, from: "#b45309", to: "#fbbf24" },
-    { label: "Therapy session",   value: 16, from: "#1e40af", to: "#60a5fa" },
-  ];
+  const stats = data?.encounterStats ?? [];
+  const summary = data?.summary ?? { totalScheduled: 0, completed: 0, missed: 0 };
 
   return (
     <motion.div
@@ -326,17 +402,23 @@ function PatientsStatistics() {
     >
       <div className="mb-[20px]">
         <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#0f172a", margin: 0 }}>Patients statistics</h2>
-        <p style={{ fontSize: "13px", color: "#94a3b8", margin: 0 }}>Figuring out stats for better health choices</p>
+        <p style={{ fontSize: "13px", color: "#94a3b8", margin: 0 }}>Encounter type distribution from database</p>
       </div>
 
       <div className="flex-1 flex items-end gap-[16px] px-[16px] pb-[16px]">
-        {stats.map((stat, i) => (
+        {loading
+          ? [0,1,2,3,4].map(i => (
+            <div key={i} className="flex-1 flex flex-col items-center justify-end h-[200px]">
+              <Skeleton h="60%" w="100%" />
+            </div>
+          ))
+          : stats.map((stat, i) => (
           <div key={i} className="flex-1 flex flex-col items-center justify-end h-[200px] group cursor-pointer">
             <span style={{ fontSize: "12px", fontWeight: 500, color: "#0f172a", marginBottom: "8px" }}>{stat.value}%</span>
             <div
               className="w-full"
               style={{
-                height: grown ? `${stat.value}%` : "0%",
+                height: grown ? `${Math.max(stat.value, 4)}%` : "0%",
                 background: `linear-gradient(to top, ${stat.from}, ${stat.to})`,
                 borderRadius: "10px 10px 0 0",
                 transition: `height 1s cubic-bezier(0.4,0,0.2,1) ${i * 0.1}s`,
@@ -355,43 +437,48 @@ function PatientsStatistics() {
 
       <div className="flex items-center justify-between px-[16px] pt-[16px] mt-[16px]"
         style={{ borderTop: "0.5px solid rgba(0,0,0,0.08)" }}>
-        <div className="flex flex-col">
-          <span style={{ fontSize: "11px", color: "#94a3b8", marginBottom: "4px" }}>Total scheduled</span>
-          <span style={{ fontSize: "18px", fontWeight: 500, color: "#0f172a" }}>
-            <ClientOnly fallback="1,025">
-              <CountUp end={1025} duration={1.8} separator="," />
-            </ClientOnly>
-          </span>
-        </div>
-        <div className="flex flex-col">
-          <span style={{ fontSize: "11px", color: "#94a3b8", marginBottom: "4px" }}>Completed</span>
-          <span style={{ fontSize: "18px", fontWeight: 500, color: "#22c55e" }}>
-            <ClientOnly fallback="780">
-              <CountUp end={780} duration={1.8} separator="," />
-            </ClientOnly>
-          </span>
-        </div>
-        <div className="flex flex-col">
-          <span style={{ fontSize: "11px", color: "#94a3b8", marginBottom: "4px" }}>Missed</span>
-          <span style={{ fontSize: "18px", fontWeight: 500, color: "#ef4444" }}>
-            <ClientOnly fallback="245">
-              <CountUp end={245} duration={1.8} separator="," />
-            </ClientOnly>
-          </span>
-        </div>
+        {loading ? (
+          <>
+            <Skeleton w="80px" h="32px" />
+            <Skeleton w="80px" h="32px" />
+            <Skeleton w="80px" h="32px" />
+          </>
+        ) : (
+          <>
+            <div className="flex flex-col">
+              <span style={{ fontSize: "11px", color: "#94a3b8", marginBottom: "4px" }}>Total scheduled</span>
+              <span style={{ fontSize: "18px", fontWeight: 500, color: "#0f172a" }}>
+                <ClientOnly fallback={summary.totalScheduled}>
+                  <CountUp end={summary.totalScheduled} duration={1.8} separator="," />
+                </ClientOnly>
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span style={{ fontSize: "11px", color: "#94a3b8", marginBottom: "4px" }}>Completed</span>
+              <span style={{ fontSize: "18px", fontWeight: 500, color: "#22c55e" }}>
+                <ClientOnly fallback={summary.completed}>
+                  <CountUp end={summary.completed} duration={1.8} separator="," />
+                </ClientOnly>
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span style={{ fontSize: "11px", color: "#94a3b8", marginBottom: "4px" }}>Missed</span>
+              <span style={{ fontSize: "18px", fontWeight: 500, color: "#ef4444" }}>
+                <ClientOnly fallback={summary.missed}>
+                  <CountUp end={summary.missed} duration={1.8} separator="," />
+                </ClientOnly>
+              </span>
+            </div>
+          </>
+        )}
       </div>
     </motion.div>
   );
 }
 
-// ─── Appointment Overview ───────────────────────────────────────────────────
-function AppointmentOverview() {
-  const appointments = [
-    { time: "7:26 AM",  name: "Jordan Rivers", type: "Migraine",           status: "success", color: "#1D9E75", initial: "J" },
-    { time: "1:12 PM",  name: "Taylor Green",  type: "Throbbing Pain",     status: "danger",  color: "#E24B4A", initial: "T" },
-    { time: "6:11 PM",  name: "Casey Blue",    type: "Pounding Sensation", status: "info",    color: "#185FA5", initial: "C" },
-    { time: "2:31 PM",  name: "Morgan Sky",    type: "Tension Ache",       status: "info",    color: "#185FA5", initial: "M" },
-  ];
+// ─── Appointment Overview ─────────────────────────────────────────────────────
+function AppointmentOverview({ data, loading }: { data: DashboardData | null; loading: boolean }) {
+  const appointments = data?.recentAppointments ?? [];
 
   return (
     <motion.div
@@ -404,16 +491,26 @@ function AppointmentOverview() {
       <div className="flex items-center justify-between mb-[16px]">
         <div>
           <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#0f172a", margin: 0 }}>Appointment overview</h2>
-          <p style={{ fontSize: "13px", color: "#94a3b8", margin: 0 }}>Smart health appointment schedule</p>
+          <p style={{ fontSize: "13px", color: "#94a3b8", margin: 0 }}>Recent encounters from database</p>
         </div>
         <ArrowUpRight className="w-4 h-4 text-[#94a3b8]" />
       </div>
+
       <div className="space-y-[4px] flex-1">
-        {appointments.map((apt, i) => (
-          <Link href="/patients/P-2024-001" key={i}
-            className="flex items-center gap-[12px] hover:bg-[#f8fafc] p-[12px] -mx-[12px] rounded-[12px] transition-colors group">
+        {loading
+          ? [0,1,2,3].map(i => <div key={i} className="p-[12px]"><Skeleton h="40px" /></div>)
+          : appointments.length === 0
+            ? <p style={{ fontSize: "13px", color: "#94a3b8", textAlign: "center", padding: "24px 0" }}>No recent encounters</p>
+            : appointments.map((apt, i) => (
+          <Link
+            href={`/patients/${apt.patientId}`}
+            key={i}
+            className="flex items-center gap-[12px] hover:bg-[#f8fafc] p-[12px] -mx-[12px] rounded-[12px] transition-colors group"
+          >
             <span style={{ fontSize: "11px", fontWeight: 500, color: "#94a3b8", width: "50px" }}>{apt.time}</span>
-            <div className="w-[8px] h-[8px] rounded-full" style={{ backgroundColor: apt.color }} />
+            <div className="w-[8px] h-[8px] rounded-full" style={{
+              backgroundColor: apt.status === "success" ? "#1D9E75" : apt.status === "danger" ? "#E24B4A" : "#185FA5"
+            }} />
             <div className="w-[32px] h-[32px] rounded-full bg-[#f1f5f9] flex items-center justify-center flex-shrink-0"
               style={{ fontSize: "12px", fontWeight: 500, color: "#64748b" }}>
               {apt.initial}
@@ -436,10 +533,40 @@ function AppointmentOverview() {
   );
 }
 
-// ─── Appointment Calendar ────────────────────────────────────────────────────
-function AppointmentCalendar() {
-  const days  = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
-  const dates = Array.from({ length: 35 }, (_, i) => i - 4);
+// ─── Appointment Calendar ─────────────────────────────────────────────────────
+function AppointmentCalendar({ data, loading }: { data: DashboardData | null; loading: boolean }) {
+  const [viewDate, setViewDate] = useState(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  });
+
+  const year    = viewDate.getFullYear();
+  const month   = viewDate.getMonth();
+  const today   = new Date();
+  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+  const monthLabel = viewDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+
+  // Build calendar grid
+  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+  const offset   = firstDay === 0 ? 6 : firstDay - 1; // Mon-based offset
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrev  = new Date(year, month, 0).getDate();
+  const cells = Array.from({ length: 35 }, (_, i) => {
+    const dayNum = i - offset + 1;
+    if (dayNum < 1)              return { day: daysInPrev + dayNum,    current: false };
+    if (dayNum > daysInMonth)    return { day: dayNum - daysInMonth,   current: false };
+    return { day: dayNum, current: true };
+  });
+
+  const dotMap = data?.calendarDotMap ?? {};
+  function hasDot(day: number): boolean {
+    const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    return !!dotMap[key];
+  }
+
+  const DOT_COLORS = ["#E24B4A", "#185FA5", "#534AB7", "#BA7517"];
 
   return (
     <motion.div
@@ -454,29 +581,35 @@ function AppointmentCalendar() {
           <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#0f172a", margin: 0 }}>Appointment calendar</h2>
           <p style={{ fontSize: "13px", color: "#94a3b8", margin: 0 }}>Schedule your health appointments with ease</p>
         </div>
-        <button className="p-[4px] rounded-[6px] hover:bg-[#f8fafc] border-[0.5px] border-[rgba(0,0,0,0.08)]">
-          <span className="w-4 h-4 flex items-center justify-center text-[#94a3b8]">⤢</span>
-        </button>
       </div>
 
       <div className="flex items-center justify-center gap-[16px] mb-[16px]">
-        <button className="p-1 text-[#94a3b8] hover:text-[#0f172a] transition-colors"><ChevronLeft className="w-4 h-4" /></button>
-        <span style={{ fontSize: "13px", fontWeight: 500, color: "#0f172a" }}>February 2025</span>
-        <button className="p-1 text-[#94a3b8] hover:text-[#0f172a] transition-colors"><ChevronRight className="w-4 h-4" /></button>
+        <button
+          className="p-1 text-[#94a3b8] hover:text-[#0f172a] transition-colors"
+          onClick={() => setViewDate(new Date(year, month - 1, 1))}
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        <span style={{ fontSize: "13px", fontWeight: 500, color: "#0f172a" }}>{monthLabel}</span>
+        <button
+          className="p-1 text-[#94a3b8] hover:text-[#0f172a] transition-colors"
+          onClick={() => setViewDate(new Date(year, month + 1, 1))}
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
 
       <div className="grid grid-cols-7 gap-y-[16px] gap-x-[8px] text-center flex-1">
         {days.map(d => (
           <div key={d} style={{ fontSize: "10px", fontWeight: 500, color: "#94a3b8", marginBottom: "8px" }}>{d}</div>
         ))}
-        {dates.map((date, i) => {
-          const isCurrentMonth = date > 0 && date <= 28;
-          const isToday        = date === 18;
-          const display        = date > 0 && date <= 28 ? date : date <= 0 ? 31 + date : date - 28;
+        {cells.map((cell, i) => {
+          const isToday = cell.current && isCurrentMonth && cell.day === today.getDate();
+          const dot     = cell.current && hasDot(cell.day);
           return (
             <div key={i} className={cn(
               "relative flex flex-col items-center pt-[4px] rounded-[6px] hover:bg-[#f8fafc] transition-colors cursor-pointer min-h-[40px]",
-              !isCurrentMonth && "opacity-40"
+              !cell.current && "opacity-40"
             )}>
               <span
                 className="w-[24px] h-[24px] flex items-center justify-center rounded-full"
@@ -486,10 +619,12 @@ function AppointmentCalendar() {
                   color: isToday ? "#fff" : "#0f172a",
                   boxShadow: isToday ? "0 2px 8px rgba(29,158,117,0.30)" : "none",
                 }}
-              >{display}</span>
-              {date === 4  && <div className="mt-[4px] flex gap-[2px]"><span className="w-[6px] h-[6px] rounded-full bg-[#E24B4A]" /></div>}
-              {date === 11 && <div className="mt-[4px] flex gap-[2px]"><span className="w-[6px] h-[6px] rounded-full bg-[#185FA5]" /></div>}
-              {date === 13 && <div className="mt-[4px] flex gap-[2px]"><span className="w-[6px] h-[6px] rounded-full bg-[#534AB7]" /><span className="w-[6px] h-[6px] rounded-full bg-[#BA7517]" /></div>}
+              >{cell.day}</span>
+              {dot && (
+                <div className="mt-[4px] flex gap-[2px]">
+                  <span className="w-[6px] h-[6px] rounded-full" style={{ backgroundColor: DOT_COLORS[i % DOT_COLORS.length] }} />
+                </div>
+              )}
             </div>
           );
         })}
@@ -498,7 +633,7 @@ function AppointmentCalendar() {
   );
 }
 
-// ─── Date Legends ────────────────────────────────────────────────────────────
+// ─── Date Legends ─────────────────────────────────────────────────────────────
 function DateLegends() {
   const legends = [
     { color: "#E24B4A", label: "Emergency patient meet"    },
@@ -555,7 +690,10 @@ function DateLegends() {
   );
 }
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
+  const { data, loading, error, lastUpdated, refresh } = useDashboard();
+
   return (
     <div
       className="min-h-screen p-[20px] relative overflow-hidden"
@@ -582,17 +720,24 @@ export default function DashboardPage() {
       />
 
       <div className="max-w-[1400px] mx-auto w-full relative z-10">
-        <TopHeader />
-        <KPICards />
+        <TopHeader loading={loading} lastUpdated={lastUpdated} onRefresh={refresh} />
+
+        {error && (
+          <div className="mb-4 px-4 py-3 rounded-lg text-sm text-red-700 bg-red-50 border border-red-200">
+            ⚠️ Dashboard data unavailable: {error}
+          </div>
+        )}
+
+        <KPICards data={data} loading={loading} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-[16px] mb-[16px] items-stretch">
-          <div className="col-span-1 flex flex-col"><PatientRiskAnalytics /></div>
-          <div className="col-span-1 lg:col-span-2 flex flex-col"><PatientsStatistics /></div>
+          <div className="col-span-1 flex flex-col"><PatientRiskAnalytics data={data} loading={loading} /></div>
+          <div className="col-span-1 lg:col-span-2 flex flex-col"><PatientsStatistics data={data} loading={loading} /></div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.8fr_200px] xl:grid-cols-[280px_1fr_220px] gap-[16px] pb-[32px] items-stretch">
-          <div className="flex flex-col"><AppointmentOverview /></div>
-          <div className="flex flex-col"><AppointmentCalendar /></div>
+          <div className="flex flex-col"><AppointmentOverview data={data} loading={loading} /></div>
+          <div className="flex flex-col"><AppointmentCalendar data={data} loading={loading} /></div>
           <div className="flex flex-col"><DateLegends /></div>
         </div>
       </div>
