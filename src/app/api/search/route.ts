@@ -59,7 +59,7 @@ export async function GET(request: Request) {
       { type: "page", title: "Schedule", subtitle: "Appointment management", iconName: "Calendar", href: "/schedule" },
       { type: "page", title: "Prescribe", subtitle: "Medications & prescriptions", iconName: "ClipboardList", href: "/prescribe" },
       { type: "page", title: "Transcript", subtitle: "Clinical notes & AI scribe", iconName: "FileText", href: "/transcript" },
-      { type: "page", title: "Patients Hub", subtitle: "Patient registry and intake", iconName: "Users", href: "/patients" },
+      { type: "page", title: "Centralized Patient Dashboard", subtitle: "Patient registry and intake", iconName: "Users", href: "/patients" },
       { type: "page", title: "Predictive Timeline", subtitle: "AI health forecasting", iconName: "TrendingUp", href: "/predictive-timeline" },
       { type: "page", title: "WhatsApp Sync", subtitle: "Triage remote patients", iconName: "MessageCircle", href: "/whatsapp-sync" },
       { type: "page", title: "Settings", subtitle: "System configurations", iconName: "Settings", href: "/admin" },

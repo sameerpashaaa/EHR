@@ -29,7 +29,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   const router = useRouter();
-  const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
 

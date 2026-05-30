@@ -1,301 +1,377 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { usePatients } from "@/hooks/usePatients";
-import { formatAge, formatDate } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
 import {
-  Search,
-  Plus,
-  Phone,
-  MessageCircle,
-  MapPin,
-  Sparkles,
-  ShieldCheck,
-  Activity,
-  UserPlus,
-  Loader2,
-  Calendar,
-  ChevronRight,
-  Stethoscope,
-  Mic,
-  QrCode
+  Search, Plus, Bell, ChevronDown, MoreVertical,
+  ChevronLeft, ChevronRight, User, Pencil, Trash2, Eye
 } from "lucide-react";
+import { MOCK_PATIENTS } from "@/data/mockPatients";
+import { cn } from "@/lib/utils";
 
-export default function PatientsDashboard() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isAiSearching, setIsAiSearching] = useState(false);
+const TOTAL_PAGES = 10;
 
-  // In a real app, this hook would fetch data based on the query.
-  // We're adapting the returned data to mirror Indian Standards visually.
-  const { data, isLoading } = usePatients({
-    query: searchQuery,
-    page: 1,
-    limit: 20,
-    sortBy: "lastName",
-    sortOrder: "asc",
-  });
+type SortKey = "name" | "age" | "lastVisit" | "gender";
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "name",      label: "Name (A → Z)" },
+  { key: "age",       label: "Age (oldest first)" },
+  { key: "lastVisit", label: "Last Visit" },
+  { key: "gender",    label: "Gender" },
+];
 
-  const rawPatients = data?.data || [];
-  
-  // Transform standard mock data to Indian standards for demonstration of the "Premium Feature"
-  const enhancedPatients = rawPatients.map((p: any, index: number) => ({
-    ...p,
-    fullName: `${p.firstName} ${p.lastName}`,
-    phone: `+91 98${Math.floor(10000000 + Math.random() * 90000000)}`, // Generate fake +91 numbers
-    abhaId: `${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`,
-    location: ["Banjara Hills, Hyderabad", "Andheri West, Mumbai", "Koramangala, Bengaluru", "Cyber City, Gurugram"][index % 4],
-    language: ["English, Telugu", "English, Hindi", "Hindi, Marathi", "English, Tamil"][index % 4],
-    bloodType: ["O+", "A+", "B+", "AB-"][index % 4],
-    lastVisit: ["Today, 10:30 AM", "Yesterday", "2 Days Ago", "Last Week"][index % 4],
-    urgentAlert: index === 0 ? "Diabetic (Type 2)" : index === 2 ? "Penicillin Allergy" : null,
-  }));
+function calculateAge(dob: string): number {
+  const birth = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
 
-  const handleAiSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery) return;
-    setIsAiSearching(true);
-    // Simulate AI parsing delay
-    setTimeout(() => setIsAiSearching(false), 1200);
-  };
+// Row action menu
+function RowMenu({ patientId }: { patientId: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   return (
-    <div className="space-y-8 pb-10">
-      
-      {/* ─── Hero & AI Search ────────────────────────────────────────────────── */}
-      <div 
-        className="relative overflow-hidden rounded-3xl p-8 text-white mt-2"
-        style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
+    <div className="relative" ref={ref}>
+      <button
+        onClick={(e) => { e.stopPropagation(); setOpen(o => !o); }}
+        className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors opacity-0 group-hover:opacity-100"
       >
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)", backgroundSize: "32px 32px" }} />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-violet-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
-
-        <div className="relative z-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-            <div>
-              <h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
-                Patient Intelligence Hub
-                <Badge className="bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 border-0">LIVE</Badge>
-              </h1>
-              <p className="text-slate-400 mt-1">Manage patient demographics, ABHA records, and smart intake modalities.</p>
-            </div>
-          </div>
-
-          {/* AI Search Bar */}
-          <form onSubmit={handleAiSearch} className="relative max-w-3xl group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
-            <div className="relative flex items-center bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden p-1 shadow-2xl">
-              <div className="pl-4 pr-3 flex items-center justify-center">
-                {isAiSearching ? (
-                  <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
-                ) : (
-                  <Sparkles className="w-5 h-5 text-cyan-400" />
-                )}
-              </div>
-              <input
-                type="text"
-                placeholder="Ask Metta AI... (e.g. 'Show me all active diabetic patients in Hyderabad')"
-                className="flex-1 bg-transparent border-0 text-white placeholder-slate-400 focus:ring-0 text-base py-3 outline-none"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button 
-                type="submit"
-                className="bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all mr-1 flex items-center gap-2"
-              >
-                Intelligent Search
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      {/* ─── Multi-modal Intake Action Bar ───────────────────────────────────── */}
-      <div>
-        <h2 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4 px-1">Quick Intake Modalities</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          
-          {/* WhatsApp Sync */}
-          <Link href="/whatsapp-sync" className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer flex flex-col justify-between block">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-bl-full -z-10 group-hover:bg-emerald-500/10 transition-colors" />
-            <div>
-              <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
-                <MessageCircle className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-800">WhatsApp Triage</h3>
-              <p className="text-sm text-slate-500 mt-1">Sync medical history & records sent by patient via WhatsApp (+91).</p>
-            </div>
-            <div className="mt-5 flex items-center gap-2 text-emerald-600 text-sm font-semibold group-hover:translate-x-1 transition-transform">
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-100 text-[10px]">3</span>
-              Pending Syncs <ChevronRight className="w-4 h-4" />
-            </div>
-          </Link>
-
-          {/* Voice Consultation Route */}
-          <Link href="/voice" className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-cyan-300 transition-all cursor-pointer flex flex-col justify-between block">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-bl-full -z-10 group-hover:bg-cyan-500/10 transition-colors" />
-            <div>
-              <div className="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-xl flex items-center justify-center mb-4">
-                <Mic className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-800">Live Voice Consult</h3>
-              <p className="text-sm text-slate-500 mt-1">Start a trilingual audio assessment. AI auto-extracts symptoms inline.</p>
-            </div>
-            <div className="mt-5 flex items-center text-cyan-600 text-sm font-semibold group-hover:translate-x-1 transition-transform">
-              Launch Voice Hub <ChevronRight className="w-4 h-4 ml-1" />
-            </div>
-          </Link>
-
-          {/* Manual Registration */}
-          <Link href="/patients/new" className="group relative overflow-hidden rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-violet-300 transition-all cursor-pointer flex flex-col justify-between block"
-            style={{ background: "linear-gradient(to bottom right, #ffffff, #f8fafc)" }}
+        <MoreVertical className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -4 }}
+            transition={{ duration: 0.12 }}
+            className="absolute right-0 top-8 z-50 bg-white border border-slate-200 rounded-xl shadow-lg py-1 w-44"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/5 rounded-bl-full -z-10 group-hover:bg-violet-500/10 transition-colors" />
-            <div>
-              <div className="w-12 h-12 bg-violet-100 text-violet-600 rounded-xl flex items-center justify-center mb-4">
-                <UserPlus className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-800">Walk-in Registry</h3>
-              <p className="text-sm text-slate-500 mt-1">Register walk-in patients manually. Requires active +91 mobile number.</p>
-            </div>
-            <div className="mt-5 flex items-center text-violet-600 text-sm font-semibold group-hover:translate-x-1 transition-transform">
-              Register New Patient <ChevronRight className="w-4 h-4 ml-1" />
-            </div>
-          </Link>
-
-        </div>
-      </div>
-
-      {/* ─── Premium Patient Database ────────────────────────────────────────── */}
-      <div>
-        <div className="flex items-center justify-between mb-4 px-1">
-          <h2 className="text-sm font-bold text-slate-500 uppercase tracking-widest">Active Patient Directory</h2>
-          <span className="text-xs font-semibold text-slate-400 border border-slate-200 px-3 py-1 rounded-full bg-white">
-            {enhancedPatients.length} Records Found
-          </span>
-        </div>
-
-        {isLoading ? (
-          <div className="flex h-64 items-center justify-center rounded-3xl border border-slate-200 bg-white shadow-sm">
-            <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
-          </div>
-        ) : enhancedPatients.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-16 rounded-3xl border border-slate-200 bg-white shadow-sm text-center">
-            <Search className="h-12 w-12 text-slate-300 mb-4" />
-            <h3 className="text-lg font-bold text-slate-800">No Patient Records Found</h3>
-            <p className="text-slate-500 mt-2">Adjust your AI search criteria or register a new patient via mobile number.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <AnimatePresence>
-              {enhancedPatients.map((patient: any, i: number) => (
-                <motion.div
-                  key={patient.id || i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="group bg-white rounded-3xl border border-slate-200 p-5 hover:shadow-xl hover:border-cyan-200 transition-all"
-                >
-                  <div className="flex flex-col sm:flex-row gap-5">
-                    {/* Avatar & Basics */}
-                    <div className="flex items-start gap-4">
-                      <Avatar className="h-16 w-16 shadow-md border-2 border-white rounded-2xl flex-shrink-0">
-                        <AvatarImage src={patient.photoUrl} alt={patient.firstName} className="object-cover" />
-                        <AvatarFallback className="bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 font-bold text-xl rounded-2xl">
-                          {patient.firstName?.[0]}{patient.lastName?.[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <Link href={`/patients/${patient.id}`} className="hover:opacity-80 transition-opacity">
-                          <h3 className="text-lg font-black text-slate-900 leading-tight">
-                            {patient.fullName} <span className="text-sm text-slate-500 font-medium ml-1">({formatAge(patient.dateOfBirth)})</span>
-                          </h3>
-                        </Link>
-                        
-                        {/* Indian Standard Primary Anchor: Mobile Number */}
-                        <div className="flex items-center gap-1.5 mt-1">
-                          <Phone className="w-3.5 h-3.5 text-emerald-500" />
-                          <span className="text-sm font-bold text-slate-700 tracking-wide">{patient.phone}</span>
-                          <ShieldCheck className="w-3.5 h-3.5 text-blue-500 ml-1" />
-                        </div>
-                        
-                        {/* ABHA ID */}
-                        <div className="flex items-center gap-1.5 mt-1.5 bg-slate-50 w-fit px-2 py-0.5 rounded text-xs border border-slate-100">
-                          <QrCode className="w-3 h-3 text-slate-400" />
-                          <span className="font-mono text-slate-600">ABHA: {patient.abhaId}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="hidden sm:block w-px bg-slate-100" /> {/* Divider */}
-
-                    {/* Clinical Meta & Actions */}
-                    <div className="flex-1 flex flex-col justify-between">
-                      <div className="grid grid-cols-2 gap-y-2 gap-x-4">
-                        <div className="flex items-start gap-2">
-                          <MapPin className="w-4 h-4 text-slate-400 mt-0.5" />
-                          <div>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Location</p>
-                            <p className="text-xs text-slate-700 font-medium truncate max-w-[120px]">{patient.location}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <Activity className="w-4 h-4 text-slate-400 mt-0.5" />
-                          <div>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Blood/Lang</p>
-                            <p className="text-xs text-slate-700 font-medium">{patient.bloodType} • {patient.language.split(',')[0]}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-2 col-span-2">
-                          <Calendar className="w-4 h-4 text-slate-400 mt-0.5" />
-                          <div>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Last Encounter</p>
-                            <p className="text-xs text-cyan-600 font-semibold">{patient.lastVisit}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Badges / Alerts */}
-                      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                          {patient.urgentAlert && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-rose-50 text-rose-600 text-xs font-bold border border-rose-100">
-                              <Activity className="w-3 h-3" />
-                              {patient.urgentAlert}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1 opacity-100 xl:opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-100 transition-colors">
-                            <MessageCircle className="w-4 h-4" />
-                          </button>
-                          <Link href="/voice" className="w-8 h-8 rounded-full bg-cyan-50 text-cyan-600 flex items-center justify-center hover:bg-cyan-100 transition-colors">
-                            <Stethoscope className="w-4 h-4" />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+            <button
+              onClick={() => { setOpen(false); router.push(`/patients/${patientId}`); }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-slate-50 transition-colors text-left"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              <Eye className="w-4 h-4" /> View Profile
+            </button>
+            <button
+              onClick={() => { setOpen(false); router.push(`/patients/${patientId}/edit`); }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-slate-50 transition-colors text-left"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              <Pencil className="w-4 h-4" /> Edit Patient
+            </button>
+            <div className="my-1 border-t border-slate-100" />
+            <button
+              onClick={() => { setOpen(false); }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-rose-50 transition-colors text-left text-rose-500"
+            >
+              <Trash2 className="w-4 h-4" /> Remove
+            </button>
+          </motion.div>
         )}
-      </div>
-
+      </AnimatePresence>
     </div>
   );
 }
 
-function Badge({ children, className }: { children: React.ReactNode; className?: string }) {
+// Pagination bar
+function Pagination({ current, total }: { current: number; total: number }) {
+  const pages: (number | "...")[] = [];
+
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+  } else {
+    pages.push(1, 2, 3, "...", 7, 8, 9, 10);
+  }
+
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", className)}>
-      {children}
-    </span>
+    <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100">
+      <span className="text-sm text-slate-500">
+        Page {current} of {total}
+      </span>
+      <div className="flex items-center gap-1">
+        <button
+          className="flex items-center gap-1 px-3 py-1.5 text-sm text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-40"
+          disabled={current === 1}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Previous
+        </button>
+
+        {pages.map((p, i) =>
+          p === "..." ? (
+            <span key={`ellipsis-${i}`} className="px-2 text-slate-400 text-sm">...</span>
+          ) : (
+            <button
+              key={p}
+              className={cn(
+                "w-8 h-8 rounded-lg text-sm font-medium transition-colors",
+                p === current
+                  ? "bg-[#12B76A] text-white"
+                  : "text-slate-600 hover:bg-slate-50 border border-slate-200"
+              )}
+            >
+              {p}
+            </button>
+          )
+        )}
+
+        <button
+          className="flex items-center gap-1 px-3 py-1.5 text-sm text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-40"
+          disabled={current === total}
+        >
+          Next
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-slate-500">Go to</span>
+        <input
+          type="number"
+          min={1}
+          max={total}
+          defaultValue={current}
+          className="w-16 h-8 text-sm text-center border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#12B76A]/20 focus:border-[#12B76A]"
+        />
+        <span className="text-sm text-slate-500">Page</span>
+      </div>
+    </div>
+  );
+}
+
+export default function PatientsListPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage] = useState(1);
+  const [sortKey, setSortKey] = useState<SortKey>("name");
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) setSortOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const filtered = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    let list = q
+      ? MOCK_PATIENTS.filter(
+          (p) =>
+            p.fullName.toLowerCase().includes(q) ||
+            (p.primaryCondition || "").toLowerCase().includes(q) ||
+            (p.carePlan || "").toLowerCase().includes(q)
+        )
+      : [...MOCK_PATIENTS];
+
+    list.sort((a, b) => {
+      if (sortKey === "name")      return a.fullName.localeCompare(b.fullName);
+      if (sortKey === "age")       return new Date(a.dateOfBirth).getTime() - new Date(b.dateOfBirth).getTime();
+      if (sortKey === "gender")    return a.gender.localeCompare(b.gender);
+      if (sortKey === "lastVisit") return a.lastVisit.localeCompare(b.lastVisit);
+      return 0;
+    });
+    return list;
+  }, [searchQuery, sortKey]);
+
+  return (
+    <div className="min-h-screen" style={{ background: "var(--bg-base)" }}>
+      {/* ── Page Header ────────────────────────────────────────────────────── */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="font-sora text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
+          Patients
+        </h1>
+        <div className="flex items-center gap-3">
+          <Link href="/patients/new">
+            <button
+              className="flex items-center gap-2 h-9 px-4 text-sm font-semibold text-white rounded-lg transition-all hover:opacity-90 active:scale-[0.98]"
+              style={{ backgroundColor: "#12B76A" }}
+            >
+              <Plus className="w-4 h-4" />
+              Add Patient
+            </button>
+          </Link>
+          <button className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-white transition-colors">
+            <Bell className="w-5 h-5" style={{ color: "var(--text-secondary)" }} />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white" />
+          </button>
+        </div>
+      </div>
+
+      {/* ── Toolbar ─────────────────────────────────────────────────────────── */}
+      <div className="flex items-center gap-3 mb-5">
+        {/* Search */}
+        <div className="relative flex-1 max-w-xs">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+            style={{ color: "var(--text-muted)" }}
+          />
+          <input
+            type="text"
+            placeholder="Search patient"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 h-9 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#12B76A]/20 focus:border-[#12B76A] placeholder-slate-400"
+          />
+        </div>
+
+        {/* Sort by */}
+        <div className="relative" ref={sortRef}>
+          <button
+            onClick={() => setSortOpen(o => !o)}
+            className="flex items-center gap-2 h-9 px-4 text-sm border border-slate-200 rounded-lg bg-white hover:bg-slate-50 transition-colors"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            Sort by: <span className="font-medium" style={{ color: "var(--text-primary)" }}>{SORT_OPTIONS.find(s => s.key === sortKey)?.label}</span>
+            <ChevronDown className={cn("w-4 h-4 transition-transform", sortOpen && "rotate-180")} />
+          </button>
+          <AnimatePresence>
+            {sortOpen && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                transition={{ duration: 0.12 }}
+                className="absolute left-0 top-10 z-50 bg-white border border-slate-200 rounded-xl shadow-lg py-1 w-52"
+              >
+                {SORT_OPTIONS.map(opt => (
+                  <button
+                    key={opt.key}
+                    onClick={() => { setSortKey(opt.key); setSortOpen(false); }}
+                    className={cn(
+                      "w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors text-left",
+                      sortKey === opt.key ? "bg-[#12B76A]/10 text-[#12B76A] font-semibold" : "hover:bg-slate-50"
+                    )}
+                    style={sortKey !== opt.key ? { color: "var(--text-secondary)" } : {}}
+                  >
+                    {sortKey === opt.key && <span className="w-1.5 h-1.5 rounded-full bg-[#12B76A]" />}
+                    {opt.label}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-slate-100">
+                {["Patient", "Gender", "Primary Condition", "Care Plan", "Last Visit Date", "Next Visit Date", ""].map((h) => (
+                  <th
+                    key={h}
+                    className="text-left text-xs font-semibold px-4 py-3 whitespace-nowrap"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((patient, i) => (
+                <motion.tr
+                  key={patient.id}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: i * 0.03 }}
+                  className="border-b border-slate-50 hover:bg-slate-50/70 transition-colors group cursor-pointer"
+                >
+                  {/* Patient */}
+                  <td className="px-4 py-3">
+                    <Link href={`/patients/${patient.id}`} className="flex items-center gap-3">
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-bold flex-shrink-0"
+                        style={{ background: patient.bg, color: patient.color }}
+                      >
+                        {patient.initials}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold leading-tight" style={{ color: "var(--text-primary)" }}>
+                          {patient.fullName}
+                        </p>
+                        <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+                          {calculateAge(patient.dateOfBirth)} years
+                        </p>
+                      </div>
+                    </Link>
+                  </td>
+
+                  {/* Gender */}
+                  <td className="px-4 py-3">
+                    <span
+                      className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                      style={
+                        patient.gender === "Female"
+                          ? { background: "#FFF0F9", color: "#BE185D" }
+                          : { background: "#EFF6FF", color: "#1D4ED8" }
+                      }
+                    >
+                      {patient.gender}
+                    </span>
+                  </td>
+
+                  {/* Primary Condition */}
+                  <td className="px-4 py-3">
+                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                      {patient.primaryCondition || "—"}
+                    </span>
+                  </td>
+
+                  {/* Care Plan */}
+                  <td className="px-4 py-3">
+                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                      {patient.carePlan || "—"}
+                    </span>
+                  </td>
+
+                  {/* Last Visit */}
+                  <td className="px-4 py-3">
+                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                      {patient.lastVisitDate || "—"}
+                    </span>
+                  </td>
+
+                  {/* Next Visit */}
+                  <td className="px-4 py-3">
+                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                      {patient.nextVisitDate || "—"}
+                    </span>
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-4 py-3">
+                    <RowMenu patientId={patient.id} />
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <Pagination current={currentPage} total={TOTAL_PAGES} />
+      </div>
+    </div>
   );
 }

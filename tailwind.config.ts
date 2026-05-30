@@ -18,7 +18,8 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ["Plus Jakarta Sans", "sans-serif"],
+        sans: ["DM Sans", "Plus Jakarta Sans", "sans-serif"],
+        sora: ["Sora", "sans-serif"],
       },
       colors: {
         // shadcn/radix CSS variable tokens (kept for compatibility with ui primitives)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -104,11 +104,17 @@ interface FloatingNavProps {
 }
 
 export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const pathname = usePathname();
 
   const navItems = filterNavItemsByRole(NAV_ITEMS, user?.role || "FRONT_DESK");
+
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      handleExpand(false);
+    }
+  }, []);
 
   const handleExpand = (val: boolean) => {
     setIsExpanded(val);

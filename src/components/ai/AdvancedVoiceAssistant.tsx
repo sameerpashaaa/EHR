@@ -90,7 +90,7 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
           "ai-pulse-btn fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all",
           isListening
             ? "bg-[#ef4444] shadow-red-500/50"
-            : "bg-gradient-to-r from-[#1D9E75] to-[#06b6d4]"
+            : "bg-[#111111] hover:bg-[#222222]"
         )}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.9 }}
@@ -191,7 +191,7 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
                     className={cn(
                       "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
                       mode === m.id
-                        ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
+                        ? "bg-[#4CAF72]/20 text-[#4CAF72] border border-[#4CAF72]/30"
                         : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
                     )}
                   >
@@ -210,13 +210,13 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 
-                               border border-cyan-500/30 flex items-center justify-center"
+                    className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#4CAF72]/10 
+                               border border-[#4CAF72]/30 flex items-center justify-center"
                   >
-                    <Sparkles className="w-8 h-8 text-cyan-400" />
+                    <Sparkles className="w-8 h-8 text-[#4CAF72]" />
                   </motion.div>
                   <p className="text-sm text-slate-300 mb-2">
-                    Say <span className="text-cyan-400 font-semibold">"Hey {assistantName}"</span> to start
+                    Say <span className="text-[#4CAF72] font-semibold">"Hey {assistantName}"</span> to start
                   </p>
                   <div className="grid grid-cols-2 gap-2 mt-4">
                     {[
@@ -229,9 +229,9 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
                         key={i}
                         onClick={() => handleModeSwitch(item.mode as VoiceMode)}
                         className="flex items-center gap-2 p-3 rounded-xl bg-slate-800/50 hover:bg-slate-800 
-                                   border border-slate-700/50 hover:border-cyan-500/30 transition-all text-left"
+                                   border border-slate-700/50 hover:border-[#4CAF72]/30 transition-all text-left"
                       >
-                        <item.icon className="w-4 h-4 text-cyan-400" />
+                        <item.icon className="w-4 h-4 text-[#4CAF72]" />
                         <span className="text-xs text-slate-300">{item.text}</span>
                       </button>
                     ))}
@@ -254,7 +254,7 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
                     className={cn(
                       "max-w-[85%] px-4 py-3 rounded-2xl text-sm",
                       msg.role === "user"
-                        ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-br-md"
+                        ? "bg-[#4CAF72] text-white rounded-br-md"
                         : "bg-slate-800 text-slate-200 rounded-bl-md border border-slate-700/50"
                     )}
                   >
@@ -282,7 +282,7 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
                                   bg-slate-800/50 text-slate-400 rounded-br-md border border-slate-700/50">
                     {transcript}
                     <span className="text-slate-500">{interimTranscript}</span>
-                    <span className="inline-block w-0.5 h-4 bg-cyan-400 ml-1 animate-pulse" />
+                    <span className="inline-block w-0.5 h-4 bg-[#4CAF72] ml-1 animate-pulse" />
                   </div>
                 </motion.div>
               )}
@@ -338,7 +338,7 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
                   placeholder={`Type command or message ${assistantName}...`}
                   className="flex-1 px-4 py-2.5 bg-slate-800 rounded-xl text-sm text-white 
                            placeholder-slate-500 border border-slate-700/50
-                           focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20"
+                           focus:outline-none focus:border-[#4CAF72]/50 focus:ring-1 focus:ring-[#4CAF72]/20"
                 />
                 <button
                   className="px-4 py-2.5 bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors"
@@ -355,7 +355,7 @@ export function AdvancedVoiceAssistant({ assistantName = "Metta" }: AdvancedVoic
                   "w-full py-3.5 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2",
                   isListening
                     ? "bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30"
-                    : "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40"
+                    : "bg-[#4CAF72] text-white shadow-lg shadow-[#4CAF72]/25 hover:shadow-[#4CAF72]/40"
                 )}
               >
                 {isListening ? (
