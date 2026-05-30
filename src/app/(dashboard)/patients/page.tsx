@@ -30,6 +30,17 @@ function calculateAge(dob: string): number {
   return age;
 }
 
+function getPatientStatus(id: string) {
+  const hash = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const statuses = [
+    { label: "Ext. Hospitalism", color: "#D97706", bg: "#FEF3C7" }, // Orange
+    { label: "In Surgery", color: "#DC2626", bg: "#FEE2E2" }, // Red
+    { label: "Discharge", color: "#059669", bg: "#D1FAE5" }, // Green
+    { label: "Expected Stay", color: "#111827", bg: "#F3F4F6" }, // Black
+  ];
+  return statuses[hash % statuses.length];
+}
+
 // Row action menu
 function RowMenu({ patientId }: { patientId: string }) {
   const [open, setOpen] = useState(false);
@@ -176,7 +187,7 @@ export default function PatientsListPage() {
           (p) =>
             p.fullName.toLowerCase().includes(q) ||
             (p.primaryCondition || "").toLowerCase().includes(q) ||
-            (p.carePlan || "").toLowerCase().includes(q)
+            (p.abhaId || "").toLowerCase().includes(q)
         )
       : [...MOCK_PATIENTS];
 
@@ -277,7 +288,7 @@ export default function PatientsListPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-100">
-                {["Patient", "Gender", "Primary Condition", "Care Plan", "Last Visit Date", "Next Visit Date", ""].map((h) => (
+                {["Patient", "Gender", "Primary Condition", "ABHA-id", "Status", "Last Visit Date", "Next Visit Date", ""].map((h) => (
                   <th
                     key={h}
                     className="text-left text-xs font-semibold px-4 py-3 whitespace-nowrap"
@@ -338,11 +349,26 @@ export default function PatientsListPage() {
                     </span>
                   </td>
 
-                  {/* Care Plan */}
+                  {/* ABHA-id */}
                   <td className="px-4 py-3">
-                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                      {patient.carePlan || "—"}
+                    <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
+                      {patient.abhaId || "—"}
                     </span>
+                  </td>
+
+                  {/* Status */}
+                  <td className="px-4 py-3">
+                    {(() => {
+                      const st = getPatientStatus(patient.id);
+                      return (
+                        <span
+                          className="text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap border"
+                          style={{ background: st.bg, color: st.color, borderColor: `${st.color}30` }}
+                        >
+                          {st.label}
+                        </span>
+                      );
+                    })()}
                   </td>
 
                   {/* Last Visit */}
