@@ -11,6 +11,7 @@ import {
   Minus, Eye, UploadCloud, Waves, Sparkles, AlertTriangle,
 } from "lucide-react";
 import { MOCK_PATIENTS, MOCK_VITALS, MOCK_LABS, MOCK_MEDICATIONS, MOCK_PROBLEMS, MOCK_ENCOUNTERS } from "@/data/mockPatients";
+import { usePatient } from "@/hooks/usePatients";
 import { cn } from "@/lib/utils";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -558,13 +559,58 @@ export default function PatientDetailPage() {
   const [activeTab, setActiveTab] = useState("details");
   const [moreOpen, setMoreOpen] = useState(false);
 
-  // Find patient from mock data
-  const patient = MOCK_PATIENTS.find((p) => p.id === patientId) || MOCK_PATIENTS[0];
+  const { data: response, isLoading, error } = usePatient(patientId);
+
+  const isMockId = patientId.startsWith("P");
+  const mockPatient = MOCK_PATIENTS.find((p) => p.id === patientId);
+  
+  let patient: any = MOCK_PATIENTS[0];
+  if (isMockId && mockPatient) {
+    patient = mockPatient;
+  } else if (response?.data) {
+    const p = response.data;
+    patient = {
+      ...p,
+      fullName: `${p.firstName} ${p.lastName}`,
+      initials: `${p.firstName?.[0] || ""}${p.lastName?.[0] || ""}`.toUpperCase(),
+      bg: "#F0FDF4",
+      color: "#15803D",
+      language: "English",
+      allergies: [],
+      emergencyContacts: p.emergencyContacts?.map((ec: any) => ({
+        id: ec.id,
+        name: ec.name,
+        relationship: ec.relationship,
+        phone: ec.phone,
+        initials: ec.name.substring(0, 2).toUpperCase(),
+        bg: "#F3E8FF",
+        color: "#7E22CE",
+        isService: false,
+      })) || [],
+    };
+  }
+
+  if (error && !isMockId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4" style={{ background: "var(--bg-base)" }}>
+        <p className="text-sm font-medium text-red-500">Error loading patient details</p>
+        <pre className="text-xs bg-slate-100 p-4 rounded-md">{error.message}</pre>
+      </div>
+    );
+  }
+
+  if (isLoading && !isMockId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg-base)" }}>
+        <p className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>Loading patient details...</p>
+      </div>
+    );
+  }
+
   const age = calculateAge(patient.dateOfBirth);
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "var(--bg-base)" }}>
-
+    <div className="min-h-screen pb-12" style={{ background: "var(--bg-base)" }}>
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2 text-sm" style={{ color: "var(--text-muted)" }}>

@@ -183,7 +183,13 @@ export default function PatientsListPage() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const { data: dbData } = usePatients({ query: searchQuery, page: currentPage, limit: 50 });
+  const { data: dbData } = usePatients({ 
+    query: searchQuery, 
+    page: currentPage, 
+    limit: 50,
+    sortBy: "lastName",
+    sortOrder: "asc"
+  });
 
   const filtered = useMemo(() => {
     const tokens = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);

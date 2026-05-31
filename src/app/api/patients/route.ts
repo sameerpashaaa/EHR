@@ -239,12 +239,13 @@ export async function POST(request: NextRequest) {
     console.error("Error creating patient:", error);
     
     if (error instanceof z.ZodError) {
+      const issueMessages = error.issues.map(i => i.message).join(", ");
       return NextResponse.json(
         {
           success: false,
           error: {
             code: "VALIDATION_ERROR",
-            message: "Invalid patient data",
+            message: `Invalid patient data: ${issueMessages}`,
             details: error.flatten().fieldErrors,
           },
         },
