@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, Plus, Bell, ChevronDown, MoreVertical,
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { MOCK_PATIENTS } from "@/data/mockPatients";
 import { cn } from "@/lib/utils";
+import { usePatients } from "@/hooks/usePatients";
 
 const TOTAL_PAGES = 10;
 
@@ -166,7 +167,9 @@ function Pagination({ current, total }: { current: number; total: number }) {
 }
 
 export default function PatientsListPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  const q = searchParams?.get("q") || "";
+  const [searchQuery, setSearchQuery] = useState(q);
   const [currentPage] = useState(1);
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortOpen, setSortOpen] = useState(false);
@@ -180,26 +183,44 @@ export default function PatientsListPage() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  const { data: dbData } = usePatients({ query: searchQuery, page: currentPage, limit: 50 });
+
   const filtered = useMemo(() => {
-    const q = searchQuery.toLowerCase();
-    let list = q
+    const tokens = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+    let list = tokens.length > 0
       ? MOCK_PATIENTS.filter(
-          (p) =>
-            p.fullName.toLowerCase().includes(q) ||
-            (p.primaryCondition || "").toLowerCase().includes(q) ||
-            (p.abhaId || "").toLowerCase().includes(q)
+          (p) => tokens.every(token => 
+            p.fullName.toLowerCase().includes(token) ||
+            (p.id || "").toLowerCase().includes(token) ||
+            (p.abhaId || "").toLowerCase().includes(token) ||
+            (p.phone || "").toLowerCase().includes(token) ||
+            (p.email || "").toLowerCase().includes(token) ||
+            (p.primaryCondition || "").toLowerCase().includes(token)
+          )
         )
       : [...MOCK_PATIENTS];
 
+    if (dbData?.data) {
+      // Append database patients to the list
+      list = [...dbData.data, ...list];
+      // Deduplicate by ID just in case
+      const seen = new Set();
+      list = list.filter(p => {
+        if (seen.has(p.id)) return false;
+        seen.add(p.id);
+        return true;
+      });
+    }
+
     list.sort((a, b) => {
-      if (sortKey === "name")      return a.fullName.localeCompare(b.fullName);
+      if (sortKey === "name")      return (a.fullName || "").localeCompare(b.fullName || "");
       if (sortKey === "age")       return new Date(a.dateOfBirth).getTime() - new Date(b.dateOfBirth).getTime();
-      if (sortKey === "gender")    return a.gender.localeCompare(b.gender);
-      if (sortKey === "lastVisit") return a.lastVisit.localeCompare(b.lastVisit);
+      if (sortKey === "gender")    return (a.gender || "").localeCompare(b.gender || "");
+      if (sortKey === "lastVisit") return (a.lastVisit || "").localeCompare(b.lastVisit || "");
       return 0;
     });
     return list;
-  }, [searchQuery, sortKey]);
+  }, [searchQuery, sortKey, dbData]);
 
   return (
     <div className="min-h-screen" style={{ background: "var(--bg-base)" }}>

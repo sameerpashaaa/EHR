@@ -56,7 +56,6 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Metapharsic ERP Design Tokens
         highlight: "#EAF4EC",
         surface: "#FFFFFF",
         page: "#F5F5F5",

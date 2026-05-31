@@ -45,11 +45,18 @@ export async function GET(request: NextRequest) {
     const where: any = {};
     
     if (validated.query) {
-      where.OR = [
-        { firstName: { contains: validated.query, mode: "insensitive" } },
-        { lastName: { contains: validated.query, mode: "insensitive" } },
-        { mrn: { contains: validated.query, mode: "insensitive" } },
-      ];
+      const tokens = validated.query.split(/\s+/).filter(Boolean);
+      if (tokens.length > 0) {
+        where.AND = tokens.map((token: string) => ({
+          OR: [
+            { firstName: { contains: token, mode: "insensitive" } },
+            { lastName: { contains: token, mode: "insensitive" } },
+            { mrn: { contains: token, mode: "insensitive" } },
+            { abhaId: { contains: token, mode: "insensitive" } },
+            { telecoms: { some: { value: { contains: token, mode: "insensitive" } } } },
+          ]
+        }));
+      }
     }
 
     if (validated.gender) {
@@ -78,6 +85,7 @@ export async function GET(request: NextRequest) {
     // Transform DB model slightly to match frontend expected fields for the table
     const formattedPatients = paginatedPatients.map((p) => ({
       ...p,
+      fullName: `${p.firstName} ${p.lastName}`,
       dateOfBirth: p.dateOfBirth.toISOString().split("T")[0],
       phone: p.telecoms?.find((t) => t.system === "PHONE")?.value || "",
       email: p.telecoms?.find((t) => t.system === "EMAIL")?.value || "",
@@ -87,6 +95,8 @@ export async function GET(request: NextRequest) {
       primaryPhysician: p.primaryPhysician 
         ? `${p.primaryPhysician.lastName}, ${p.primaryPhysician.firstName}`
         : "Unassigned",
+      lastVisit: new Date().toISOString().split("T")[0], // Mock recent visit
+      primaryCondition: "N/A"
     }));
 
     return NextResponse.json({

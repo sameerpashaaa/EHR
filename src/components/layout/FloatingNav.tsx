@@ -164,7 +164,7 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
           {isExpanded && (
             <div className="overflow-hidden">
               <p className="font-[700] text-[13px] text-[#0f172a] whitespace-nowrap">Metapharsic</p>
-              <p className="text-[10px] text-[#4CAF72] font-[500] whitespace-nowrap tracking-wide">Lifesciences ERP</p>
+              <p className="text-[10px] text-[#4CAF72] font-[500] whitespace-nowrap tracking-wide">Lifesciences EHR</p>
             </div>
           )}
         </div>
@@ -324,7 +324,7 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
             </div>
             <div>
               <p className="font-[700] text-[13px] text-[#0f172a]">Metapharsic</p>
-              <p className="text-[10px] text-[#4CAF72]">Lifesciences ERP</p>
+              <p className="text-[10px] text-[#4CAF72]">Lifesciences EHR</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

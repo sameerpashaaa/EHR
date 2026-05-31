@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { MOCK_PATIENTS as ALL_MOCK_PATIENTS } from "@/data/mockPatients";
+import { db } from "@/lib/db";
 
 export async function GET(request: Request) {
   try {
@@ -66,6 +68,7 @@ export async function GET(request: Request) {
     ];
 
     // AI specific tasks/actions
+
     const AI_ACTIONS = [
       { type: "ai action", title: "Draft WhatsApp Reply", subtitle: "Generate AI response for patient queries", iconName: "Sparkles", href: "/whatsapp-sync" },
       { type: "ai action", title: "Start Voice Consult", subtitle: "Trilingual audio assessment", iconName: "Mic", href: "/transcript" },
@@ -73,26 +76,73 @@ export async function GET(request: Request) {
     ];
 
     // Patients lookup (simulating DB query)
-    const MOCK_PATIENTS = [
-      { type: "patient", title: "John Smith", subtitle: "MRN2024001 • 41y • MALE", iconName: "User", href: "/patients" },
-      { type: "patient", title: "Maria Garcia", subtitle: "MRN2024002 • 35y • FEMALE", iconName: "User", href: "/patients" },
-      { type: "patient", title: "Robert Johnson", subtitle: "MRN2024003 • 50y • MALE", iconName: "User", href: "/patients" },
-      { type: "patient", title: "Rajesh Kumar", subtitle: "ABHA: 91-7689-0021 • Active Diabetes", iconName: "User", href: "/patients" },
-      { type: "patient", title: "Priya Sharma", subtitle: "ABHA: 91-4521-9980 • Urgent Care", iconName: "User", href: "/patients" },
-      { type: "patient", title: "Sneha Reddy", subtitle: "+91 98765 43210 • Walk-in", iconName: "User", href: "/patients/new" },
-    ];
+    const MOCK_PATIENTS = ALL_MOCK_PATIENTS.map(p => {
+      const age = new Date().getFullYear() - new Date(p.dateOfBirth).getFullYear();
+      let subtitle = "";
+      if (p.abhaId) subtitle += `ABHA: ${p.abhaId} • `;
+      else if (p.id) subtitle += `${p.id} • `;
+      subtitle += `${age}y • ${p.gender.toUpperCase()}`;
+      if (p.primaryCondition) subtitle += ` • ${p.primaryCondition}`;
+
+      return {
+        type: "patient",
+        title: p.fullName,
+        subtitle,
+        iconName: "User",
+        href: `/patients/${p.id}`
+      };
+    });
 
     const allData = [...PAGES, ...AI_ACTIONS, ...MOCK_PATIENTS];
 
     // Basic NLP-like fuzzy matching
+    const tokens = query.split(/\s+/).filter(Boolean);
     let results = allData.filter((item) =>
-      item.title.toLowerCase().includes(query) ||
-      item.subtitle.toLowerCase().includes(query) ||
-      item.type.toLowerCase().includes(query)
+      tokens.every(token =>
+        item.title.toLowerCase().includes(token) ||
+        item.subtitle.toLowerCase().includes(token) ||
+        item.type.toLowerCase().includes(token)
+      )
     );
 
+    // Also search real patients from the DB
+    if (tokens.length > 0) {
+      const realPatients = await db.patient.findMany({
+        where: {
+          AND: tokens.map((token: string) => ({
+            OR: [
+              { firstName: { contains: token, mode: "insensitive" } },
+              { lastName: { contains: token, mode: "insensitive" } },
+              { mrn: { contains: token, mode: "insensitive" } },
+              { abhaId: { contains: token, mode: "insensitive" } },
+              { telecoms: { some: { value: { contains: token, mode: "insensitive" } } } }
+            ]
+          }))
+        },
+        take: 10
+      });
+
+      const formattedRealPatients = realPatients.map(p => {
+        const age = p.dateOfBirth ? new Date().getFullYear() - new Date(p.dateOfBirth).getFullYear() : "?";
+        let subtitle = "";
+        if (p.abhaId) subtitle += `ABHA: ${p.abhaId} • `;
+        else if (p.mrn) subtitle += `${p.mrn} • `;
+        subtitle += `${age}y • ${p.gender.toUpperCase()}`;
+
+        return {
+          type: "patient",
+          title: `${p.firstName} ${p.lastName}`,
+          subtitle,
+          iconName: "User",
+          href: `/patients/${p.id}`
+        };
+      });
+
+      results = [...results, ...formattedRealPatients];
+    }
+
     // Prioritize Autonomous Actions
-    results = [...autonomousActions, ...results.slice(0, 7)];
+    results = [...autonomousActions, ...results].slice(0, 8);
 
     return NextResponse.json({ results }); // Return max 8 matches
 

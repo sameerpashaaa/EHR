@@ -156,6 +156,8 @@ model Patient {
   preferredName String?
   previousName  String?
 
+  abhaId         String? @unique
+
   // Demographics
   gender          Gender    @default(UNKNOWN)
   birthSex        BirthSex?
