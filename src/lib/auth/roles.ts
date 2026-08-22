@@ -37,11 +37,37 @@ export type Permission =
   | "allergies:read"
   | "allergies:create"
   | "allergies:update"
+  // Prescription permissions
+  | "prescriptions:read"
+  | "prescriptions:create"
+  | "prescriptions:sign"
+  | "prescriptions:delete"
   // Document permissions
   | "documents:read"
   | "documents:create"
   | "documents:update"
   | "documents:delete"
+  // Facility permissions
+  | "facility:read"
+  | "facility:manage"
+  // AI permissions
+  | "ai:voice"
+  | "ai:scribe"
+  | "ai:diagnostics"
+  | "ai:digital_twin"
+  | "ai:genomics"
+  | "ai:predictive"
+  // Scheduling permissions
+  | "scheduling:read"
+  | "scheduling:manage"
+  // Insurance permissions
+  | "insurance:read"
+  | "insurance:manage"
+  // Refill permissions
+  | "refills:read"
+  | "refills:manage"
+  // Patient portal permissions
+  | "portal:patient"
   // Admin permissions
   | "users:read"
   | "users:create"
@@ -69,6 +95,9 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "medications:read",
     "allergies:read",
     "documents:read",
+    "prescriptions:read",
+    "scheduling:read",
+    "portal:patient",
   ],
   FRONT_DESK: [
     "patients:read",
@@ -78,6 +107,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "encounters:read",
     "encounters:create",
     "encounters:update",
+    "facility:read",
+    "scheduling:read",
+    "scheduling:manage",
+    "insurance:read",
+    "insurance:manage",
   ],
   MEDICAL_ASSISTANT: [
     "patients:read",
@@ -92,6 +126,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "allergies:read",
     "documents:read",
     "documents:create",
+    "scheduling:read",
+    "scheduling:manage",
+    "ai:voice",
+    "ai:scribe",
   ],
   NURSE: [
     "patients:read",
@@ -113,6 +151,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "allergies:update",
     "documents:read",
     "documents:create",
+    "prescriptions:read",
+    "scheduling:read",
+    "scheduling:manage",
+    "ai:voice",
+    "ai:scribe",
   ],
   PHYSICIAN: [
     "patients:read",
@@ -123,7 +166,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "encounters:read",
     "encounters:create",
     "encounters:update",
-    "encounters:delete",
     "observations:read",
     "observations:create",
     "observations:update",
@@ -142,6 +184,20 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "documents:delete",
     "reports:read",
     "reports:export",
+    "prescriptions:read",
+    "prescriptions:create",
+    "prescriptions:sign",
+    "prescriptions:delete",
+    "refills:read",
+    "refills:manage",
+    "scheduling:read",
+    "scheduling:manage",
+    "ai:voice",
+    "ai:scribe",
+    "ai:diagnostics",
+    "ai:digital_twin",
+    "ai:genomics",
+    "ai:predictive",
   ],
   ADMIN: [
     // All permissions
@@ -186,6 +242,25 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "reports:read",
     "reports:export",
     "audit:read",
+    "prescriptions:read",
+    "prescriptions:create",
+    "prescriptions:sign",
+    "prescriptions:delete",
+    "facility:read",
+    "facility:manage",
+    "ai:voice",
+    "ai:scribe",
+    "ai:diagnostics",
+    "ai:digital_twin",
+    "ai:genomics",
+    "ai:predictive",
+    "scheduling:read",
+    "scheduling:manage",
+    "insurance:read",
+    "insurance:manage",
+    "refills:read",
+    "refills:manage",
+    "portal:patient",
   ],
 };
 
@@ -284,6 +359,24 @@ export const NAV_ITEMS: NavItem[] = [
     permissions: ["encounters:read"],
   },
   {
+    title: "Vitals Capture",
+    href: "/clinical/vitals",
+    icon: "Activity",
+    permissions: ["observations:create"],
+  },
+  {
+    title: "Refills",
+    href: "/prescriptions/refills",
+    icon: "Pill",
+    permissions: ["refills:read"],
+  },
+  {
+    title: "Insurance",
+    href: "/insurance",
+    icon: "ClipboardList",
+    permissions: ["insurance:read"],
+  },
+  {
     title: "Clinical",
     href: "/clinical",
     icon: "Stethoscope",
@@ -320,6 +413,27 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/reports",
     icon: "BarChart3",
     permissions: ["reports:read"],
+  },
+  {
+    title: "Facility Management",
+    href: "/facility/overview",
+    icon: "Building2",
+    permissions: ["facility:read"],
+    children: [
+      { title: "Overview", href: "/facility/overview", icon: "LayoutDashboard" },
+      { title: "Setup Wizard", href: "/facility/setup", icon: "Settings" },
+      { title: "Hospital Profile", href: "/facility/profile", icon: "UserCog" },
+      { title: "Layout Manager", href: "/facility/layout", icon: "List" },
+      { title: "Bed Management", href: "/facility/beds", icon: "Bed" },
+      { title: "ICU Management", href: "/facility/icu", icon: "Activity" },
+      { title: "Operation Theatre", href: "/facility/ot", icon: "ClipboardList" },
+      { title: "Equipment & Assets", href: "/facility/equipment", icon: "Wrench" },
+      { title: "Housekeeping", href: "/facility/housekeeping", icon: "Brush" },
+      { title: "Maintenance", href: "/facility/maintenance", icon: "Wrench" },
+      { title: "Staff Allocation", href: "/facility/staff-allocation", icon: "Users" },
+      { title: "Visitor Management", href: "/facility/visitors", icon: "Users" },
+      { title: "Ambulance Management", href: "/facility/ambulance", icon: "Ambulance" },
+    ],
   },
   {
     title: "Administration",

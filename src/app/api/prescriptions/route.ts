@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/index";
+import { guard } from "@/lib/auth/guard";
 
 // GET /api/prescriptions - Get prescriptions for a patient
 export async function GET(request: NextRequest) {
@@ -13,7 +14,8 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    const guardResponse = guard(session.user, "prescriptions:read");
+    if (guardResponse) return guardResponse;
 
     const { searchParams } = new URL(request.url);
     const patientId = searchParams.get("patientId");
@@ -77,7 +79,8 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    const guardResponse = guard(session.user, "prescriptions:create");
+    if (guardResponse) return guardResponse;
 
     const body = await request.json();
     const { patientId, items, diagnosis, conversationContext } = body;

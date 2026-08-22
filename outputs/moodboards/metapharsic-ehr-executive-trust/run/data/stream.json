@@ -1,0 +1,1475 @@
+{
+  "meta": {
+    "title": "Metapharsic EHR Executive Trust Mood Board",
+    "subtitle": "Premium, calm, useful futurism for an AI-enabled clinic command-center campaign.",
+    "brief": {
+      "theme": "Metapharsic Lifesciences EHR as a modern clinic command center.",
+      "goal": "Create a premium campaign visual world that makes clinical and executive buyers feel focused, confident, and able to trust a sophisticated EHR platform.",
+      "audience": "Clinic owners, administrators, physicians, and operational leaders evaluating an AI-assisted EHR MVP.",
+      "brand_inputs": [
+        "Metapharsic Lifesciences EHR",
+        "Next.js EHR product with patient management, voice workflows, prescriptions, clinical dashboards, documents, predictive timeline, genomics, digital twin, and admin views"
+      ],
+      "palette_direction": "Clean whites, warm off-white surfaces, pale glass, graphite, controlled clinical blue, desaturated green, and small amber highlights.",
+      "emotional_register": "Premium focus, calm confidence, executive trust, warm usefulness, futurist minimalism.",
+      "must_include": [
+        "work surfaces",
+        "glass interfaces",
+        "care team decision contexts",
+        "clinic operations",
+        "subtle AI-assisted workflow cues"
+      ],
+      "visual_principles": [
+        "single visual reference image per tile",
+        "quiet premium composition",
+        "human-scale usefulness",
+        "no readable UI text",
+        "no logos",
+        "no patient-identifying detail"
+      ],
+      "avoid": [
+        "mini mood boards",
+        "collage layouts",
+        "fake readable dashboard text",
+        "stock hospital smiles",
+        "overly futuristic neon sci-fi",
+        "dark moody healthcare"
+      ],
+      "next_outputs": [
+        "website hero imagery",
+        "campaign landing page visuals",
+        "sales deck section imagery",
+        "LinkedIn launch ads",
+        "product narrative cards"
+      ],
+      "context_signals": [
+        "repository describes the product as a clinic digital command center",
+        "demo/MVP stage should feel advanced while staying honest and credible",
+        "clinical safety and operational clarity matter more than spectacle"
+      ]
+    }
+  },
+  "signals": {
+    "territories": [
+      "Executive clinic command center",
+      "Warm operational intelligence",
+      "Minimal glass interface proof",
+      "Care-team decision calm"
+    ],
+    "audience_cues": [
+      "doctor-administrator collaboration",
+      "clinic operations leadership",
+      "clinical staff using calm AI assistance"
+    ],
+    "palette": [
+      "soft white",
+      "warm ivory",
+      "pale clinical blue",
+      "desaturated mint",
+      "graphite",
+      "subtle amber"
+    ],
+    "motifs": [
+      "work surfaces",
+      "glass interface panes",
+      "soft daylight clinics",
+      "hands in focused collaboration",
+      "premium medical materials",
+      "quiet data light"
+    ]
+  },
+  "items": [
+    {
+      "id": "executive-clinic-worktable",
+      "title": "Executive Clinic Worktable",
+      "caption": "A premium decision table where clinical leadership reviews operations with calm focus.",
+      "source": "Inferred from EHR command-center campaign brief",
+      "tone": "premium focus, executive trust",
+      "motif": "warm work surface, glass interface, clinical planning",
+      "palette": "warm ivory, graphite, pale blue, soft daylight",
+      "prompt": "Single editorial photograph of a premium clinic leadership worktable in soft daylight, two or three professionals partly visible from shoulders and hands only, reviewing a translucent glass-like digital interface hovering low over a warm matte work surface, abstract charts and patient-flow shapes with no readable text, quiet medical materials, calm confident mood, executive trust, warm useful futurist minimalism, clean white clinic background, realistic photography, shallow depth of field. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet, no split panels. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Editorial Worktable",
+            "description": "Cleaner light and hierarchy around Executive Clinic Worktable",
+            "promptHint": "Apply a polished editorial treatment to Executive Clinic Worktable; preserve A premium decision table where clinical leadership reviews operations with calm focus while..."
+          },
+          {
+            "label": "Minimal Worktable",
+            "description": "Quieter hierarchy, more negative space, and stricter restraint around Executive Clinic Worktable",
+            "promptHint": "Strip Executive Clinic Worktable down to a minimal premium frame; keep A premium decision table where clinical leadership reviews operations with calm focus legible but change..."
+          },
+          {
+            "label": "Motion Worktable",
+            "description": "More kinetic gesture, blur, or environmental energy around Executive Clinic Worktable",
+            "promptHint": "Introduce controlled motion to Executive Clinic Worktable while preserving the campaign cue: A premium decision table where clinical leadership reviews operations with calm focus"
+          }
+        ],
+        "palette": [
+          {
+            "label": "Accent Worktable",
+            "description": "A stronger accent color against quieter supporting surfaces",
+            "promptHint": "Add a controlled accent palette to Executive Clinic Worktable without changing the main subject"
+          },
+          {
+            "label": "Unexpected Worktable",
+            "description": "A more surprising secondary color relationship around Executive Clinic Worktable",
+            "promptHint": "Keep the subject recognizable, but introduce one unexpected supporting color that extends A premium decision table where clinical leadership reviews operations with calm focus"
+          },
+          {
+            "label": "Cool Worktable",
+            "description": "Crisper whites, cooler shadows, and restrained technical contrast",
+            "promptHint": "Use cooler minimal accents around Executive Clinic Worktable; keep A premium decision table where clinical leadership reviews operations with calm focus intact"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Worktable Detail",
+            "description": "A tighter scene focused on material, craft, or product detail",
+            "promptHint": "Create a close-detail scene for Executive Clinic Worktable, keeping the most important source cue visible"
+          },
+          {
+            "label": "Worktable Backstage",
+            "description": "A behind-the-scenes environment that adds process and atmosphere around Executive Clinic Worktable",
+            "promptHint": "Reframe Executive Clinic Worktable as a backstage or preparation moment; keep A premium decision table where clinical leadership reviews operations with calm focus recognizable"
+          },
+          {
+            "label": "Worktable In Use",
+            "description": "A more believable real-world context for Executive Clinic Worktable",
+            "promptHint": "Place Executive Clinic Worktable into a realistic usage context; preserve the source image's core cue: A premium decision table where clinical leadership reviews operations..."
+          }
+        ],
+        "props": [
+          {
+            "label": "Premium Finish",
+            "description": "Sharper materials, cleaner surfaces, and more elevated detail",
+            "promptHint": "Add premium material cues around Executive Clinic Worktable; preserve the source image's composition"
+          },
+          {
+            "label": "Process Cues",
+            "description": "Tools, traces, or handling details that make Executive Clinic Worktable feel actively used",
+            "promptHint": "Add restrained process cues around Executive Clinic Worktable; preserve the strongest visual idea from A premium decision table where clinical leadership reviews operations..."
+          },
+          {
+            "label": "Worktable Cues",
+            "description": "Add restrained supporting objects that clarify the context of Executive Clinic Worktable",
+            "promptHint": "Add a few contextual props that reinforce A premium decision table where clinical leadership reviews operations with calm focus without distracting from Executive Clinic Worktable"
+          }
+        ],
+        "character": [
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Executive Clinic Worktable",
+            "promptHint": "Add a cropped passing figure or gesture around Executive Clinic Worktable; keep identity nonspecific and preserve A premium decision table where clinical leadership reviews..."
+          },
+          {
+            "label": "Expert Hands",
+            "description": "More credible craft, authority, and purposeful interaction with Executive Clinic Worktable",
+            "promptHint": "If a person appears, make them an expert operator interacting naturally with Executive Clinic Worktable"
+          },
+          {
+            "label": "No Human",
+            "description": "Let the object, place, or composition carry the frame",
+            "promptHint": "Remove visible people and let Executive Clinic Worktable carry the image"
+          }
+        ],
+        "format": [
+          {
+            "label": "Wide Worktable",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Executive Clinic Worktable to a wide hero composition with room for layout"
+          },
+          {
+            "label": "Square Worktable",
+            "description": "A balanced square crop for gallery or feed review",
+            "promptHint": "Recompose Executive Clinic Worktable as a square frame with a changed focal balance and the core cue intact"
+          },
+          {
+            "label": "Portrait Worktable",
+            "description": "Tighter vertical crop for social or story placement",
+            "promptHint": "Adapt Executive Clinic Worktable to a portrait social crop while preserving the key visual read"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/executive-clinic-worktable.jpg",
+      "sourceImageUrl": "/generated/5e304bf179f0ac4caeee9f692110c358.png"
+    },
+    {
+      "id": "glass-interface-vitals",
+      "title": "Glass Interface Vitals",
+      "caption": "Transparent data feels precise, restrained, and clinically useful.",
+      "source": "Selected cue: glass interfaces",
+      "tone": "calm confidence, futurist minimal",
+      "motif": "glass UI pane, vitals rhythm, premium clinical light",
+      "palette": "white, pale cyan, mint, graphite",
+      "prompt": "Single visual reference image of a translucent glass interface panel angled above a clean white clinical desk, softly glowing abstract vital-sign curves and modular dashboard blocks with no readable numbers or text, a stethoscope and tablet edge nearby, premium minimal healthcare technology, airy warm daylight, calm confidence, realistic product-ad photography. No logos, no readable text, no patient identifiers, no collage, no grid, no mood board layout. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Dramatic Vitals",
+            "description": "Richer blacks, sharper highlights, and more cinematic emphasis",
+            "promptHint": "Apply high-contrast cinematic treatment to Glass Interface Vitals; keep Transparent data feels precise, restrained, and clinically useful recognizable but alter camera angle or..."
+          },
+          {
+            "label": "Candid Vitals",
+            "description": "More natural texture and believable lived-in detail for Glass Interface Vitals",
+            "promptHint": "Shift Glass Interface Vitals toward documentary realism while preserving Transparent data feels precise, restrained, and clinically useful; make lighting and staging feel newly..."
+          },
+          {
+            "label": "Editorial Vitals",
+            "description": "Cleaner light and hierarchy around Glass Interface Vitals",
+            "promptHint": "Apply a polished editorial treatment to Glass Interface Vitals; preserve Transparent data feels precise, restrained, and clinically useful while changing the composition enough..."
+          }
+        ],
+        "palette": [
+          {
+            "label": "Accent Vitals",
+            "description": "A stronger accent color against quieter supporting surfaces",
+            "promptHint": "Add a controlled accent palette to Glass Interface Vitals without changing the main subject"
+          },
+          {
+            "label": "Unexpected Vitals",
+            "description": "A more surprising secondary color relationship around Glass Interface Vitals",
+            "promptHint": "Keep the subject recognizable, but introduce one unexpected supporting color that extends Transparent data feels precise, restrained, and clinically useful"
+          },
+          {
+            "label": "Cool Vitals",
+            "description": "Crisper whites, cooler shadows, and restrained technical contrast",
+            "promptHint": "Use cooler minimal accents around Glass Interface Vitals; keep Transparent data feels precise, restrained, and clinically useful intact"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Vitals Studio",
+            "description": "A cleaner controlled studio setting that keeps Glass Interface Vitals dominant",
+            "promptHint": "Move Glass Interface Vitals into a cleaner studio-hero setting while preserving Transparent data feels precise, restrained, and clinically useful"
+          },
+          {
+            "label": "Vitals Detail",
+            "description": "A tighter scene focused on material, craft, or product detail",
+            "promptHint": "Create a close-detail scene for Glass Interface Vitals, keeping the most important source cue visible"
+          },
+          {
+            "label": "Vitals Backstage",
+            "description": "A behind-the-scenes environment that adds process and atmosphere around Glass Interface Vitals",
+            "promptHint": "Reframe Glass Interface Vitals as a backstage or preparation moment; keep Transparent data feels precise, restrained, and clinically useful recognizable"
+          }
+        ],
+        "props": [
+          {
+            "label": "Minimal Support",
+            "description": "Reduce surrounding objects so Glass Interface Vitals carries more weight",
+            "promptHint": "Remove nonessential props and keep Glass Interface Vitals as the dominant read"
+          },
+          {
+            "label": "Premium Finish",
+            "description": "Sharper materials, cleaner surfaces, and more elevated detail",
+            "promptHint": "Add premium material cues around Glass Interface Vitals; preserve the source image's composition"
+          },
+          {
+            "label": "Process Cues",
+            "description": "Tools, traces, or handling details that make Glass Interface Vitals feel actively used",
+            "promptHint": "Add restrained process cues around Glass Interface Vitals; preserve the strongest visual idea from Transparent data feels precise, restrained, and clinically useful"
+          }
+        ],
+        "character": [
+          {
+            "label": "Expert Hands",
+            "description": "More credible craft, authority, and purposeful interaction with Glass Interface Vitals",
+            "promptHint": "If a person appears, make them an expert operator interacting naturally with Glass Interface Vitals"
+          },
+          {
+            "label": "No Human",
+            "description": "Let the object, place, or composition carry the frame",
+            "promptHint": "Remove visible people and let Glass Interface Vitals carry the image"
+          },
+          {
+            "label": "Collector Persona",
+            "description": "A more intentional, taste-driven persona interacting with Glass Interface Vitals",
+            "promptHint": "Introduce a collector or tastemaker presence around Glass Interface Vitals while changing wardrobe, gesture, or posture"
+          }
+        ],
+        "format": [
+          {
+            "label": "Portrait Vitals",
+            "description": "Tighter vertical crop for social or story placement",
+            "promptHint": "Adapt Glass Interface Vitals to a portrait social crop while preserving the key visual read"
+          },
+          {
+            "label": "Vitals Crop",
+            "description": "Closer inspection of the material, surface, or focal subject",
+            "promptHint": "Create a closer detail crop of Glass Interface Vitals; keep Transparent data feels precise, restrained, and clinically useful legible"
+          },
+          {
+            "label": "Split-Depth Vitals",
+            "description": "Foreground detail and background atmosphere in one composed frame",
+            "promptHint": "Create a single-frame split-depth composition for Glass Interface Vitals; do not make a collage or panel layout"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/glass-interface-vitals.jpg",
+      "sourceImageUrl": "/generated/26f340a820a3fd651b3f4cb368ca24c1.png"
+    },
+    {
+      "id": "voice-scribe-consult-room",
+      "title": "Voice Scribe Consult Room",
+      "caption": "AI documentation should feel invisible, respectful, and useful during a visit.",
+      "source": "Product context: voice workflows and ambient scribe",
+      "tone": "warm useful, calm confidence",
+      "motif": "consultation work surface, ambient voice cue, glass note layer",
+      "palette": "soft white, warm beige, muted blue, gentle green",
+      "prompt": "Single editorial photograph inside a modern consultation room, doctor hands resting near a tablet on a warm work surface while a subtle translucent glass note layer floats beside the tablet, abstract waveform and note blocks only, no readable text, patient represented only as an out-of-focus shoulder silhouette, respectful privacy, warm useful healthcare technology, premium calm confidence, natural daylight. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Candid Room",
+            "description": "More natural texture and believable lived-in detail for Voice Scribe Consult Room",
+            "promptHint": "Shift Voice Scribe Consult Room toward documentary realism while preserving AI documentation should feel invisible, respectful, and useful during a visit; make lighting and..."
+          },
+          {
+            "label": "Editorial Room",
+            "description": "Cleaner light and hierarchy around Voice Scribe Consult Room",
+            "promptHint": "Apply a polished editorial treatment to Voice Scribe Consult Room; preserve AI documentation should feel invisible, respectful, and useful during a visit while changing the..."
+          },
+          {
+            "label": "Minimal Room",
+            "description": "Quieter hierarchy, more negative space, and stricter restraint around Voice Scribe Consult Room",
+            "promptHint": "Strip Voice Scribe Consult Room down to a minimal premium frame; keep AI documentation should feel invisible, respectful, and useful during a visit legible but change the..."
+          }
+        ],
+        "palette": [
+          {
+            "label": "Unexpected Room",
+            "description": "A more surprising secondary color relationship around Voice Scribe Consult Room",
+            "promptHint": "Keep the subject recognizable, but introduce one unexpected supporting color that extends AI documentation should feel invisible, respectful, and useful during a visit"
+          },
+          {
+            "label": "Cool Room",
+            "description": "Crisper whites, cooler shadows, and restrained technical contrast",
+            "promptHint": "Use cooler minimal accents around Voice Scribe Consult Room; keep AI documentation should feel invisible, respectful, and useful during a visit intact"
+          },
+          {
+            "label": "Monochrome Room",
+            "description": "A narrower near-monochrome treatment that lets one cue around Voice Scribe Consult Room stand out",
+            "promptHint": "Reduce the palette around Voice Scribe Consult Room to tonal restraint plus one preserved cue from AI documentation should feel invisible, respectful, and useful during a visit"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Room Studio",
+            "description": "A cleaner controlled studio setting that keeps Voice Scribe Consult Room dominant",
+            "promptHint": "Move Voice Scribe Consult Room into a cleaner studio-hero setting while preserving AI documentation should feel invisible, respectful, and useful during a visit"
+          },
+          {
+            "label": "Room Detail",
+            "description": "A tighter scene focused on material, craft, or product detail",
+            "promptHint": "Create a close-detail scene for Voice Scribe Consult Room, keeping the most important source cue visible"
+          },
+          {
+            "label": "Room Backstage",
+            "description": "A behind-the-scenes environment that adds process and atmosphere around Voice Scribe Consult Room",
+            "promptHint": "Reframe Voice Scribe Consult Room as a backstage or preparation moment; keep AI documentation should feel invisible, respectful, and useful during a visit recognizable"
+          }
+        ],
+        "props": [
+          {
+            "label": "Minimal Support",
+            "description": "Reduce surrounding objects so Voice Scribe Consult Room carries more weight",
+            "promptHint": "Remove nonessential props and keep Voice Scribe Consult Room as the dominant read"
+          },
+          {
+            "label": "Premium Finish",
+            "description": "Sharper materials, cleaner surfaces, and more elevated detail",
+            "promptHint": "Add premium material cues around Voice Scribe Consult Room; preserve the source image's composition"
+          },
+          {
+            "label": "Process Cues",
+            "description": "Tools, traces, or handling details that make Voice Scribe Consult Room feel actively used",
+            "promptHint": "Add restrained process cues around Voice Scribe Consult Room; preserve the strongest visual idea from AI documentation should feel invisible, respectful, and useful during a visit"
+          }
+        ],
+        "character": [
+          {
+            "label": "Collector Persona",
+            "description": "A more intentional, taste-driven persona interacting with Voice Scribe Consult Room",
+            "promptHint": "Introduce a collector or tastemaker presence around Voice Scribe Consult Room while changing wardrobe, gesture, or posture"
+          },
+          {
+            "label": "Everyday Use",
+            "description": "More approachable human presence while preserving the mood",
+            "promptHint": "Show Voice Scribe Consult Room in an everyday user context without losing AI documentation should feel invisible, respectful, and useful during a visit"
+          },
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Voice Scribe Consult Room",
+            "promptHint": "Add a cropped passing figure or gesture around Voice Scribe Consult Room; keep identity nonspecific and preserve AI documentation should feel invisible, respectful, and useful..."
+          }
+        ],
+        "format": [
+          {
+            "label": "Wide Room",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Voice Scribe Consult Room to a wide hero composition with room for layout"
+          },
+          {
+            "label": "Square Room",
+            "description": "A balanced square crop for gallery or feed review",
+            "promptHint": "Recompose Voice Scribe Consult Room as a square frame with a changed focal balance and the core cue intact"
+          },
+          {
+            "label": "Portrait Room",
+            "description": "Tighter vertical crop for social or story placement",
+            "promptHint": "Adapt Voice Scribe Consult Room to a portrait social crop while preserving the key visual read"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/voice-scribe-consult-room.jpg",
+      "sourceImageUrl": "/generated/3456f37d4596a38da70384d16a402379.png"
+    },
+    {
+      "id": "patient-hub-command-surface",
+      "title": "Patient Hub Command Surface",
+      "caption": "A composed patient overview without exposing private data.",
+      "source": "Product context: patient hub and clinical dashboards",
+      "tone": "executive trust, premium focus",
+      "motif": "dashboard surface, patient story abstraction, clean interface glass",
+      "palette": "white, graphite, pale green, muted blue",
+      "prompt": "Single composed scene of a premium EHR patient hub displayed as abstract glass interface panes across a large clean monitor and a physical desk surface, privacy-safe silhouettes and chart shapes with no readable labels or numbers, a clinician's hand pointing calmly, refined clinic command-center atmosphere, warm daylight, executive trust, minimalist realistic photography. No logos, no readable text, no patient identifiers, no collage, no grid, no split panels. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Candid Surface",
+            "description": "More natural texture and believable lived-in detail for Patient Hub Command Surface",
+            "promptHint": "Shift Patient Hub Command Surface toward documentary realism while preserving A composed patient overview without exposing private data; make lighting and staging feel newly..."
+          },
+          {
+            "label": "Editorial Surface",
+            "description": "Cleaner light and hierarchy around Patient Hub Command Surface",
+            "promptHint": "Apply a polished editorial treatment to Patient Hub Command Surface; preserve A composed patient overview without exposing private data while changing the composition enough to..."
+          },
+          {
+            "label": "Minimal Surface",
+            "description": "Quieter hierarchy, more negative space, and stricter restraint around Patient Hub Command Surface",
+            "promptHint": "Strip Patient Hub Command Surface down to a minimal premium frame; keep A composed patient overview without exposing private data legible but change the surrounding space"
+          }
+        ],
+        "palette": [
+          {
+            "label": "Unexpected Surface",
+            "description": "A more surprising secondary color relationship around Patient Hub Command Surface",
+            "promptHint": "Keep the subject recognizable, but introduce one unexpected supporting color that extends A composed patient overview without exposing private data"
+          },
+          {
+            "label": "Cool Surface",
+            "description": "Crisper whites, cooler shadows, and restrained technical contrast",
+            "promptHint": "Use cooler minimal accents around Patient Hub Command Surface; keep A composed patient overview without exposing private data intact"
+          },
+          {
+            "label": "Monochrome Surface",
+            "description": "A narrower near-monochrome treatment that lets one cue around Patient Hub Command Surface stand out",
+            "promptHint": "Reduce the palette around Patient Hub Command Surface to tonal restraint plus one preserved cue from A composed patient overview without exposing private data"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Surface In Use",
+            "description": "A more believable real-world context for Patient Hub Command Surface",
+            "promptHint": "Place Patient Hub Command Surface into a realistic usage context; preserve the source image's core cue: A composed patient overview without exposing private data"
+          },
+          {
+            "label": "Surface Exterior",
+            "description": "Move Patient Hub Command Surface into an outdoor or threshold environment with a fresh spatial read",
+            "promptHint": "Relocate Patient Hub Command Surface into an exterior or entryway scene while preserving the core cue: A composed patient overview without exposing private data"
+          },
+          {
+            "label": "Surface Studio",
+            "description": "A cleaner controlled studio setting that keeps Patient Hub Command Surface dominant",
+            "promptHint": "Move Patient Hub Command Surface into a cleaner studio-hero setting while preserving A composed patient overview without exposing private data"
+          }
+        ],
+        "props": [
+          {
+            "label": "Surface Cues",
+            "description": "Add restrained supporting objects that clarify the context of Patient Hub Command Surface",
+            "promptHint": "Add a few contextual props that reinforce A composed patient overview without exposing private data without distracting from Patient Hub Command Surface"
+          },
+          {
+            "label": "Unexpected Surface Prop",
+            "description": "One surprising but believable object that opens a new story around Patient Hub Command Surface",
+            "promptHint": "Add one unexpected supporting prop that extends A composed patient overview without exposing private data without stealing focus from Patient Hub Command Surface"
+          },
+          {
+            "label": "Minimal Support",
+            "description": "Reduce surrounding objects so Patient Hub Command Surface carries more weight",
+            "promptHint": "Remove nonessential props and keep Patient Hub Command Surface as the dominant read"
+          }
+        ],
+        "character": [
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Patient Hub Command Surface",
+            "promptHint": "Add a cropped passing figure or gesture around Patient Hub Command Surface; keep identity nonspecific and preserve A composed patient overview without exposing private data"
+          },
+          {
+            "label": "Expert Hands",
+            "description": "More credible craft, authority, and purposeful interaction with Patient Hub Command Surface",
+            "promptHint": "If a person appears, make them an expert operator interacting naturally with Patient Hub Command Surface"
+          },
+          {
+            "label": "No Human",
+            "description": "Let the object, place, or composition carry the frame",
+            "promptHint": "Remove visible people and let Patient Hub Command Surface carry the image"
+          }
+        ],
+        "format": [
+          {
+            "label": "Split-Depth Surface",
+            "description": "Foreground detail and background atmosphere in one composed frame",
+            "promptHint": "Create a single-frame split-depth composition for Patient Hub Command Surface; do not make a collage or panel layout"
+          },
+          {
+            "label": "Wide Surface",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Patient Hub Command Surface to a wide hero composition with room for layout"
+          },
+          {
+            "label": "Square Surface",
+            "description": "A balanced square crop for gallery or feed review",
+            "promptHint": "Recompose Patient Hub Command Surface as a square frame with a changed focal balance and the core cue intact"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/patient-hub-command-surface.jpg",
+      "sourceImageUrl": "/generated/c6cde9c7868734bfb9e9c593ae6641a3.png"
+    },
+    {
+      "id": "prescription-safety-desk",
+      "title": "Prescription Safety Desk",
+      "caption": "Medication support shown as careful, quiet, and safety-led.",
+      "source": "Product context: prescriptions and medication safety UI",
+      "tone": "calm confidence, clinical precision",
+      "motif": "medication tray, glass decision pane, doctor workflow",
+      "palette": "warm white, graphite, pale blue, amber safety accent",
+      "prompt": "Single editorial product photograph of a physician work surface with a closed prescription pad, a few neutral medication blister packs, and a translucent glass decision pane showing abstract interaction-alert shapes in amber and blue with no readable text, premium clinical safety mood, careful and calm, realistic warm daylight, minimal futuristic healthcare. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Motion Desk",
+            "description": "More kinetic gesture, blur, or environmental energy around Prescription Safety Desk",
+            "promptHint": "Introduce controlled motion to Prescription Safety Desk while preserving the campaign cue: Medication support shown as careful, quiet, and safety-led"
+          },
+          {
+            "label": "Material Desk",
+            "description": "A closer tactile read of surface, temperature, and finish around Prescription Safety Desk",
+            "promptHint": "Rebuild Prescription Safety Desk as a tactile material study inspired by Medication support shown as careful, quiet, and safety-led, with a visibly different crop and focal plane"
+          },
+          {
+            "label": "Dramatic Desk",
+            "description": "Richer blacks, sharper highlights, and more cinematic emphasis",
+            "promptHint": "Apply high-contrast cinematic treatment to Prescription Safety Desk; keep Medication support shown as careful, quiet, and safety-led recognizable but alter camera angle or staging"
+          }
+        ],
+        "palette": [
+          {
+            "label": "Accent Desk",
+            "description": "A stronger accent color against quieter supporting surfaces",
+            "promptHint": "Add a controlled accent palette to Prescription Safety Desk without changing the main subject"
+          },
+          {
+            "label": "Unexpected Desk",
+            "description": "A more surprising secondary color relationship around Prescription Safety Desk",
+            "promptHint": "Keep the subject recognizable, but introduce one unexpected supporting color that extends Medication support shown as careful, quiet, and safety-led"
+          },
+          {
+            "label": "Cool Desk",
+            "description": "Crisper whites, cooler shadows, and restrained technical contrast",
+            "promptHint": "Use cooler minimal accents around Prescription Safety Desk; keep Medication support shown as careful, quiet, and safety-led intact"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Desk Backstage",
+            "description": "A behind-the-scenes environment that adds process and atmosphere around Prescription Safety Desk",
+            "promptHint": "Reframe Prescription Safety Desk as a backstage or preparation moment; keep Medication support shown as careful, quiet, and safety-led recognizable"
+          },
+          {
+            "label": "Desk In Use",
+            "description": "A more believable real-world context for Prescription Safety Desk",
+            "promptHint": "Place Prescription Safety Desk into a realistic usage context; preserve the source image's core cue: Medication support shown as careful, quiet, and safety-led"
+          },
+          {
+            "label": "Desk Exterior",
+            "description": "Move Prescription Safety Desk into an outdoor or threshold environment with a fresh spatial read",
+            "promptHint": "Relocate Prescription Safety Desk into an exterior or entryway scene while preserving the core cue: Medication support shown as careful, quiet, and safety-led"
+          }
+        ],
+        "props": [
+          {
+            "label": "Process Cues",
+            "description": "Tools, traces, or handling details that make Prescription Safety Desk feel actively used",
+            "promptHint": "Add restrained process cues around Prescription Safety Desk; preserve the strongest visual idea from Medication support shown as careful, quiet, and safety-led"
+          },
+          {
+            "label": "Desk Cues",
+            "description": "Add restrained supporting objects that clarify the context of Prescription Safety Desk",
+            "promptHint": "Add a few contextual props that reinforce Medication support shown as careful, quiet, and safety-led without distracting from Prescription Safety Desk"
+          },
+          {
+            "label": "Unexpected Desk Prop",
+            "description": "One surprising but believable object that opens a new story around Prescription Safety Desk",
+            "promptHint": "Add one unexpected supporting prop that extends Medication support shown as careful, quiet, and safety-led without stealing focus from Prescription Safety Desk"
+          }
+        ],
+        "character": [
+          {
+            "label": "Everyday Use",
+            "description": "More approachable human presence while preserving the mood",
+            "promptHint": "Show Prescription Safety Desk in an everyday user context without losing Medication support shown as careful, quiet, and safety-led"
+          },
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Prescription Safety Desk",
+            "promptHint": "Add a cropped passing figure or gesture around Prescription Safety Desk; keep identity nonspecific and preserve Medication support shown as careful, quiet, and safety-led"
+          },
+          {
+            "label": "Expert Hands",
+            "description": "More credible craft, authority, and purposeful interaction with Prescription Safety Desk",
+            "promptHint": "If a person appears, make them an expert operator interacting naturally with Prescription Safety Desk"
+          }
+        ],
+        "format": [
+          {
+            "label": "Desk Crop",
+            "description": "Closer inspection of the material, surface, or focal subject",
+            "promptHint": "Create a closer detail crop of Prescription Safety Desk; keep Medication support shown as careful, quiet, and safety-led legible"
+          },
+          {
+            "label": "Split-Depth Desk",
+            "description": "Foreground detail and background atmosphere in one composed frame",
+            "promptHint": "Create a single-frame split-depth composition for Prescription Safety Desk; do not make a collage or panel layout"
+          },
+          {
+            "label": "Wide Desk",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Prescription Safety Desk to a wide hero composition with room for layout"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/prescription-safety-desk.jpg",
+      "sourceImageUrl": "/generated/ce238b4ff339aa22d2f75a20599302e0.png"
+    },
+    {
+      "id": "predictive-timeline-glass",
+      "title": "Predictive Timeline Glass",
+      "caption": "Future clinical risk becomes calm and legible, not alarming.",
+      "source": "Product context: predictive timeline",
+      "tone": "futurist minimal, calm confidence",
+      "motif": "timeline ribbon, glass plane, soft clinical environment",
+      "palette": "white, mist blue, mint, graphite, small amber",
+      "prompt": "Single visual reference image of an elegant translucent timeline ribbon floating above a white clinic desk, abstract nodes and risk gradients only, no readable text or numbers, soft focus background of a calm modern healthcare office, premium minimal data visualization, gentle blue-green palette, executive trust and calm confidence, realistic photography with subtle digital compositing. No logos, no readable text, no patient identifiers, no collage, no grid. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Material Glass",
+            "description": "A closer tactile read of surface, temperature, and finish around Predictive Timeline Glass",
+            "promptHint": "Rebuild Predictive Timeline Glass as a tactile material study inspired by Future clinical risk becomes calm and legible, not alarming, with a visibly different crop and focal plane"
+          },
+          {
+            "label": "Dramatic Glass",
+            "description": "Richer blacks, sharper highlights, and more cinematic emphasis",
+            "promptHint": "Apply high-contrast cinematic treatment to Predictive Timeline Glass; keep Future clinical risk becomes calm and legible, not alarming recognizable but alter camera angle or..."
+          },
+          {
+            "label": "Candid Glass",
+            "description": "More natural texture and believable lived-in detail for Predictive Timeline Glass",
+            "promptHint": "Shift Predictive Timeline Glass toward documentary realism while preserving Future clinical risk becomes calm and legible, not alarming; make lighting and staging feel newly..."
+          }
+        ],
+        "palette": [
+          {
+            "label": "Cool Glass",
+            "description": "Crisper whites, cooler shadows, and restrained technical contrast",
+            "promptHint": "Use cooler minimal accents around Predictive Timeline Glass; keep Future clinical risk becomes calm and legible, not alarming intact"
+          },
+          {
+            "label": "Monochrome Glass",
+            "description": "A narrower near-monochrome treatment that lets one cue around Predictive Timeline Glass stand out",
+            "promptHint": "Reduce the palette around Predictive Timeline Glass to tonal restraint plus one preserved cue from Future clinical risk becomes calm and legible, not alarming"
+          },
+          {
+            "label": "Warm Glass",
+            "description": "Warmer neutrals and tactile highlights around Predictive Timeline Glass",
+            "promptHint": "Shift the palette warmer while preserving the subject and composition of Predictive Timeline Glass"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Glass Studio",
+            "description": "A cleaner controlled studio setting that keeps Predictive Timeline Glass dominant",
+            "promptHint": "Move Predictive Timeline Glass into a cleaner studio-hero setting while preserving Future clinical risk becomes calm and legible, not alarming"
+          },
+          {
+            "label": "Glass Detail",
+            "description": "A tighter scene focused on material, craft, or product detail",
+            "promptHint": "Create a close-detail scene for Predictive Timeline Glass, keeping the most important source cue visible"
+          },
+          {
+            "label": "Glass Backstage",
+            "description": "A behind-the-scenes environment that adds process and atmosphere around Predictive Timeline Glass",
+            "promptHint": "Reframe Predictive Timeline Glass as a backstage or preparation moment; keep Future clinical risk becomes calm and legible, not alarming recognizable"
+          }
+        ],
+        "props": [
+          {
+            "label": "Minimal Support",
+            "description": "Reduce surrounding objects so Predictive Timeline Glass carries more weight",
+            "promptHint": "Remove nonessential props and keep Predictive Timeline Glass as the dominant read"
+          },
+          {
+            "label": "Premium Finish",
+            "description": "Sharper materials, cleaner surfaces, and more elevated detail",
+            "promptHint": "Add premium material cues around Predictive Timeline Glass; preserve the source image's composition"
+          },
+          {
+            "label": "Process Cues",
+            "description": "Tools, traces, or handling details that make Predictive Timeline Glass feel actively used",
+            "promptHint": "Add restrained process cues around Predictive Timeline Glass; preserve the strongest visual idea from Future clinical risk becomes calm and legible, not alarming"
+          }
+        ],
+        "character": [
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Predictive Timeline Glass",
+            "promptHint": "Add a cropped passing figure or gesture around Predictive Timeline Glass; keep identity nonspecific and preserve Future clinical risk becomes calm and legible, not alarming"
+          },
+          {
+            "label": "Expert Hands",
+            "description": "More credible craft, authority, and purposeful interaction with Predictive Timeline Glass",
+            "promptHint": "If a person appears, make them an expert operator interacting naturally with Predictive Timeline Glass"
+          },
+          {
+            "label": "No Human",
+            "description": "Let the object, place, or composition carry the frame",
+            "promptHint": "Remove visible people and let Predictive Timeline Glass carry the image"
+          }
+        ],
+        "format": [
+          {
+            "label": "Glass Crop",
+            "description": "Closer inspection of the material, surface, or focal subject",
+            "promptHint": "Create a closer detail crop of Predictive Timeline Glass; keep Future clinical risk becomes calm and legible, not alarming legible"
+          },
+          {
+            "label": "Split-Depth Glass",
+            "description": "Foreground detail and background atmosphere in one composed frame",
+            "promptHint": "Create a single-frame split-depth composition for Predictive Timeline Glass; do not make a collage or panel layout"
+          },
+          {
+            "label": "Wide Glass",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Predictive Timeline Glass to a wide hero composition with room for layout"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/predictive-timeline-glass.jpg",
+      "sourceImageUrl": "/generated/d3cb4932dd206baded7d187dbe4c9490.png"
+    },
+    {
+      "id": "admin-trust-boardroom",
+      "title": "Admin Trust Boardroom",
+      "caption": "Operational leadership sees the clinic clearly without visual noise.",
+      "source": "Audience cue: health administrators and executives",
+      "tone": "executive trust, premium focus",
+      "motif": "boardroom, glass dashboards, clinic operations",
+      "palette": "ivory, graphite, pale blue, muted green",
+      "prompt": "Single editorial photograph in a small premium healthcare boardroom, clinic administrators around a warm wood and glass conference table reviewing large translucent interface panes with abstract appointment, staffing, and finance blocks, no readable text, soft daylight, refined and practical, calm executive trust, minimal futuristic healthcare campaign image. No logos, no readable text, no patient identifiers, no collage, no grid, no split panels. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Dramatic Boardroom",
+            "description": "Richer blacks, sharper highlights, and more cinematic emphasis",
+            "promptHint": "Apply high-contrast cinematic treatment to Admin Trust Boardroom; keep Operational leadership sees the clinic clearly without visual noise recognizable but alter camera angle..."
+          },
+          {
+            "label": "Candid Boardroom",
+            "description": "More natural texture and believable lived-in detail for Admin Trust Boardroom",
+            "promptHint": "Shift Admin Trust Boardroom toward documentary realism while preserving Operational leadership sees the clinic clearly without visual noise; make lighting and staging feel..."
+          },
+          {
+            "label": "Editorial Boardroom",
+            "description": "Cleaner light and hierarchy around Admin Trust Boardroom",
+            "promptHint": "Apply a polished editorial treatment to Admin Trust Boardroom; preserve Operational leadership sees the clinic clearly without visual noise while changing the composition..."
+          }
+        ],
+        "palette": [
+          {
+            "label": "Monochrome Boardroom",
+            "description": "A narrower near-monochrome treatment that lets one cue around Admin Trust Boardroom stand out",
+            "promptHint": "Reduce the palette around Admin Trust Boardroom to tonal restraint plus one preserved cue from Operational leadership sees the clinic clearly without visual noise"
+          },
+          {
+            "label": "Warm Boardroom",
+            "description": "Warmer neutrals and tactile highlights around Admin Trust Boardroom",
+            "promptHint": "Shift the palette warmer while preserving the subject and composition of Admin Trust Boardroom"
+          },
+          {
+            "label": "Accent Boardroom",
+            "description": "A stronger accent color against quieter supporting surfaces",
+            "promptHint": "Add a controlled accent palette to Admin Trust Boardroom without changing the main subject"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Boardroom Detail",
+            "description": "A tighter scene focused on material, craft, or product detail",
+            "promptHint": "Create a close-detail scene for Admin Trust Boardroom, keeping the most important source cue visible"
+          },
+          {
+            "label": "Boardroom Backstage",
+            "description": "A behind-the-scenes environment that adds process and atmosphere around Admin Trust Boardroom",
+            "promptHint": "Reframe Admin Trust Boardroom as a backstage or preparation moment; keep Operational leadership sees the clinic clearly without visual noise recognizable"
+          },
+          {
+            "label": "Boardroom In Use",
+            "description": "A more believable real-world context for Admin Trust Boardroom",
+            "promptHint": "Place Admin Trust Boardroom into a realistic usage context; preserve the source image's core cue: Operational leadership sees the clinic clearly without visual noise"
+          }
+        ],
+        "props": [
+          {
+            "label": "Premium Finish",
+            "description": "Sharper materials, cleaner surfaces, and more elevated detail",
+            "promptHint": "Add premium material cues around Admin Trust Boardroom; preserve the source image's composition"
+          },
+          {
+            "label": "Process Cues",
+            "description": "Tools, traces, or handling details that make Admin Trust Boardroom feel actively used",
+            "promptHint": "Add restrained process cues around Admin Trust Boardroom; preserve the strongest visual idea from Operational leadership sees the clinic clearly without visual noise"
+          },
+          {
+            "label": "Boardroom Cues",
+            "description": "Add restrained supporting objects that clarify the context of Admin Trust Boardroom",
+            "promptHint": "Add a few contextual props that reinforce Operational leadership sees the clinic clearly without visual noise without distracting from Admin Trust Boardroom"
+          }
+        ],
+        "character": [
+          {
+            "label": "Expert Hands",
+            "description": "More credible craft, authority, and purposeful interaction with Admin Trust Boardroom",
+            "promptHint": "If a person appears, make them an expert operator interacting naturally with Admin Trust Boardroom"
+          },
+          {
+            "label": "No Human",
+            "description": "Let the object, place, or composition carry the frame",
+            "promptHint": "Remove visible people and let Admin Trust Boardroom carry the image"
+          },
+          {
+            "label": "Collector Persona",
+            "description": "A more intentional, taste-driven persona interacting with Admin Trust Boardroom",
+            "promptHint": "Introduce a collector or tastemaker presence around Admin Trust Boardroom while changing wardrobe, gesture, or posture"
+          }
+        ],
+        "format": [
+          {
+            "label": "Split-Depth Boardroom",
+            "description": "Foreground detail and background atmosphere in one composed frame",
+            "promptHint": "Create a single-frame split-depth composition for Admin Trust Boardroom; do not make a collage or panel layout"
+          },
+          {
+            "label": "Wide Boardroom",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Admin Trust Boardroom to a wide hero composition with room for layout"
+          },
+          {
+            "label": "Square Boardroom",
+            "description": "A balanced square crop for gallery or feed review",
+            "promptHint": "Recompose Admin Trust Boardroom as a square frame with a changed focal balance and the core cue intact"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/admin-trust-boardroom.jpg",
+      "sourceImageUrl": "/generated/b2242dbf8db0077c4b15e6ea8af7d9e0.png"
+    },
+    {
+      "id": "documents-revenue-workflow",
+      "title": "Documents Revenue Workflow",
+      "caption": "Documentation and revenue-cycle intelligence presented as organized calm.",
+      "source": "Product context: documents, claims, revenue analytics",
+      "tone": "warm useful, executive trust",
+      "motif": "paperless documents, glass cards, organized work surface",
+      "palette": "warm ivory, graphite, pale blue, soft amber",
+      "prompt": "Single composed scene of a clean clinic operations desk with neatly stacked blank forms, a tablet, and floating glass document cards showing abstract blocks and status marks only, no readable text, small amber signals for priority, warm practical healthcare administration, premium but grounded, realistic daylight photography. No logos, no readable text, no patient identifiers, no collage, no grid, no mood board layout. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Motion Workflow",
+            "description": "More kinetic gesture, blur, or environmental energy around Documents Revenue Workflow",
+            "promptHint": "Introduce controlled motion to Documents Revenue Workflow while preserving the campaign cue: Documentation and revenue-cycle intelligence presented as organized calm"
+          },
+          {
+            "label": "Material Workflow",
+            "description": "A closer tactile read of surface, temperature, and finish around Documents Revenue Workflow",
+            "promptHint": "Rebuild Documents Revenue Workflow as a tactile material study inspired by Documentation and revenue-cycle intelligence presented as organized calm, with a visibly different..."
+          },
+          {
+            "label": "Dramatic Workflow",
+            "description": "Richer blacks, sharper highlights, and more cinematic emphasis",
+            "promptHint": "Apply high-contrast cinematic treatment to Documents Revenue Workflow; keep Documentation and revenue-cycle intelligence presented as organized calm recognizable but alter..."
+          }
+        ],
+        "palette": [
+          {
+            "label": "Unexpected Workflow",
+            "description": "A more surprising secondary color relationship around Documents Revenue Workflow",
+            "promptHint": "Keep the subject recognizable, but introduce one unexpected supporting color that extends Documentation and revenue-cycle intelligence presented as organized calm"
+          },
+          {
+            "label": "Cool Workflow",
+            "description": "Crisper whites, cooler shadows, and restrained technical contrast",
+            "promptHint": "Use cooler minimal accents around Documents Revenue Workflow; keep Documentation and revenue-cycle intelligence presented as organized calm intact"
+          },
+          {
+            "label": "Monochrome Workflow",
+            "description": "A narrower near-monochrome treatment that lets one cue around Documents Revenue Workflow stand out",
+            "promptHint": "Reduce the palette around Documents Revenue Workflow to tonal restraint plus one preserved cue from Documentation and revenue-cycle intelligence presented as organized calm"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Workflow In Use",
+            "description": "A more believable real-world context for Documents Revenue Workflow",
+            "promptHint": "Place Documents Revenue Workflow into a realistic usage context; preserve the source image's core cue: Documentation and revenue-cycle intelligence presented as organized calm"
+          },
+          {
+            "label": "Workflow Exterior",
+            "description": "Move Documents Revenue Workflow into an outdoor or threshold environment with a fresh spatial read",
+            "promptHint": "Relocate Documents Revenue Workflow into an exterior or entryway scene while preserving the core cue: Documentation and revenue-cycle intelligence presented as organized calm"
+          },
+          {
+            "label": "Workflow Studio",
+            "description": "A cleaner controlled studio setting that keeps Documents Revenue Workflow dominant",
+            "promptHint": "Move Documents Revenue Workflow into a cleaner studio-hero setting while preserving Documentation and revenue-cycle intelligence presented as organized calm"
+          }
+        ],
+        "props": [
+          {
+            "label": "Workflow Cues",
+            "description": "Add restrained supporting objects that clarify the context of Documents Revenue Workflow",
+            "promptHint": "Add a few contextual props that reinforce Documentation and revenue-cycle intelligence presented as organized calm without distracting from Documents Revenue Workflow"
+          },
+          {
+            "label": "Unexpected Workflow Prop",
+            "description": "One surprising but believable object that opens a new story around Documents Revenue Workflow",
+            "promptHint": "Add one unexpected supporting prop that extends Documentation and revenue-cycle intelligence presented as organized calm without stealing focus from Documents Revenue Workflow"
+          },
+          {
+            "label": "Minimal Support",
+            "description": "Reduce surrounding objects so Documents Revenue Workflow carries more weight",
+            "promptHint": "Remove nonessential props and keep Documents Revenue Workflow as the dominant read"
+          }
+        ],
+        "character": [
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Documents Revenue Workflow",
+            "promptHint": "Add a cropped passing figure or gesture around Documents Revenue Workflow; keep identity nonspecific and preserve Documentation and revenue-cycle intelligence presented as..."
+          },
+          {
+            "label": "Expert Hands",
+            "description": "More credible craft, authority, and purposeful interaction with Documents Revenue Workflow",
+            "promptHint": "If a person appears, make them an expert operator interacting naturally with Documents Revenue Workflow"
+          },
+          {
+            "label": "No Human",
+            "description": "Let the object, place, or composition carry the frame",
+            "promptHint": "Remove visible people and let Documents Revenue Workflow carry the image"
+          }
+        ],
+        "format": [
+          {
+            "label": "Split-Depth Workflow",
+            "description": "Foreground detail and background atmosphere in one composed frame",
+            "promptHint": "Create a single-frame split-depth composition for Documents Revenue Workflow; do not make a collage or panel layout"
+          },
+          {
+            "label": "Wide Workflow",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Documents Revenue Workflow to a wide hero composition with room for layout"
+          },
+          {
+            "label": "Square Workflow",
+            "description": "A balanced square crop for gallery or feed review",
+            "promptHint": "Recompose Documents Revenue Workflow as a square frame with a changed focal balance and the core cue intact"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/documents-revenue-workflow.jpg",
+      "sourceImageUrl": "/generated/a1de59a7d74b8d5d7238ca7582fd615e.png"
+    },
+    {
+      "id": "bilingual-care-interface",
+      "title": "Bilingual Care Interface",
+      "caption": "Language support suggested through human connection, not literal copy.",
+      "source": "Product context: bilingual consultation and symptom mappings",
+      "tone": "warm useful, calm confidence",
+      "motif": "conversation, soft voice wave, transparent interface",
+      "palette": "soft white, warm neutrals, pale green, muted blue",
+      "prompt": "Single editorial photograph of a calm clinic conversation at a desk, clinician and patient hands visible with respectful privacy, a subtle translucent speech-wave interface floating between them as abstract shapes only, no letters or readable text, warm daylight, human-centered EHR intelligence, premium useful feeling, quiet trust. No logos, no readable text, no patient identifiers, no collage, no grid, no split panels. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Material Interface",
+            "description": "A closer tactile read of surface, temperature, and finish around Bilingual Care Interface",
+            "promptHint": "Rebuild Bilingual Care Interface as a tactile material study inspired by Language support suggested through human connection, not literal copy, with a visibly different crop..."
+          },
+          {
+            "label": "Dramatic Interface",
+            "description": "Richer blacks, sharper highlights, and more cinematic emphasis",
+            "promptHint": "Apply high-contrast cinematic treatment to Bilingual Care Interface; keep Language support suggested through human connection, not literal copy recognizable but alter camera..."
+          },
+          {
+            "label": "Candid Interface",
+            "description": "More natural texture and believable lived-in detail for Bilingual Care Interface",
+            "promptHint": "Shift Bilingual Care Interface toward documentary realism while preserving Language support suggested through human connection, not literal copy; make lighting and staging feel..."
+          }
+        ],
+        "palette": [
+          {
+            "label": "Warm Interface",
+            "description": "Warmer neutrals and tactile highlights around Bilingual Care Interface",
+            "promptHint": "Shift the palette warmer while preserving the subject and composition of Bilingual Care Interface"
+          },
+          {
+            "label": "Accent Interface",
+            "description": "A stronger accent color against quieter supporting surfaces",
+            "promptHint": "Add a controlled accent palette to Bilingual Care Interface without changing the main subject"
+          },
+          {
+            "label": "Unexpected Interface",
+            "description": "A more surprising secondary color relationship around Bilingual Care Interface",
+            "promptHint": "Keep the subject recognizable, but introduce one unexpected supporting color that extends Language support suggested through human connection, not literal copy"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Interface Studio",
+            "description": "A cleaner controlled studio setting that keeps Bilingual Care Interface dominant",
+            "promptHint": "Move Bilingual Care Interface into a cleaner studio-hero setting while preserving Language support suggested through human connection, not literal copy"
+          },
+          {
+            "label": "Interface Detail",
+            "description": "A tighter scene focused on material, craft, or product detail",
+            "promptHint": "Create a close-detail scene for Bilingual Care Interface, keeping the most important source cue visible"
+          },
+          {
+            "label": "Interface Backstage",
+            "description": "A behind-the-scenes environment that adds process and atmosphere around Bilingual Care Interface",
+            "promptHint": "Reframe Bilingual Care Interface as a backstage or preparation moment; keep Language support suggested through human connection, not literal copy recognizable"
+          }
+        ],
+        "props": [
+          {
+            "label": "Minimal Support",
+            "description": "Reduce surrounding objects so Bilingual Care Interface carries more weight",
+            "promptHint": "Remove nonessential props and keep Bilingual Care Interface as the dominant read"
+          },
+          {
+            "label": "Premium Finish",
+            "description": "Sharper materials, cleaner surfaces, and more elevated detail",
+            "promptHint": "Add premium material cues around Bilingual Care Interface; preserve the source image's composition"
+          },
+          {
+            "label": "Process Cues",
+            "description": "Tools, traces, or handling details that make Bilingual Care Interface feel actively used",
+            "promptHint": "Add restrained process cues around Bilingual Care Interface; preserve the strongest visual idea from Language support suggested through human connection, not literal copy"
+          }
+        ],
+        "character": [
+          {
+            "label": "Everyday Use",
+            "description": "More approachable human presence while preserving the mood",
+            "promptHint": "Show Bilingual Care Interface in an everyday user context without losing Language support suggested through human connection, not literal copy"
+          },
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Bilingual Care Interface",
+            "promptHint": "Add a cropped passing figure or gesture around Bilingual Care Interface; keep identity nonspecific and preserve Language support suggested through human connection, not literal..."
+          },
+          {
+            "label": "Expert Hands",
+            "description": "More credible craft, authority, and purposeful interaction with Bilingual Care Interface",
+            "promptHint": "If a person appears, make them an expert operator interacting naturally with Bilingual Care Interface"
+          }
+        ],
+        "format": [
+          {
+            "label": "Split-Depth Interface",
+            "description": "Foreground detail and background atmosphere in one composed frame",
+            "promptHint": "Create a single-frame split-depth composition for Bilingual Care Interface; do not make a collage or panel layout"
+          },
+          {
+            "label": "Wide Interface",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Bilingual Care Interface to a wide hero composition with room for layout"
+          },
+          {
+            "label": "Square Interface",
+            "description": "A balanced square crop for gallery or feed review",
+            "promptHint": "Recompose Bilingual Care Interface as a square frame with a changed focal balance and the core cue intact"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/bilingual-care-interface.jpg",
+      "sourceImageUrl": "/generated/3496bd242269c801e30088fb97a53056.png"
+    },
+    {
+      "id": "digital-twin-material-study",
+      "title": "Digital Twin Material Study",
+      "caption": "Advanced clinical ideas expressed with restraint and material polish.",
+      "source": "Product context: digital twin and genomics features",
+      "tone": "futurist minimal, premium focus",
+      "motif": "glass model, clinical object detail, restrained future",
+      "palette": "white, translucent blue, graphite, mint",
+      "prompt": "Single macro editorial photograph of a translucent glass anatomical abstraction on a white clinical work surface beside a tablet edge, softly illuminated blue-green internal lines suggesting a digital twin without literal organs or labels, premium minimal healthcare technology, quiet and sophisticated, shallow depth of field, no sci-fi neon. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Editorial Material",
+            "description": "Cleaner light and hierarchy around Digital Twin Material Study",
+            "promptHint": "Apply a polished editorial treatment to Digital Twin Material Study; preserve Advanced clinical ideas expressed with restraint and material polish while changing the..."
+          },
+          {
+            "label": "Minimal Material",
+            "description": "Quieter hierarchy, more negative space, and stricter restraint around Digital Twin Material Study",
+            "promptHint": "Strip Digital Twin Material Study down to a minimal premium frame; keep Advanced clinical ideas expressed with restraint and material polish legible but change the surrounding..."
+          },
+          {
+            "label": "Motion Material",
+            "description": "More kinetic gesture, blur, or environmental energy around Digital Twin Material Study",
+            "promptHint": "Introduce controlled motion to Digital Twin Material Study while preserving the campaign cue: Advanced clinical ideas expressed with restraint and material polish"
+          }
+        ],
+        "palette": [
+          {
+            "label": "Monochrome Material",
+            "description": "A narrower near-monochrome treatment that lets one cue around Digital Twin Material Study stand out",
+            "promptHint": "Reduce the palette around Digital Twin Material Study to tonal restraint plus one preserved cue from Advanced clinical ideas expressed with restraint and material polish"
+          },
+          {
+            "label": "Warm Material",
+            "description": "Warmer neutrals and tactile highlights around Digital Twin Material Study",
+            "promptHint": "Shift the palette warmer while preserving the subject and composition of Digital Twin Material Study"
+          },
+          {
+            "label": "Accent Material",
+            "description": "A stronger accent color against quieter supporting surfaces",
+            "promptHint": "Add a controlled accent palette to Digital Twin Material Study without changing the main subject"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Material Exterior",
+            "description": "Move Digital Twin Material Study into an outdoor or threshold environment with a fresh spatial read",
+            "promptHint": "Relocate Digital Twin Material Study into an exterior or entryway scene while preserving the core cue: Advanced clinical ideas expressed with restraint and material polish"
+          },
+          {
+            "label": "Material Studio",
+            "description": "A cleaner controlled studio setting that keeps Digital Twin Material Study dominant",
+            "promptHint": "Move Digital Twin Material Study into a cleaner studio-hero setting while preserving Advanced clinical ideas expressed with restraint and material polish"
+          },
+          {
+            "label": "Material Detail",
+            "description": "A tighter scene focused on material, craft, or product detail",
+            "promptHint": "Create a close-detail scene for Digital Twin Material Study, keeping the most important source cue visible"
+          }
+        ],
+        "props": [
+          {
+            "label": "Unexpected Material Prop",
+            "description": "One surprising but believable object that opens a new story around Digital Twin Material Study",
+            "promptHint": "Add one unexpected supporting prop that extends Advanced clinical ideas expressed with restraint and material polish without stealing focus from Digital Twin Material Study"
+          },
+          {
+            "label": "Minimal Support",
+            "description": "Reduce surrounding objects so Digital Twin Material Study carries more weight",
+            "promptHint": "Remove nonessential props and keep Digital Twin Material Study as the dominant read"
+          },
+          {
+            "label": "Premium Finish",
+            "description": "Sharper materials, cleaner surfaces, and more elevated detail",
+            "promptHint": "Add premium material cues around Digital Twin Material Study; preserve the source image's composition"
+          }
+        ],
+        "character": [
+          {
+            "label": "Collector Persona",
+            "description": "A more intentional, taste-driven persona interacting with Digital Twin Material Study",
+            "promptHint": "Introduce a collector or tastemaker presence around Digital Twin Material Study while changing wardrobe, gesture, or posture"
+          },
+          {
+            "label": "Everyday Use",
+            "description": "More approachable human presence while preserving the mood",
+            "promptHint": "Show Digital Twin Material Study in an everyday user context without losing Advanced clinical ideas expressed with restraint and material polish"
+          },
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Digital Twin Material Study",
+            "promptHint": "Add a cropped passing figure or gesture around Digital Twin Material Study; keep identity nonspecific and preserve Advanced clinical ideas expressed with restraint and material..."
+          }
+        ],
+        "format": [
+          {
+            "label": "Material Crop",
+            "description": "Closer inspection of the material, surface, or focal subject",
+            "promptHint": "Create a closer detail crop of Digital Twin Material Study; keep Advanced clinical ideas expressed with restraint and material polish legible"
+          },
+          {
+            "label": "Split-Depth Material",
+            "description": "Foreground detail and background atmosphere in one composed frame",
+            "promptHint": "Create a single-frame split-depth composition for Digital Twin Material Study; do not make a collage or panel layout"
+          },
+          {
+            "label": "Wide Material",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Digital Twin Material Study to a wide hero composition with room for layout"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/digital-twin-material-study.jpg",
+      "sourceImageUrl": "/generated/a8589412efc0f99f7c36634b94f38bb0.png"
+    },
+    {
+      "id": "clinic-flow-morning",
+      "title": "Clinic Flow Morning",
+      "caption": "The clinic day starts organized, bright, and operationally clear.",
+      "source": "Campaign goal: clinic overload solved by one command center",
+      "tone": "calm confidence, warm useful",
+      "motif": "front desk, glass schedule interface, soft morning clinic",
+      "palette": "warm white, pale blue, soft green, graphite",
+      "prompt": "Single editorial photograph of a refined clinic front desk in morning light, staff hands arranging a tablet and appointment materials while a translucent glass schedule layer floats above the counter, abstract appointment blocks only with no readable text, organized calm, warm useful healthcare operations, premium minimal realism. No logos, no readable text, no patient identifiers, no collage, no grid, no split panels. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Minimal Morning",
+            "description": "Quieter hierarchy, more negative space, and stricter restraint around Clinic Flow Morning",
+            "promptHint": "Strip Clinic Flow Morning down to a minimal premium frame; keep The clinic day starts organized, bright, and operationally clear legible but change the surrounding space"
+          },
+          {
+            "label": "Motion Morning",
+            "description": "More kinetic gesture, blur, or environmental energy around Clinic Flow Morning",
+            "promptHint": "Introduce controlled motion to Clinic Flow Morning while preserving the campaign cue: The clinic day starts organized, bright, and operationally clear"
+          },
+          {
+            "label": "Material Morning",
+            "description": "A closer tactile read of surface, temperature, and finish around Clinic Flow Morning",
+            "promptHint": "Rebuild Clinic Flow Morning as a tactile material study inspired by The clinic day starts organized, bright, and operationally clear, with a visibly different crop and focal plane"
+          }
+        ],
+        "palette": [
+          {
+            "label": "Unexpected Morning",
+            "description": "A more surprising secondary color relationship around Clinic Flow Morning",
+            "promptHint": "Keep the subject recognizable, but introduce one unexpected supporting color that extends The clinic day starts organized, bright, and operationally clear"
+          },
+          {
+            "label": "Cool Morning",
+            "description": "Crisper whites, cooler shadows, and restrained technical contrast",
+            "promptHint": "Use cooler minimal accents around Clinic Flow Morning; keep The clinic day starts organized, bright, and operationally clear intact"
+          },
+          {
+            "label": "Monochrome Morning",
+            "description": "A narrower near-monochrome treatment that lets one cue around Clinic Flow Morning stand out",
+            "promptHint": "Reduce the palette around Clinic Flow Morning to tonal restraint plus one preserved cue from The clinic day starts organized, bright, and operationally clear"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Morning Studio",
+            "description": "A cleaner controlled studio setting that keeps Clinic Flow Morning dominant",
+            "promptHint": "Move Clinic Flow Morning into a cleaner studio-hero setting while preserving The clinic day starts organized, bright, and operationally clear"
+          },
+          {
+            "label": "Morning Detail",
+            "description": "A tighter scene focused on material, craft, or product detail",
+            "promptHint": "Create a close-detail scene for Clinic Flow Morning, keeping the most important source cue visible"
+          },
+          {
+            "label": "Morning Backstage",
+            "description": "A behind-the-scenes environment that adds process and atmosphere around Clinic Flow Morning",
+            "promptHint": "Reframe Clinic Flow Morning as a backstage or preparation moment; keep The clinic day starts organized, bright, and operationally clear recognizable"
+          }
+        ],
+        "props": [
+          {
+            "label": "Minimal Support",
+            "description": "Reduce surrounding objects so Clinic Flow Morning carries more weight",
+            "promptHint": "Remove nonessential props and keep Clinic Flow Morning as the dominant read"
+          },
+          {
+            "label": "Premium Finish",
+            "description": "Sharper materials, cleaner surfaces, and more elevated detail",
+            "promptHint": "Add premium material cues around Clinic Flow Morning; preserve the source image's composition"
+          },
+          {
+            "label": "Process Cues",
+            "description": "Tools, traces, or handling details that make Clinic Flow Morning feel actively used",
+            "promptHint": "Add restrained process cues around Clinic Flow Morning; preserve the strongest visual idea from The clinic day starts organized, bright, and operationally clear"
+          }
+        ],
+        "character": [
+          {
+            "label": "Collector Persona",
+            "description": "A more intentional, taste-driven persona interacting with Clinic Flow Morning",
+            "promptHint": "Introduce a collector or tastemaker presence around Clinic Flow Morning while changing wardrobe, gesture, or posture"
+          },
+          {
+            "label": "Everyday Use",
+            "description": "More approachable human presence while preserving the mood",
+            "promptHint": "Show Clinic Flow Morning in an everyday user context without losing The clinic day starts organized, bright, and operationally clear"
+          },
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Clinic Flow Morning",
+            "promptHint": "Add a cropped passing figure or gesture around Clinic Flow Morning; keep identity nonspecific and preserve The clinic day starts organized, bright, and operationally clear"
+          }
+        ],
+        "format": [
+          {
+            "label": "Wide Morning",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Clinic Flow Morning to a wide hero composition with room for layout"
+          },
+          {
+            "label": "Square Morning",
+            "description": "A balanced square crop for gallery or feed review",
+            "promptHint": "Recompose Clinic Flow Morning as a square frame with a changed focal balance and the core cue intact"
+          },
+          {
+            "label": "Portrait Morning",
+            "description": "Tighter vertical crop for social or story placement",
+            "promptHint": "Adapt Clinic Flow Morning to a portrait social crop while preserving the key visual read"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/clinic-flow-morning.jpg",
+      "sourceImageUrl": "/generated/3fe79a96c8de56c9e300d697bec0e139.png"
+    },
+    {
+      "id": "quiet-ai-command-center",
+      "title": "Quiet AI Command Center",
+      "caption": "AI appears as ambient clarity rather than spectacle.",
+      "source": "Product context: AI dashboard, clinical decision support, swarm intelligence",
+      "tone": "executive trust, futurist minimal",
+      "motif": "ambient data light, clinician workstation, glass interface",
+      "palette": "white, graphite, pale cyan, mint, restrained amber",
+      "prompt": "Single premium campaign photograph of a calm clinician workstation with multiple glass-like interface planes arranged around a central monitor, abstract AI decision pathways and care-team signals only, no readable text or numbers, soft white clinical environment, warm practical futurism, executive trust, minimal and sophisticated, realistic lighting. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet. Single coherent frame, one composed scene or object detail, not a collage, not a grid, not a contact sheet, not a scrapbook, not a mood board layout.",
+      "remixSuggestions": {
+        "style": [
+          {
+            "label": "Candid Center",
+            "description": "More natural texture and believable lived-in detail for Quiet AI Command Center",
+            "promptHint": "Shift Quiet AI Command Center toward documentary realism while preserving AI appears as ambient clarity rather than spectacle; make lighting and staging feel newly observed"
+          },
+          {
+            "label": "Editorial Center",
+            "description": "Cleaner light and hierarchy around Quiet AI Command Center",
+            "promptHint": "Apply a polished editorial treatment to Quiet AI Command Center; preserve AI appears as ambient clarity rather than spectacle while changing the composition enough to read as a..."
+          },
+          {
+            "label": "Minimal Center",
+            "description": "Quieter hierarchy, more negative space, and stricter restraint around Quiet AI Command Center",
+            "promptHint": "Strip Quiet AI Command Center down to a minimal premium frame; keep AI appears as ambient clarity rather than spectacle legible but change the surrounding space"
+          }
+        ],
+        "palette": [
+          {
+            "label": "Accent Center",
+            "description": "A stronger accent color against quieter supporting surfaces",
+            "promptHint": "Add a controlled accent palette to Quiet AI Command Center without changing the main subject"
+          },
+          {
+            "label": "Unexpected Center",
+            "description": "A more surprising secondary color relationship around Quiet AI Command Center",
+            "promptHint": "Keep the subject recognizable, but introduce one unexpected supporting color that extends AI appears as ambient clarity rather than spectacle"
+          },
+          {
+            "label": "Cool Center",
+            "description": "Crisper whites, cooler shadows, and restrained technical contrast",
+            "promptHint": "Use cooler minimal accents around Quiet AI Command Center; keep AI appears as ambient clarity rather than spectacle intact"
+          }
+        ],
+        "scene": [
+          {
+            "label": "Center Backstage",
+            "description": "A behind-the-scenes environment that adds process and atmosphere around Quiet AI Command Center",
+            "promptHint": "Reframe Quiet AI Command Center as a backstage or preparation moment; keep AI appears as ambient clarity rather than spectacle recognizable"
+          },
+          {
+            "label": "Center In Use",
+            "description": "A more believable real-world context for Quiet AI Command Center",
+            "promptHint": "Place Quiet AI Command Center into a realistic usage context; preserve the source image's core cue: AI appears as ambient clarity rather than spectacle"
+          },
+          {
+            "label": "Center Exterior",
+            "description": "Move Quiet AI Command Center into an outdoor or threshold environment with a fresh spatial read",
+            "promptHint": "Relocate Quiet AI Command Center into an exterior or entryway scene while preserving the core cue: AI appears as ambient clarity rather than spectacle"
+          }
+        ],
+        "props": [
+          {
+            "label": "Process Cues",
+            "description": "Tools, traces, or handling details that make Quiet AI Command Center feel actively used",
+            "promptHint": "Add restrained process cues around Quiet AI Command Center; preserve the strongest visual idea from AI appears as ambient clarity rather than spectacle"
+          },
+          {
+            "label": "Center Cues",
+            "description": "Add restrained supporting objects that clarify the context of Quiet AI Command Center",
+            "promptHint": "Add a few contextual props that reinforce AI appears as ambient clarity rather than spectacle without distracting from Quiet AI Command Center"
+          },
+          {
+            "label": "Unexpected Center Prop",
+            "description": "One surprising but believable object that opens a new story around Quiet AI Command Center",
+            "promptHint": "Add one unexpected supporting prop that extends AI appears as ambient clarity rather than spectacle without stealing focus from Quiet AI Command Center"
+          }
+        ],
+        "character": [
+          {
+            "label": "Everyday Use",
+            "description": "More approachable human presence while preserving the mood",
+            "promptHint": "Show Quiet AI Command Center in an everyday user context without losing AI appears as ambient clarity rather than spectacle"
+          },
+          {
+            "label": "Passing Figure",
+            "description": "A partial human presence that adds scale and motion without taking over Quiet AI Command Center",
+            "promptHint": "Add a cropped passing figure or gesture around Quiet AI Command Center; keep identity nonspecific and preserve AI appears as ambient clarity rather than spectacle"
+          },
+          {
+            "label": "Expert Hands",
+            "description": "More credible craft, authority, and purposeful interaction with Quiet AI Command Center",
+            "promptHint": "If a person appears, make them an expert operator interacting naturally with Quiet AI Command Center"
+          }
+        ],
+        "format": [
+          {
+            "label": "Center Crop",
+            "description": "Closer inspection of the material, surface, or focal subject",
+            "promptHint": "Create a closer detail crop of Quiet AI Command Center; keep AI appears as ambient clarity rather than spectacle legible"
+          },
+          {
+            "label": "Split-Depth Center",
+            "description": "Foreground detail and background atmosphere in one composed frame",
+            "promptHint": "Create a single-frame split-depth composition for Quiet AI Command Center; do not make a collage or panel layout"
+          },
+          {
+            "label": "Wide Center",
+            "description": "Broader horizontal composition for landing-page or banner use",
+            "promptHint": "Adapt Quiet AI Command Center to a wide hero composition with room for layout"
+          }
+        ]
+      },
+      "imageUrl": "/generated/mcp-thumbs/quiet-ai-command-center.jpg",
+      "sourceImageUrl": "/generated/acced6f8732f908cc9db8fb9da80577f.png"
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "meta": {
+    "title": "Metapharsic EHR Executive Trust Mood Board",
+    "subtitle": "Premium, calm, useful futurism for an AI-enabled clinic command-center campaign.",
+    "brief": {
+      "theme": "Metapharsic Lifesciences EHR as a modern clinic command center.",
+      "goal": "Create a premium campaign visual world that makes clinical and executive buyers feel focused, confident, and able to trust a sophisticated EHR platform.",
+      "audience": "Clinic owners, administrators, physicians, and operational leaders evaluating an AI-assisted EHR MVP.",
+      "brand_inputs": [
+        "Metapharsic Lifesciences EHR",
+        "Next.js EHR product with patient management, voice workflows, prescriptions, clinical dashboards, documents, predictive timeline, genomics, digital twin, and admin views"
+      ],
+      "palette_direction": "Clean whites, warm off-white surfaces, pale glass, graphite, controlled clinical blue, desaturated green, and small amber highlights.",
+      "emotional_register": "Premium focus, calm confidence, executive trust, warm usefulness, futurist minimalism.",
+      "must_include": [
+        "work surfaces",
+        "glass interfaces",
+        "care team decision contexts",
+        "clinic operations",
+        "subtle AI-assisted workflow cues"
+      ],
+      "visual_principles": [
+        "single visual reference image per tile",
+        "quiet premium composition",
+        "human-scale usefulness",
+        "no readable UI text",
+        "no logos",
+        "no patient-identifying detail"
+      ],
+      "avoid": [
+        "mini mood boards",
+        "collage layouts",
+        "fake readable dashboard text",
+        "stock hospital smiles",
+        "overly futuristic neon sci-fi",
+        "dark moody healthcare"
+      ],
+      "next_outputs": [
+        "website hero imagery",
+        "campaign landing page visuals",
+        "sales deck section imagery",
+        "LinkedIn launch ads",
+        "product narrative cards"
+      ],
+      "context_signals": [
+        "repository describes the product as a clinic digital command center",
+        "demo/MVP stage should feel advanced while staying honest and credible",
+        "clinical safety and operational clarity matter more than spectacle"
+      ]
+    }
+  },
+  "signals": {
+    "territories": [
+      "Executive clinic command center",
+      "Warm operational intelligence",
+      "Minimal glass interface proof",
+      "Care-team decision calm"
+    ],
+    "audience_cues": [
+      "doctor-administrator collaboration",
+      "clinic operations leadership",
+      "clinical staff using calm AI assistance"
+    ],
+    "palette": [
+      "soft white",
+      "warm ivory",
+      "pale clinical blue",
+      "desaturated mint",
+      "graphite",
+      "subtle amber"
+    ],
+    "motifs": [
+      "work surfaces",
+      "glass interface panes",
+      "soft daylight clinics",
+      "hands in focused collaboration",
+      "premium medical materials",
+      "quiet data light"
+    ]
+  },
+  "items": [
+    {
+      "id": "executive-clinic-worktable",
+      "title": "Executive Clinic Worktable",
+      "caption": "A premium decision table where clinical leadership reviews operations with calm focus.",
+      "source": "Inferred from EHR command-center campaign brief",
+      "tone": "premium focus, executive trust",
+      "motif": "warm work surface, glass interface, clinical planning",
+      "palette": "warm ivory, graphite, pale blue, soft daylight",
+      "prompt": "Single editorial photograph of a premium clinic leadership worktable in soft daylight, two or three professionals partly visible from shoulders and hands only, reviewing a translucent glass-like digital interface hovering low over a warm matte work surface, abstract charts and patient-flow shapes with no readable text, quiet medical materials, calm confident mood, executive trust, warm useful futurist minimalism, clean white clinic background, realistic photography, shallow depth of field. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet, no split panels."
+    },
+    {
+      "id": "glass-interface-vitals",
+      "title": "Glass Interface Vitals",
+      "caption": "Transparent data feels precise, restrained, and clinically useful.",
+      "source": "Selected cue: glass interfaces",
+      "tone": "calm confidence, futurist minimal",
+      "motif": "glass UI pane, vitals rhythm, premium clinical light",
+      "palette": "white, pale cyan, mint, graphite",
+      "prompt": "Single visual reference image of a translucent glass interface panel angled above a clean white clinical desk, softly glowing abstract vital-sign curves and modular dashboard blocks with no readable numbers or text, a stethoscope and tablet edge nearby, premium minimal healthcare technology, airy warm daylight, calm confidence, realistic product-ad photography. No logos, no readable text, no patient identifiers, no collage, no grid, no mood board layout."
+    },
+    {
+      "id": "voice-scribe-consult-room",
+      "title": "Voice Scribe Consult Room",
+      "caption": "AI documentation should feel invisible, respectful, and useful during a visit.",
+      "source": "Product context: voice workflows and ambient scribe",
+      "tone": "warm useful, calm confidence",
+      "motif": "consultation work surface, ambient voice cue, glass note layer",
+      "palette": "soft white, warm beige, muted blue, gentle green",
+      "prompt": "Single editorial photograph inside a modern consultation room, doctor hands resting near a tablet on a warm work surface while a subtle translucent glass note layer floats beside the tablet, abstract waveform and note blocks only, no readable text, patient represented only as an out-of-focus shoulder silhouette, respectful privacy, warm useful healthcare technology, premium calm confidence, natural daylight. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet."
+    },
+    {
+      "id": "patient-hub-command-surface",
+      "title": "Patient Hub Command Surface",
+      "caption": "A composed patient overview without exposing private data.",
+      "source": "Product context: patient hub and clinical dashboards",
+      "tone": "executive trust, premium focus",
+      "motif": "dashboard surface, patient story abstraction, clean interface glass",
+      "palette": "white, graphite, pale green, muted blue",
+      "prompt": "Single composed scene of a premium EHR patient hub displayed as abstract glass interface panes across a large clean monitor and a physical desk surface, privacy-safe silhouettes and chart shapes with no readable labels or numbers, a clinician's hand pointing calmly, refined clinic command-center atmosphere, warm daylight, executive trust, minimalist realistic photography. No logos, no readable text, no patient identifiers, no collage, no grid, no split panels."
+    },
+    {
+      "id": "prescription-safety-desk",
+      "title": "Prescription Safety Desk",
+      "caption": "Medication support shown as careful, quiet, and safety-led.",
+      "source": "Product context: prescriptions and medication safety UI",
+      "tone": "calm confidence, clinical precision",
+      "motif": "medication tray, glass decision pane, doctor workflow",
+      "palette": "warm white, graphite, pale blue, amber safety accent",
+      "prompt": "Single editorial product photograph of a physician work surface with a closed prescription pad, a few neutral medication blister packs, and a translucent glass decision pane showing abstract interaction-alert shapes in amber and blue with no readable text, premium clinical safety mood, careful and calm, realistic warm daylight, minimal futuristic healthcare. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet."
+    },
+    {
+      "id": "predictive-timeline-glass",
+      "title": "Predictive Timeline Glass",
+      "caption": "Future clinical risk becomes calm and legible, not alarming.",
+      "source": "Product context: predictive timeline",
+      "tone": "futurist minimal, calm confidence",
+      "motif": "timeline ribbon, glass plane, soft clinical environment",
+      "palette": "white, mist blue, mint, graphite, small amber",
+      "prompt": "Single visual reference image of an elegant translucent timeline ribbon floating above a white clinic desk, abstract nodes and risk gradients only, no readable text or numbers, soft focus background of a calm modern healthcare office, premium minimal data visualization, gentle blue-green palette, executive trust and calm confidence, realistic photography with subtle digital compositing. No logos, no readable text, no patient identifiers, no collage, no grid."
+    },
+    {
+      "id": "admin-trust-boardroom",
+      "title": "Admin Trust Boardroom",
+      "caption": "Operational leadership sees the clinic clearly without visual noise.",
+      "source": "Audience cue: health administrators and executives",
+      "tone": "executive trust, premium focus",
+      "motif": "boardroom, glass dashboards, clinic operations",
+      "palette": "ivory, graphite, pale blue, muted green",
+      "prompt": "Single editorial photograph in a small premium healthcare boardroom, clinic administrators around a warm wood and glass conference table reviewing large translucent interface panes with abstract appointment, staffing, and finance blocks, no readable text, soft daylight, refined and practical, calm executive trust, minimal futuristic healthcare campaign image. No logos, no readable text, no patient identifiers, no collage, no grid, no split panels."
+    },
+    {
+      "id": "documents-revenue-workflow",
+      "title": "Documents Revenue Workflow",
+      "caption": "Documentation and revenue-cycle intelligence presented as organized calm.",
+      "source": "Product context: documents, claims, revenue analytics",
+      "tone": "warm useful, executive trust",
+      "motif": "paperless documents, glass cards, organized work surface",
+      "palette": "warm ivory, graphite, pale blue, soft amber",
+      "prompt": "Single composed scene of a clean clinic operations desk with neatly stacked blank forms, a tablet, and floating glass document cards showing abstract blocks and status marks only, no readable text, small amber signals for priority, warm practical healthcare administration, premium but grounded, realistic daylight photography. No logos, no readable text, no patient identifiers, no collage, no grid, no mood board layout."
+    },
+    {
+      "id": "bilingual-care-interface",
+      "title": "Bilingual Care Interface",
+      "caption": "Language support suggested through human connection, not literal copy.",
+      "source": "Product context: bilingual consultation and symptom mappings",
+      "tone": "warm useful, calm confidence",
+      "motif": "conversation, soft voice wave, transparent interface",
+      "palette": "soft white, warm neutrals, pale green, muted blue",
+      "prompt": "Single editorial photograph of a calm clinic conversation at a desk, clinician and patient hands visible with respectful privacy, a subtle translucent speech-wave interface floating between them as abstract shapes only, no letters or readable text, warm daylight, human-centered EHR intelligence, premium useful feeling, quiet trust. No logos, no readable text, no patient identifiers, no collage, no grid, no split panels."
+    },
+    {
+      "id": "digital-twin-material-study",
+      "title": "Digital Twin Material Study",
+      "caption": "Advanced clinical ideas expressed with restraint and material polish.",
+      "source": "Product context: digital twin and genomics features",
+      "tone": "futurist minimal, premium focus",
+      "motif": "glass model, clinical object detail, restrained future",
+      "palette": "white, translucent blue, graphite, mint",
+      "prompt": "Single macro editorial photograph of a translucent glass anatomical abstraction on a white clinical work surface beside a tablet edge, softly illuminated blue-green internal lines suggesting a digital twin without literal organs or labels, premium minimal healthcare technology, quiet and sophisticated, shallow depth of field, no sci-fi neon. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet."
+    },
+    {
+      "id": "clinic-flow-morning",
+      "title": "Clinic Flow Morning",
+      "caption": "The clinic day starts organized, bright, and operationally clear.",
+      "source": "Campaign goal: clinic overload solved by one command center",
+      "tone": "calm confidence, warm useful",
+      "motif": "front desk, glass schedule interface, soft morning clinic",
+      "palette": "warm white, pale blue, soft green, graphite",
+      "prompt": "Single editorial photograph of a refined clinic front desk in morning light, staff hands arranging a tablet and appointment materials while a translucent glass schedule layer floats above the counter, abstract appointment blocks only with no readable text, organized calm, warm useful healthcare operations, premium minimal realism. No logos, no readable text, no patient identifiers, no collage, no grid, no split panels."
+    },
+    {
+      "id": "quiet-ai-command-center",
+      "title": "Quiet AI Command Center",
+      "caption": "AI appears as ambient clarity rather than spectacle.",
+      "source": "Product context: AI dashboard, clinical decision support, swarm intelligence",
+      "tone": "executive trust, futurist minimal",
+      "motif": "ambient data light, clinician workstation, glass interface",
+      "palette": "white, graphite, pale cyan, mint, restrained amber",
+      "prompt": "Single premium campaign photograph of a calm clinician workstation with multiple glass-like interface planes arranged around a central monitor, abstract AI decision pathways and care-team signals only, no readable text or numbers, soft white clinical environment, warm practical futurism, executive trust, minimal and sophisticated, realistic lighting. No logos, no readable text, no patient identifiers, no collage, no grid, no contact sheet."
+    }
+  ]
+}

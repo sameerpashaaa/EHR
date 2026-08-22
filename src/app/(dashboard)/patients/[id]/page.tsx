@@ -13,6 +13,9 @@ import {
 import { MOCK_PATIENTS, MOCK_VITALS, MOCK_LABS, MOCK_MEDICATIONS, MOCK_PROBLEMS, MOCK_ENCOUNTERS } from "@/data/mockPatients";
 import { usePatient } from "@/hooks/usePatients";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { hasPermission, Permission } from "@/lib/auth/roles";
+import PermissionGate from "@/components/ui/PermissionGate";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function calculateAge(dob: string): number {
@@ -38,13 +41,13 @@ const ALLERGY_COLORS: Record<string, { bg: string; color: string }> = {
   "🌿": { bg: "#F0FDF4", color: "#14532D" },
 };
 
-const TABS = [
+const ALL_TABS: Array<{ id: string; label: string; permission?: Permission }> = [
   { id: "details",         label: "Details" },
-  { id: "schedule",        label: "Schedule" },
-  { id: "medical-summary", label: "Medical Summary" },
-  { id: "medications",     label: "Medications" },
-  { id: "reports",         label: "Reports" },
-  { id: "documents",       label: "Documents" },
+  { id: "schedule",        label: "Schedule", permission: "encounters:read" },
+  { id: "medical-summary", label: "Medical Summary", permission: "conditions:read" },
+  { id: "medications",     label: "Medications", permission: "medications:read" },
+  { id: "reports",         label: "Reports", permission: "documents:read" },
+  { id: "documents",       label: "Documents", permission: "documents:read" },
 ];
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
@@ -558,6 +561,7 @@ export default function PatientDetailPage() {
   const patientId = params.id as string;
   const [activeTab, setActiveTab] = useState("details");
   const [moreOpen, setMoreOpen] = useState(false);
+  const { data: session } = useSession();
 
   const { data: response, isLoading, error } = usePatient(patientId);
 
@@ -686,7 +690,7 @@ export default function PatientDetailPage() {
       {/* ── Tab Bar ─────────────────────────────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-slate-200 mb-5">
         <div className="flex items-center overflow-x-auto hide-scrollbar px-5">
-          {TABS.map((tab) => (
+          {ALL_TABS.filter(tab => !tab.permission || hasPermission((session?.user as any)?.role, tab.permission)).map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -716,23 +720,25 @@ export default function PatientDetailPage() {
       {activeTab === "documents"       && <DocumentsTab />}
 
       {/* ── Floating AI Scribe Console ───────────────────────────────────────── */}
-      <div
-        className="fixed bottom-6 right-6 z-50"
-        style={{ pointerEvents: "auto" }}
-      >
-        <Link href="/transcript">
-          <button
-            className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-white rounded-2xl shadow-lg transition-all hover:opacity-90 active:scale-[0.97]"
-            style={{
-              background: "linear-gradient(135deg, #0EA5E9 0%, #7C3AED 100%)",
-              boxShadow: "0 8px 24px rgba(14,165,233,0.35)",
-            }}
-          >
-            <Sparkles className="w-4 h-4" />
-            AI Scribe Console
-          </button>
-        </Link>
-      </div>
+      <PermissionGate permission="ai:scribe">
+        <div
+          className="fixed bottom-6 right-6 z-50"
+          style={{ pointerEvents: "auto" }}
+        >
+          <Link href="/transcript">
+            <button
+              className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-white rounded-2xl shadow-lg transition-all hover:opacity-90 active:scale-[0.97]"
+              style={{
+                background: "linear-gradient(135deg, #0EA5E9 0%, #7C3AED 100%)",
+                boxShadow: "0 8px 24px rgba(14,165,233,0.35)",
+              }}
+            >
+              <Sparkles className="w-4 h-4" />
+              AI Scribe Console
+            </button>
+          </Link>
+        </div>
+      </PermissionGate>
     </div>
   );
 }

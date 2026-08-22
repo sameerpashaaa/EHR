@@ -1,0 +1,7 @@
+Done.
+
+Generated one PNG with `image_gen.imagegen` and saved:
+
+`C:\Users\SAMEER PASHA\OneDrive\Documents\Projects\EHR\outputs\moodboards\metapharsic-ehr-executive-trust\run\generated\workers\admin-trust-boardroom\attempt-1\image.png`
+
+Wrote and validated `result.json` at the requested path.

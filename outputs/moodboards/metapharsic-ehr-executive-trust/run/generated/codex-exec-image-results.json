@@ -1,0 +1,93 @@
+{
+  "status": "complete",
+  "total": 12,
+  "complete": 12,
+  "failed": 0,
+  "pending": 0,
+  "results": [
+    {
+      "id": "executive-clinic-worktable",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\5e304bf179f0ac4caeee9f692110c358.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "glass-interface-vitals",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\26f340a820a3fd651b3f4cb368ca24c1.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "voice-scribe-consult-room",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\3456f37d4596a38da70384d16a402379.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "patient-hub-command-surface",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\c6cde9c7868734bfb9e9c593ae6641a3.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "prescription-safety-desk",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\ce238b4ff339aa22d2f75a20599302e0.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "predictive-timeline-glass",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\d3cb4932dd206baded7d187dbe4c9490.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "admin-trust-boardroom",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\b2242dbf8db0077c4b15e6ea8af7d9e0.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "documents-revenue-workflow",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\a1de59a7d74b8d5d7238ca7582fd615e.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "bilingual-care-interface",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\3496bd242269c801e30088fb97a53056.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "digital-twin-material-study",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\a8589412efc0f99f7c36634b94f38bb0.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "clinic-flow-morning",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\3fe79a96c8de56c9e300d697bec0e139.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    },
+    {
+      "id": "quiet-ai-command-center",
+      "status": "complete",
+      "image_path": "C:\\Users\\SAMEER PASHA\\OneDrive\\Documents\\Projects\\EHR\\outputs\\moodboards\\metapharsic-ehr-executive-trust\\run\\generated\\acced6f8732f908cc9db8fb9da80577f.png",
+      "error": null,
+      "caveats": "Recovered from existing worker image because result JSON was invalid: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    }
+  ]
+}

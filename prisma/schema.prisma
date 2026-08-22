@@ -21,6 +21,10 @@ model User {
   isActive      Boolean   @default(true)
   emailVerified DateTime?
   lastLoginAt   DateTime?
+  lastPortalLogin DateTime?
+  loginPortal   LoginPortal @default(STAFF)
+  failedLoginAttempts Int @default(0)
+  lockedUntil   DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -49,6 +53,15 @@ enum UserRole {
   MEDICAL_ASSISTANT
   FRONT_DESK
   PATIENT
+}
+
+enum LoginPortal {
+  ADMIN_PORTAL
+  PHYSICIAN_PORTAL
+  CLINICAL_PORTAL
+  RECEPTION_PORTAL
+  PATIENT_PORTAL
+  STAFF
 }
 
 // Organization/Practice Model

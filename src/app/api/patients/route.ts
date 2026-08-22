@@ -6,26 +6,16 @@ import { hasPermission } from "@/lib/auth/roles";
 import { generateMRN } from "@/lib/utils";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { guard } from "@/lib/auth/guard";
+import { getPatientScopeFilter } from "@/lib/auth/patientScope";
 
 // GET /api/patients - List patients with search and pagination
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: { code: "UNAUTHORIZED", message: "Not authenticated" } },
-        { status: 401 }
-      );
-    }
-    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-
-    if (!hasPermission((session.user as any).role, "patients:read")) {
-      return NextResponse.json(
-        { success: false, error: { code: "FORBIDDEN", message: "Insufficient permissions" } },
-        { status: 403 }
-      );
-    }
+    const guardResponse = guard(session?.user, "patients:read");
+    if (guardResponse) return guardResponse;
 
     const { searchParams } = new URL(request.url);
     
@@ -42,7 +32,9 @@ export async function GET(request: NextRequest) {
 
     const validated = patientSearchSchema.parse(params);
 
-    const where: any = {};
+    const where: any = {
+      ...getPatientScopeFilter(session?.user)
+    };
     
     if (validated.query) {
       const tokens = validated.query.split(/\s+/).filter(Boolean);
@@ -129,20 +121,8 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: { code: "UNAUTHORIZED", message: "Not authenticated" } },
-        { status: 401 }
-      );
-    }
-    if (!['PHYSICIAN', 'ADMIN', 'NURSE', 'MEDICAL_ASSISTANT'].includes((session?.user as any)?.role || "")) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-
-    if (!hasPermission((session.user as any).role, "patients:create")) {
-      return NextResponse.json(
-        { success: false, error: { code: "FORBIDDEN", message: "Insufficient permissions" } },
-        { status: 403 }
-      );
-    }
+    const guardResponse = guard(session?.user, "patients:create");
+    if (guardResponse) return guardResponse;
 
     const body = await request.json();
     const validated = patientSchema.parse(body);

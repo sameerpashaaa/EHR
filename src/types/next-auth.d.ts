@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import { UserRole } from "./index";
+import { UserRole, LoginPortal } from "./index";
 
 declare module "next-auth" {
   interface Session {
@@ -8,6 +8,7 @@ declare module "next-auth" {
       email: string;
       name: string;
       role: UserRole;
+      portal?: LoginPortal;
       image?: string;
       practitionerId?: string;
       patientId?: string;
@@ -20,6 +21,7 @@ declare module "next-auth" {
     email: string;
     name: string;
     role: UserRole;
+    portal?: LoginPortal;
     image?: string;
     practitionerId?: string;
     patientId?: string;
@@ -31,6 +33,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
     role?: UserRole;
+    portal?: LoginPortal;
     practitionerId?: string;
     patientId?: string;
     organizationId?: string;

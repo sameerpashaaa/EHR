@@ -11,11 +11,20 @@ export type UserRole =
   | "FRONT_DESK"
   | "PATIENT";
 
+export type LoginPortal =
+  | "ADMIN_PORTAL"
+  | "PHYSICIAN_PORTAL"
+  | "CLINICAL_PORTAL"
+  | "RECEPTION_PORTAL"
+  | "PATIENT_PORTAL"
+  | "STAFF";
+
 export interface User {
   id: string;
   email: string;
   name: string;
   role: UserRole;
+  loginPortal?: LoginPortal;
   image?: string;
   practitionerId?: string;
   patientId?: string;

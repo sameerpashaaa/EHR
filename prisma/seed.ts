@@ -141,6 +141,32 @@ async function main() {
         organizationId: organization.id,
       },
     }),
+    // Medical Assistant user
+    prisma.user.upsert({
+      where: { email: "ma@metapharsic.com" },
+      update: {},
+      create: {
+        email: "ma@metapharsic.com",
+        password: await bcrypt.hash("ma123", 12),
+        name: "Alex Vance, MA",
+        role: "MEDICAL_ASSISTANT",
+        isActive: true,
+        organizationId: organization.id,
+      },
+    }),
+    // Patient user
+    prisma.user.upsert({
+      where: { email: "patient@metapharsic.com" },
+      update: {},
+      create: {
+        email: "patient@metapharsic.com",
+        password: await bcrypt.hash("patient123", 12),
+        name: "John Smith",
+        role: "PATIENT",
+        isActive: true,
+        organizationId: organization.id,
+      },
+    }),
   ]);
 
   console.log(`Created ${users.length} users`);

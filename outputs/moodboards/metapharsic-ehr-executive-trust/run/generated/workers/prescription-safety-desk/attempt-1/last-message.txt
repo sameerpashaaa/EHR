@@ -1,0 +1,7 @@
+Generated exactly one PNG with `image_gen.imagegen` and saved it here:
+
+`C:\Users\SAMEER PASHA\OneDrive\Documents\Projects\EHR\outputs\moodboards\metapharsic-ehr-executive-trust\run\generated\workers\prescription-safety-desk\attempt-1\image.png`
+
+Wrote the worker result JSON here:
+
+`C:\Users\SAMEER PASHA\OneDrive\Documents\Projects\EHR\outputs\moodboards\metapharsic-ehr-executive-trust\run\generated\workers\prescription-safety-desk\attempt-1\result.json`

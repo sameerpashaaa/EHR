@@ -1,0 +1,7 @@
+Done.
+
+Generated PNG:
+`C:\Users\SAMEER PASHA\OneDrive\Documents\Projects\EHR\outputs\moodboards\metapharsic-ehr-executive-trust\run\generated\workers\bilingual-care-interface\attempt-1\image.png`
+
+Wrote valid worker result JSON:
+`C:\Users\SAMEER PASHA\OneDrive\Documents\Projects\EHR\outputs\moodboards\metapharsic-ehr-executive-trust\run\generated\workers\bilingual-care-interface\attempt-1\result.json`

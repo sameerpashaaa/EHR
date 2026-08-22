@@ -20,7 +20,12 @@ import {
   Menu,
   X,
   ChevronRight,
+  ChevronDown,
   BarChart3,
+  Building2,
+  Bed,
+  Wrench,
+  Brush,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -39,6 +44,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   UserCog,
   ClipboardList,
   BarChart3,
+  Building2,
+  Bed,
+  Wrench,
+  Ambulance,
+  Brush,
 };
 
 function List({ className }: { className?: string }) {
@@ -98,6 +108,29 @@ function ClipboardList({ className }: { className?: string }) {
   );
 }
 
+function Ambulance({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M14 18H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7" />
+      <path d="M19 11h3a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-3" />
+      <circle cx="7.5" cy="18.5" r="2.5" />
+      <circle cx="16.5" cy="18.5" r="2.5" />
+      <path d="M8 8h4" />
+      <path d="M10 6v4" />
+      <path d="M13 14h3" />
+    </svg>
+  );
+}
+
 interface FloatingNavProps {
   user: SessionUser;
   onExpandChange?: (expanded: boolean) => void;
@@ -107,6 +140,9 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const pathname = usePathname();
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+    "Facility Management": true,
+  });
 
   const navItems = filterNavItemsByRole(NAV_ITEMS, user?.role || "FRONT_DESK");
 
@@ -172,7 +208,52 @@ export function FloatingNav({ user, onExpandChange }: FloatingNavProps) {
         {/* Navigation Items */}
         <div className="flex flex-col gap-[2px] flex-1 overflow-y-auto px-2 py-3">
           {navItems.map((item) => {
+            const hasChildren = item.children && item.children.length > 0;
+            const isGroupOpen = expandedGroups[item.title];
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+
+            if (hasChildren && isExpanded) {
+              return (
+                <div key={item.href} className="flex flex-col gap-[2px]">
+                  <button
+                    onClick={() => setExpandedGroups(prev => ({ ...prev, [item.title]: !prev[item.title] }))}
+                    className={cn(
+                      "flex items-center gap-3 px-3 h-9 rounded-[12px] text-[#475569] hover:bg-slate-100/60 hover:text-[#0f172a] transition-all text-left w-full",
+                      isActive && "font-[700] text-[#16a34a] bg-[#f0fdf4]"
+                    )}
+                  >
+                    <span className="flex-shrink-0">{getIcon(item.icon)}</span>
+                    <span className="text-[13px] whitespace-nowrap overflow-hidden flex-1">
+                      {item.title}
+                    </span>
+                    <ChevronDown className={cn("h-3.5 w-3.5 text-[#94a3b8] transition-transform", isGroupOpen && "rotate-180")} />
+                  </button>
+                  
+                  {isGroupOpen && (
+                    <div className="flex flex-col gap-[2px] pl-4 mt-[1px] border-l border-slate-200/80 ml-5">
+                      {(item.children || []).map((child) => {
+                        const isChildActive = pathname === child.href;
+                        return (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className={cn(
+                              "flex items-center gap-2.5 px-3 h-8 rounded-[8px] transition-all text-[12px]",
+                              isChildActive
+                                ? "text-[#16a34a] bg-[#f0fdf4] font-[600] border-l-2 border-[#22c55e]"
+                                : "text-[#64748b] hover:bg-slate-100/40 hover:text-[#0f172a]"
+                            )}
+                          >
+                            <span className="flex-shrink-0 opacity-70">{getIcon(child.icon)}</span>
+                            <span className="whitespace-nowrap overflow-hidden">{child.title}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
 
             return (
               <Link

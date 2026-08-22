@@ -49,14 +49,41 @@ export default withAuth(
     }
 
     const userRole = token.role as UserRole;
+    const portal = (token as any).portal as string;
 
-    // Check route-specific permissions
-    for (const [route, allowedRoles] of Object.entries(ROUTE_PERMISSIONS)) {
-      if (pathname.startsWith(route)) {
-        if (!allowedRoles.includes(userRole)) {
-          // Redirect to unauthorized page or dashboard
-          return NextResponse.redirect(new URL("/", req.url));
+    // Check API route permissions first
+    if (pathname.startsWith("/api/") && !PUBLIC_ROUTES.some((r) => pathname.startsWith(r))) {
+      if (pathname.startsWith("/api/admin") && userRole !== "ADMIN") {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+      if (pathname.startsWith("/api/clinical") && !["PHYSICIAN", "NURSE", "MEDICAL_ASSISTANT"].includes(userRole)) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+      if (pathname.startsWith("/api/patient") && userRole !== "PATIENT") {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    } else {
+      // Check UI route-specific permissions
+      for (const [route, allowedRoles] of Object.entries(ROUTE_PERMISSIONS)) {
+        if (pathname.startsWith(route)) {
+          if (!allowedRoles.includes(userRole)) {
+            return NextResponse.redirect(new URL("/unauthorized", req.url));
+          }
         }
+      }
+
+      // Check portal-specific boundaries
+      if (pathname.startsWith("/admin") && portal !== "ADMIN_PORTAL") {
+        return NextResponse.redirect(new URL("/unauthorized", req.url));
+      }
+      if (pathname.startsWith("/clinical") && portal !== "CLINICAL_PORTAL" && portal !== "PHYSICIAN_PORTAL") {
+        return NextResponse.redirect(new URL("/unauthorized", req.url));
+      }
+      if (pathname.startsWith("/reception") && portal !== "RECEPTION_PORTAL") {
+        return NextResponse.redirect(new URL("/unauthorized", req.url));
+      }
+      if (pathname.startsWith("/patient-portal") && portal !== "PATIENT_PORTAL") {
+        return NextResponse.redirect(new URL("/unauthorized", req.url));
       }
     }
 
